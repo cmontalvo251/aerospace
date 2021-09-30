@@ -1,3 +1,7 @@
+*.jar
+*.gif
+*.java
+*.wav
 *.dat
 *.xlsx
 *.slx
