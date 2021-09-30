@@ -1,0 +1,5 @@
+These outer solar system diagrams show the positions of asteroids and comets with semi-major axes (a) greater than 5 AU (orbital periods greater than ~11 years) on 2018 January 1. The orbits and positions of Earth, Jupiter, Saturn, Uranus, Neptune, Pluto, and comets Halley and Hale-Bopp are also shown. Asteroids are yellow dots and comets are symbolized by sunward-pointing wedges.
+
+The top diagram shows the view from above the ecliptic plane. The bottom diagram shows the view from the edge of the ecliptic plane. In both diagrams, the vernal equinox is to the right along the horizontal axis (+X direction). Only comets and asteroids in JPL's small-body database as of 2018 January 1 were used.
+
+Postscript versions of these diagrams: view from above, view from the edge.

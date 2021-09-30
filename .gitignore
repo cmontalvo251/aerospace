@@ -1,3 +1,10 @@
+*.mat
+*.pyc
+__pycache__
+*.png
+*.jpg
+*.jpeg
+
 # Prerequisites
 *.d
 
