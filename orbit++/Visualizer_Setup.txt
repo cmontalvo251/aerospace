@@ -1,0 +1,8 @@
+0                       !Save Each Frame to a File 1 = on,0 = off
+2  		     	!Number of objects in window 
+objects/portalcube.obj 	!First Object file - No spaces allowed!!
+1.000000  	        !Scale Factor of Object
+0.0000015695		!Scale Factor of Position
+objects/earthcube.obj 	!Second Object file - This is the Earth
+2.000000  	        !Scale Factor of Object
+1.000000  	        !Scale Factor of Position

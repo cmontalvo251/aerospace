@@ -1,0 +1,3 @@
+84	    !Number of turns (integer)
+0.02	!Magnetorque area (m^2)
+0.04 	!Maximum Current (Amps)

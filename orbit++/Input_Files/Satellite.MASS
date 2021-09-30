@@ -1,0 +1,4 @@
+2.6	    !Mass of Satellite in kilograms
+0.0108	!Ixx (kg-m^2)
+0.0108	!Iyy (kg-m^2)
+0.0043	!Izz (kg-m^2)

@@ -1,0 +1,11 @@
+600	!Distance of Orbit from Surface (km)
+0	!Ycoordinate (m)
+0	!Zcoordinate (m)
+0	!Xdot (m/s) - This would normal to the Earth's surface
+-52	!Inclination Angle (deg) - Tangential Velocity is computed
+0	!Roll (deg)
+0	!Pitch (deg)
+0	!Yaw (deg)
+0.03	!Roll Rate (rad/s)
+0.0	!Pitch Rate (rad/s)
+-0.02	!Yaw Rate (rad/s)

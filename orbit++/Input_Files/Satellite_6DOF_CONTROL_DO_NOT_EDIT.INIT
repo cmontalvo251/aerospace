@@ -1,0 +1,13 @@
+-99	!Distance of Orbit from Surface (km) (Set to -99 for full 6DOF control)
+0	!Xcoordinate (m) -- Only works if you have Distance set to -99
+0	!Ycoordinate (m)
+0	!Zcoordinate (m)
+0	!Xdot (m/s) - This would normal to the Earth's surface
+0	!Ydot (m/s) 
+0	!Zdot (m/s) 
+0	!Roll (deg)
+0	!Pitch (deg)
+0	!Yaw (deg)
+-0.1	!Roll Rate (rad/s)
+0.05	!Pitch Rate (rad/s)
+-0.1	!Yaw Rate (rad/s)

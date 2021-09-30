@@ -1,0 +1,10 @@
+1		!Simulate XYZ trajectory
+1		!Simulate Attitude Dynamics
+0		!Gravity Flag (-1=off,0=point mass, 1=egm2008)
+2018		!Year
+1		!Magnetic Field Model (0=off, 1=emm2015)
+-99		!Update Rate of Magnetic Field Model (sec) (-99=update once,0=everytimestep)
+0.01		!Timestep (sec)
+5400		!Tfinal (sec)
+1		!Print Rate (sec)
+2		!Number of Satellites
