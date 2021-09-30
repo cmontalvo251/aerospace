@@ -1,0 +1,14 @@
+2.0 #factor of safety
+0.385 #Ixx (kg-m^2)
+0.431 #Iyy (kg-m^2)
+0.296 #Izz (kg-m^2)
+10.0 #wmax  (deg/s)
+20.0 #length (cm)
+20.0 #width (cm)
+30.0 #height (cm)
+12.0 #mission duration (months)
+1.0 #CD
+400.0 #rp (km)
+60000.0 #ra (km)
+24 #Mass (kg)
+1.0 #Magnetic (Moment-Am^2)
