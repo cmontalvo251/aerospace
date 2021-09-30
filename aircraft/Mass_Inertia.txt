@@ -1,0 +1,8 @@
+55.07	!Weight_(N)
+0.4497	!Ixx(kg*m^2)
+0.5111	!Iyy
+0.8470	!Izz
+0	!Ixy
+0	!Ixz
+0	!Iyz
+
