@@ -4,6 +4,7 @@ __pycache__
 *.png
 *.jpg
 *.jpeg
+*.OUT
 
 # Prerequisites
 *.d
