@@ -27,4 +27,4 @@ for idx = 1:length(x)
 	ByI(idx) = BI(2);
 	BzI(idx) = BI(3);
 end
-disp('Done')
+disp('Done Computing Magnetic Field')
