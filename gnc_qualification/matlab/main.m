@@ -8,7 +8,7 @@ disp('GNC QUALIFICATION')
 apogee = 600; %%km above surface
 perigee = 600; %km above surface
 N = 1000; %%%precision of orbit
-magnetic_moment = 1.176;  %%number of turns times current time area of magnetorquers
+magnetic_moment = 0.6;  %%number of turns times current time area of magnetorquers
 L = 36.6; %%%length of satellite in centimeters
 W  = 22.6; %%%width of satellite in centirmeter
 D = 22.6; %%depth of satellite in centimeters
@@ -26,14 +26,14 @@ maneuver_angle = 180; %%%manuever_angle in degrees
 f = 0.5; %%%a factor from 0(non-inclusive) to 0.5 which dictate the speed of the manuever (0 is not moving and 0.5 is as fast as possible)
 
 %%%% Inertia Calculator
-[Ixx,Iyy,Izz,max_moment_arm] = inertia(L,W,D,m);
+[Ixx,Iyy,Izz,max_moment_arm,max_area] = inertia(L,W,D,m);
 
 %%%Run the orbit model
-[x,y,z,t,T_orbit] = orbit_model(apogee,perigee,N,0);
+[x,y,z,t,r,T_orbit,vx,vy,vz,v] = orbit_model(apogee,perigee,N,0);
 disp(['Orbit Time = ',num2str(T_orbit)])
 
 %%%Plot the orbit
-plot3(x,y,z)
+plot3(x,y,z,'LineWidth',2)
 set(gcf,'color','white')
 xlabel('X (m)')
 ylabel('Y (m)')
@@ -41,28 +41,61 @@ zlabel('Z (m)')
 grid on
 title('Orbit')
 axis equal
-%%%Plot Altitude
-altitude = sqrt(x.^2 + y.^2 + z.^2);
+%%%Plot the velocity
 figure()
 set(gcf,'color','white')
-plot(t,altitude)
+plot(t,vx,'LineWidth',2)
+hold on
+plot(t,vy,'LineWidth',2)
+plot(t,vz,'LineWidth',2)
 xlabel('Time (sec)')
-ylabel('Altitude (m)')
+ylabel('Velocity (m/s)')
+legend('Vx','Vy','Vz')
+grid on
+title('Velocity of Orbit')
+%%%Plot Altitude
+figure()
+set(gcf,'color','white')
+constants
+plot(t,(r-REarth)/1000,'LineWidth',2)
+xlabel('Time (sec)')
+ylabel('Altitude (km)')
 grid on
 
 %%%Call the magnetic field model
 addpath('../../igrf') %%%Hey you need to make sure you download igrf from mathworks
 %%https://www.mathworks.com/matlabcentral/fileexchange/34388-international-geomagnetic-reference-field-igrf-model
-[BxI,ByI,BzI] = magnetic_field(x,y,z);
+[BxI,ByI,BzI,B500] = magnetic_field(x,y,z,r);
+disp(['Magnetic Field Strength @ 500 km (nT) = ',num2str(B500)])
 
 %%%Plot the magnetic field
 figure()
 set(gcf,'color','white')
-plot(t,BxI,'b-')
+plot(t,BxI,'LineWidth',2)
 hold on
-plot(t,ByI,'r-')
-plot(t,BzI,'g-')
+plot(t,ByI,'LineWidth',2)
+plot(t,BzI,'LineWidth',2)
 legend('X','Y','Z')
 xlabel('Time (sec)')
 ylabel('Magnetic Field (nano Tesla)')
+grid on
+
+%%%%Initial Detumbling
+[Hx0,Hy0,Hz0] = initial_angular_momentum(Ixx,Iyy,Izz,w0,SF);
+disp(['Initial Angular Momentum (kg-m^2) ',num2str(Hx0),' ',num2str(Hy0),' ',num2str(Hz0)])
+
+%%%DISTURBANCE TORQUES
+Maero = aerodynamics(t,r,v,max_area,max_moment_arm,rhosl,CD);
+
+
+%%%Plot all disturbance torques
+figure()
+set(gcf,'color','white')
+plot(t,Maero,'LineWidth',2)
+hold on
+%plot(t,ByI,'LineWidth',2)
+%plot(t,BzI,'LineWidth',2)
+legend('Aerodynamics')%'Y','Z')
+xlabel('Time (sec)')
+ylabel('Disturbance Torques (N-m)')
 grid on

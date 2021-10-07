@@ -1,4 +1,4 @@
-function [Ixx,Iyy,Izz,max_moment_arm] = inertia(L,W,D,m)
+function [Ixx,Iyy,Izz,max_moment_arm,max_area] = inertia(L,W,D,m)
 
 max_moment_arm = max([L,W,D]/200);
 disp(['Maximum Moment Arm (m) = ',num2str(max_moment_arm)])

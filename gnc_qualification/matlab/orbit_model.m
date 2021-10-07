@@ -1,4 +1,4 @@
-function [x,y,z,t,T_orbit] = orbit_model(apogee,perigee,N,flag)
+function [x,y,z,t,r,T_orbit,vx,vy,vz,v] = orbit_model(apogee,perigee,N,flag)
 constants
 
 %%%COnvert
@@ -28,6 +28,11 @@ stateinitial = [x0;y0;z0;velx;vely;velz];
 x = stateout(1,:);
 y = stateout(2,:);
 z = stateout(3,:);
+r = sqrt(x.^2+y.^2+z.^2);
+vx = stateout(4,:);
+vy = stateout(5,:);
+vz = stateout(6,:);
+v = sqrt(vx.^2+vy.^2+vz.^2);
 
 if flag
   plot3(x,y,z)
