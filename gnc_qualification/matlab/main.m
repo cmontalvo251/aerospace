@@ -48,9 +48,10 @@ plot(t,vx,'LineWidth',2)
 hold on
 plot(t,vy,'LineWidth',2)
 plot(t,vz,'LineWidth',2)
+plot(t,sqrt(vx.^2+vy.^2+vz.^2),'LineWidth',2)
 xlabel('Time (sec)')
 ylabel('Velocity (m/s)')
-legend('Vx','Vy','Vz')
+legend('Vx','Vy','Vz','V')
 grid on
 title('Velocity of Orbit')
 %%%Plot Altitude
@@ -65,7 +66,7 @@ grid on
 %%%Call the magnetic field model
 addpath('../../igrf') %%%Hey you need to make sure you download igrf from mathworks
 %%https://www.mathworks.com/matlabcentral/fileexchange/34388-international-geomagnetic-reference-field-igrf-model
-[BxI,ByI,BzI,B500] = magnetic_field(x,y,z,r);
+[BxI,ByI,BzI,B500,B] = magnetic_field(x,y,z,r);
 disp(['Magnetic Field Strength @ 500 km (nT) = ',num2str(B500)])
 
 %%%Plot the magnetic field
@@ -80,22 +81,16 @@ xlabel('Time (sec)')
 ylabel('Magnetic Field (nano Tesla)')
 grid on
 
-%%%%Initial Detumbling
+%%%%Initial Tumbling
 [Hx0,Hy0,Hz0] = initial_angular_momentum(Ixx,Iyy,Izz,w0,SF);
-disp(['Initial Angular Momentum (kg-m^2) ',num2str(Hx0),' ',num2str(Hy0),' ',num2str(Hz0)])
+disp(['Initial Angular Momentum (N-m-s) ',num2str(Hx0),' ',num2str(Hy0),' ',num2str(Hz0)])
 
 %%%DISTURBANCE TORQUES
 Maero = aerodynamics(t,r,v,max_area,max_moment_arm,rhosl,CD);
+Mgrav = gravity(r,max_moment_arm,m);
+Mrad = solar_radiation(r,max_area,max_moment_arm);
+Mdipole = dipole(Mrad,B,B500);
 
-
-%%%Plot all disturbance torques
-figure()
-set(gcf,'color','white')
-plot(t,Maero,'LineWidth',2)
-hold on
-%plot(t,ByI,'LineWidth',2)
-%plot(t,BzI,'LineWidth',2)
-legend('Aerodynamics')%'Y','Z')
-xlabel('Time (sec)')
-ylabel('Disturbance Torques (N-m)')
-grid on
+%%%%Compute Total Disturbance Per Orbit
+Hdist = disturbance(t,Maero,Mgrav,Mrad,Mdipole);
+disp(['Total Disturbance Momentum Per Orbit (N-m-s) = ',num2str(Hdist)])

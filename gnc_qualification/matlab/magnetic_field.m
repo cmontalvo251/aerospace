@@ -1,4 +1,4 @@
-function [BxI,ByI,BzI,B500] = magnetic_field(x,y,z,r)
+function [BxI,ByI,BzI,B500,B] = magnetic_field(x,y,z,r)
 %%%Make dummy variables
 BxI = 0*x;
 ByI = BxI;
@@ -28,3 +28,4 @@ constants
 [BN,BE,BD] = igrf('28-Sep-2019',0,0,500+REarth/1000,'geocentric');
 B500 = sqrt(BN^2+BE^2+BD^2);
 disp('Done Computing Magnetic Field')
+B = sqrt(BxI.^2+ByI.^2+BzI.^2);

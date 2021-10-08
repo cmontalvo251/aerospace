@@ -43,9 +43,7 @@ end
 
 %#Equations of Motion
 function dstatedt = Derivatives(t,state)
-MEarth = 5.9736e24;% #earth mass
-REarth = 6357000.0;% #earth radius
-G = 6.6742e-11; %%Gravitational constant
+constants
 
 %%Extract State
 x = state(1);
