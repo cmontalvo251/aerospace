@@ -18,7 +18,4 @@ grid on
 
 
 %%%%Integrate Disturbance Momentum
-%%%The Orbit model right now is a constant step integrator which means we can just
-%%Use a summing algorithm
-dt = t(2)-t(1);
-Hdist = sum(dt*Mtotal);
+Hdist = integrate_curve(t,Mtotal);

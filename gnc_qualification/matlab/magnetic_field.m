@@ -1,4 +1,4 @@
-function [BxI,ByI,BzI,B500,B] = magnetic_field(x,y,z,r)
+function [BxI,ByI,BzI,B500,Btotal] = magnetic_field(x,y,z,r,t)
 %%%Make dummy variables
 BxI = 0*x;
 ByI = BxI;
@@ -27,5 +27,17 @@ end
 constants
 [BN,BE,BD] = igrf('28-Sep-2019',0,0,500+REarth/1000,'geocentric');
 B500 = sqrt(BN^2+BE^2+BD^2);
+Btotal = sqrt(BxI.^2+ByI.^2+BzI.^2);
 disp('Done Computing Magnetic Field')
-B = sqrt(BxI.^2+ByI.^2+BzI.^2);
+
+%%%Plot the magnetic field
+figure()
+set(gcf,'color','white')
+plot(t,BxI,'LineWidth',2)
+hold on
+plot(t,ByI,'LineWidth',2)
+plot(t,BzI,'LineWidth',2)
+legend('X','Y','Z')
+xlabel('Time (sec)')
+ylabel('Magnetic Field (nano Tesla)')
+grid on

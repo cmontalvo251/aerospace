@@ -1,4 +1,4 @@
-function [x,y,z,t,r,T_orbit,vx,vy,vz,v] = orbit_model(apogee,perigee,N,flag)
+function [x,y,z,t,r,T_orbit,vx,vy,vz,v] = orbit_model(apogee,perigee,N)
 constants
 
 %%%COnvert
@@ -34,10 +34,35 @@ vy = stateout(5,:);
 vz = stateout(6,:);
 v = sqrt(vx.^2+vy.^2+vz.^2);
 
-if flag
-  plot3(x,y,z)
-  axis equal
-end
+%%%Plot the orbit
+plot3(x,y,z,'LineWidth',2)
+set(gcf,'color','white')
+xlabel('X (m)')
+ylabel('Y (m)')
+zlabel('Z (m)')
+grid on
+title('Orbit')
+axis equal
+%%%Plot the velocity
+figure()
+set(gcf,'color','white')
+plot(t,vx,'LineWidth',2)
+hold on
+plot(t,vy,'LineWidth',2)
+plot(t,vz,'LineWidth',2)
+plot(t,sqrt(vx.^2+vy.^2+vz.^2),'LineWidth',2)
+xlabel('Time (sec)')
+ylabel('Velocity (m/s)')
+legend('Vx','Vy','Vz','V')
+grid on
+title('Velocity of Orbit')
+%%%Plot Altitude
+figure()
+set(gcf,'color','white')
+plot(t,(r-REarth)/1000,'LineWidth',2)
+xlabel('Time (sec)')
+ylabel('Altitude (km)')
+grid on
 
 end
 
