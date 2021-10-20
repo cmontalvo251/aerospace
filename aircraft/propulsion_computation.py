@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 #Tkg = Tg/1000.0
 #TN = Tkg*9.81
 #print(TN)
-P = 772  ##POWER FROM WEBSITE
+P = 300.0  ##POWER FROM WEBSITE
 P *= 1.50 ##Add 50% for induced power
 rho = 1.225  #DENSITY AT SEA-LEVEL
-R = (12./12.)/(3.28*2)  ##RADIUS OF PROP IN METERS
+R = (4./12.)/(3.28*2)  ##RADIUS OF PROP IN METERS
 A = np.pi*R**2  ##AREA OF ROTOR
 kv = 600.0  ##KV of MOTOR
-V = 6*3.7  ##VOLTAGE OF BATTER
+V = 3*3.7  ##VOLTAGE OF BATTER
 omega_rpm = kv*V
 omega_rads = omega_rpm*np.pi/30.0
 print('Omega RPM = ',omega_rpm)
