@@ -1,3 +1,7 @@
+spice/kernels/
+spice/cspice
+spice/mice
+spice/SELF_TRAINING
 *.jar
 *.gif
 *.java
