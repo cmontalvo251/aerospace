@@ -23,23 +23,21 @@ et = cspice_str2et( {'Sep 2, 1987', 'Oct 27, 2021'} );
 times = (0:STEP-1) * ( et(2) - et(1) )/STEP + et(1);
 AU = 1.496e+8; %%Km
 
-%%%GET EARTH
-[pos, ltime]= cspice_spkpos( 'EARTH BARYCENTER', times, 'J2000', 'NONE', 'SUN' );
-%Plot the resulting trajectory.
-xE = pos(1,:)/AU;
-yE = pos(2,:)/AU;
-zE = pos(3,:)/AU;
-plot3(xE,yE,zE)
-hold on
-plot3(xE(1),yE(1),zE(1),'b*')
-%%%GET SATURN
-[pos, ltime]= cspice_spkpos( 'SATURN BARYCENTER', times, 'J2000', 'NONE', 'SUN' );
-%Plot the resulting trajectory.
-xS = pos(1,:)/AU;
-yS = pos(2,:)/AU;
-zS = pos(3,:)/AU;
-plot3(xS,yS,zS)
-plot3(xS(1),yS(1),zS(1),'y*')
+%%%GET PLANETS
+planets = {'MERCURY BARYCENTER','VENUS BARYCENTER','EARTH BARYCENTER','MARS BARYCENTER','EARTH','JUPITER BARYCENTER','SATURN BARYCENTER','URANUS BARYCENTER','NEPTUNE BARYCENTER','PLUTO BARYCENTER'};
+p = [];
+for x = 1:length(planets)
+    [pos, ltime]= cspice_spkpos( planets{x}, times, 'J2000', 'NONE', 'SUN' );
+    %Plot the resulting trajectory.
+    xE = pos(1,:)/AU;
+    yE = pos(2,:)/AU;
+    zE = pos(3,:)/AU;
+    pN = plot3(xE,yE,zE);
+    p = [p;pN];
+    hold on
+    plot3(xE(1),yE(1),zE(1),'b*')
+end
+legend(p,planets)
 
 xlabel('X')
 ylabel('Y')
