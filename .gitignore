@@ -1,3 +1,4 @@
+*.asv
 spice/kernels/
 spice/cspice
 spice/mice
@@ -26,7 +27,6 @@ __pycache__
 *.slo
 *.lo
 *.o
-*.obj
 
 # Precompiled Headers
 *.gch
