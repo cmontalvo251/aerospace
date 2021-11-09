@@ -2,6 +2,7 @@
 spice/kernels/
 spice/cspice
 spice/mice
+*.pdf
 spice/SELF_TRAINING
 *.jar
 *.gif
