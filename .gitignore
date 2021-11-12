@@ -1,6 +1,8 @@
+*.asv
 spice/kernels/
 spice/cspice
 spice/mice
+*.pdf
 spice/SELF_TRAINING
 *.jar
 *.gif
@@ -26,7 +28,6 @@ __pycache__
 *.slo
 *.lo
 *.o
-*.obj
 
 # Precompiled Headers
 *.gch
