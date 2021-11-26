@@ -9,11 +9,11 @@ nu = np.linspace(0,2*np.pi,100)
 ##Semi Major Axis
 a = 13599840256. #meters
 ##Eccentricity
-e = 0.0
+e = 0.8
 ##inclination
-i = 0
+i = 45*np.pi/180.0
 ###Longitude of the Ascending Node
-W = 0
+W = 45*np.pi/180.0
 #Argument of the periaps
 w = 0.
 
@@ -52,6 +52,7 @@ ax = fig.add_subplot(111, projection='3d')
 ax.plot(xi,yj,zk)
 ax.scatter(xi[0],yj[0],zk[0],'b*',s=20)
 ax.scatter(0,0,0,'y*',s=100)
-ax.axis('equal')
+ax.set_title('Look at this f#@$&*@#@ing sweet plot!!!!')
+#ax.axis('equal')
     
 plt.show()
