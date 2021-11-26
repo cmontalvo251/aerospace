@@ -35,14 +35,23 @@ vz = stateout(6,:);
 v = sqrt(vx.^2+vy.^2+vz.^2);
 
 %%%Plot the orbit
-plot3(x,y,z,'LineWidth',2)
+nu = linspace(0,2*pi,1000);
+RE = 6378.1;
+xE = RE*cos(nu);
+yE = RE*sin(nu);
+zE = 0*xE;
+plot3(xE,yE,zE,'b-','LineWidth',2)
+hold on
+plot3(x/1000,y/1000,z/1000,'r-','LineWidth',2)
 set(gcf,'color','white')
-xlabel('X (m)')
-ylabel('Y (m)')
-zlabel('Z (m)')
+xlabel('X (km)')
+ylabel('Y (km)')
+zlabel('Z (km)')
 grid on
+legend('Earth','Orbit')
 title('Orbit')
 axis equal
+view(0,90)
 %%%Plot the velocity
 figure()
 set(gcf,'color','white')
