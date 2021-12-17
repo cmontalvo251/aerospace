@@ -25,52 +25,88 @@ import sys
 class JPL():
     def __init__(self,julian_day):
         #run the coordinate transformation
+        self.planetsInit()
+        print('Planets Initialized')
         satellites = self.computePlanetLocations(julian_day)
+        print('============Satellites Created==============')
         ##Now that we've looped through the satellites it's time to create a solar system Class
         self.MilkyWay = SolarSystem(satellites,'The Solar System')
 
     def AnimateOrbits(self,pp,julian_day,day_skip,num_skips,pause_time):
+        framenumber = 0
+        print('Animating Orbits')
         ##Let's just try and plot today
         plt.close("all")
 
         plti = P.plottool(12,'X (AU)','Y (AU)','Skip = '+str(0))
+        XTRACES = []
+        YTRACES = []
         for j in range(0,num_skips):
+            print('j=',j)
             #Recompute orbits? But how?
             #Ok moved some things around here we go
             self.MilkyWay.satellites = self.computePlanetLocations(julian_day+j*day_skip)
-            self.MilkyWay.Orbit()
+            #self.MilkyWay.Orbit()
 
             plt.cla()
             #Plot system in a top down view -- REally it'd be nice if we could plot the orbital plane somehow
-            plt.title('Skip = '+str(j))            
+            plt.title('Skip = '+str(j))         
             for i in range(0,self.MilkyWay.numsatellites):
-                plti.plot(self.MilkyWay.satellites[i].x/self.MilkyWay.AU,self.MilkyWay.satellites[i].y/self.MilkyWay.AU,label=self.MilkyWay.satellites[i].name,color=self.MilkyWay.satellites[i].color)
-                plti.plot(self.MilkyWay.satellites[i].x0/self.MilkyWay.AU,self.MilkyWay.satellites[i].y0/self.MilkyWay.AU,marker='o',color=self.MilkyWay.satellites[i].color)
-            plt.legend()
+                offsetx = self.MilkyWay.satellites[3].x0/self.MilkyWay.AU*0
+                offsety = self.MilkyWay.satellites[3].y0/self.MilkyWay.AU*0
+                x = self.MilkyWay.satellites[i].x0/self.MilkyWay.AU-offsetx
+                y = self.MilkyWay.satellites[i].y0/self.MilkyWay.AU-offsety
+                if j == 0:
+                    print('J == 0')
+                    tracex = []
+                    tracey = []
+                    XTRACES.append(tracex)
+                    YTRACES.append(tracey)
+                else:
+                    XTRACES[i].append(x)
+                    YTRACES[i].append(y)
+                    plti.plot(XTRACES[i],YTRACES[i],color=self.MilkyWay.satellites[i].color,label=self.MilkyWay.satellites[i].name)
+                #plti.plot(self.MilkyWay.satellites[i].x/self.MilkyWay.AU-offsetx,self.MilkyWay.satellites[i].y/self.MilkyWay.AU-offsety,label=self.MilkyWay.satellites[i].name,color=self.MilkyWay.satellites[i].color)
+                plti.plot(x,y,marker='o',color=self.MilkyWay.satellites[i].color)
+            plt.legend(loc='upper right')
             plt.grid()
             #plt.axis('equal')
             #if self.numsatellites < 7:
             plt.axis('square')
-            #plt.xlim([-2.4,2.4])
-            #plt.ylim([-2,2])
+            plt.xlim([-4,4])
+            plt.ylim([-4,4])
             if j == 0:
-                plt.pause(3.0)
+                plt.pause(1.0)
             plt.pause(pause_time)
+            strnumber = str(framenumber)
+            strnumber = '0'*(4-len(strnumber)) + strnumber
+            filename = 'Frames/'+strnumber+'.png'
+            framenumber+=1
+            print(filename)
+            plt.savefig(filename)
 
-    def computePlanetLocations(self,julian_day):
-        #First we need to open the correction parameters
-        correction_parameters = fileIO.dlmread('Outer_Planets_Corrections.txt',' ')
-        #print correction_parameters
-        #This will import the text file Solar_System_Orbital_Elements and save the orbital elements
-        file = open('Solar_System_Orbital_Elements.txt')
-        self.names = ['Sun','Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto']
-        colorwheel = ['red','orange','blue','red','orange','yellow','green','blue','grey']
-        #Sun is always assumed at the center of the universe
-        self.Sun = Satellite(1.989e30,432169*5280./3.28,np.asarray([0,0,0]),np.asarray([0,0,0]),'Sun','yellow',0)
-        satellites = [self.Sun]
+    def planetsInit(self):
         self.G = 6.67408e-11 #m3 kg-1 s-2
-        planet_number = 1
+        #First we need to open the correction parameters
+        self.correction_parameters = fileIO.dlmread('Outer_Planets_Corrections.txt',' ')
+        #print correction_parameters
+        file = open('Solar_System_Orbital_Elements.txt')
         ctr = 0
+        self.names = ['Sun','Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto']
+        self.colorwheel = ['tan','orange','blue','red','orange','yellow','green','blue','grey']
+        self.AU = 149597870700.0
+        self.a0 = []
+        self.e0 = []
+        self.i0 = []
+        self.L0 = []
+        self.wbar0 = []
+        self.OMEGA0 = []
+        self.adot = []
+        self.edot = []
+        self.idot = []
+        self.Ldot = []
+        self.wbardot = []
+        self.OMEGAdot = []
         for line in file:
             if len(line) > 0:
                 numbers = line.split(',')
@@ -78,67 +114,88 @@ class JPL():
                 if ctr == 0:
                     #print(self.names[planet_number])
                     a0 = np.float(numbers[0])
+                    self.a0.append(a0)
                     e0 = np.float(numbers[1])
+                    self.e0.append(e0)
                     i0 = np.float(numbers[2])
+                    self.i0.append(i0)
                     L0 = np.float(numbers[3])
+                    self.L0.append(L0)
                     wbar0 = np.float(numbers[4])
+                    self.wbar0.append(wbar0)
                     OMEGA0 = np.float(numbers[5])
+                    self.OMEGA0.append(OMEGA0)
                 if ctr == 1:
                     adot = np.float(numbers[0])
+                    self.adot.append(adot)
                     edot = np.float(numbers[1])
+                    self.edot.append(edot)
                     idot = np.float(numbers[2])
+                    self.idot.append(idot)
                     Ldot = np.float(numbers[3])
+                    self.Ldot.append(Ldot)
                     wbardot = np.float(numbers[4])
+                    self.wbardot.append(wbardot)
                     OMEGAdot = np.float(numbers[5])                    
+                    self.OMEGAdot.append(OMEGAdot)
                 ctr+=1
                 if ctr == 2:
-                    this_planet = Satellite(0,432169*5280./3.28,np.asarray([0,0,0]),np.asarray([0,0,0]),self.names[planet_number],colorwheel[planet_number-1],0)
-                    #First compute the orbital Elements for this particular Julian Day
-                    T = (julian_day - 2451545.)/36525.0
-                    self.AU = 149597870700.0
-                    this_planet.a = (a0 + T*adot)*self.AU
-                    this_planet.initial_enorm = e0 + T*edot ##This is in radians
-                    this_planet.initial_i = i0 + T*idot
-                    this_planet.initial_L = L0 + T*Ldot
-                    this_planet.wbar = wbar0 + T*wbardot
-                    this_planet.initial_OMEGA = OMEGA0 + T*OMEGAdot
-                    #Compute the rest of the orbital elements using aprx_pos_planets.pdf
-                    if planet_number > 4:
-                        print('Applying correction factors')
-                        b = correction_parameters[planet_number-5,0]
-                        c = correction_parameters[planet_number-5,1]
-                        s = correction_parameters[planet_number-5,2]
-                        f = correction_parameters[planet_number-5,3]
-                    else:
-                        b = 0
-                        c = 0
-                        s = 0
-                        f = 0
-                    #print(b,c,s,f)
-                    self.ComputeCoordinates(this_planet,T,b,c,s,f)
-                    satellites.append(this_planet)
                     ctr = 0
-                    planet_number += 1
+
+    def computePlanetLocations(self,julian_day):
+        #This will import the text file Solar_System_Orbital_Elements and save the orbital elements
+        #Sun is always assumed at the center of the universe
+        self.Sun = Satellite(1.989e30,432169*5280./3.28,np.asarray([0,0,0]),np.asarray([0,0,0]),'Sun','yellow',0)
+        satellites = [self.Sun]
+        planet_number = 1
+        for i in range(0,len(self.names)-2):
+            name = self.names[planet_number]
+            #print(name)
+            this_planet = Satellite(0,432169*5280./3.28,np.asarray([0,0,0]),np.asarray([0,0,0]),name,self.colorwheel[planet_number-1],0)
+            #First compute the orbital Elements for this particular Julian Day
+            T = (julian_day - 2451545.)/36525.0
+            this_planet.a = (self.a0[i] + T*self.adot[i])*self.AU
+            this_planet.initial_enorm = self.e0[i] + T*self.edot[i] ##This is in radians
+            this_planet.initial_i = self.i0[i] + T*self.idot[i]
+            this_planet.initial_L = self.L0[i] + T*self.Ldot[i]
+            this_planet.wbar = self.wbar0[i] + T*self.wbardot[i]
+            this_planet.initial_OMEGA = self.OMEGA0[i] + T*self.OMEGAdot[i]
+            #Compute the rest of the orbital elements using aprx_pos_planets.pdf
+            if planet_number > 4:
+                #print('Applying correction factors')
+                b = self.correction_parameters[planet_number-5,0]
+                c = self.correction_parameters[planet_number-5,1]
+                s = self.correction_parameters[planet_number-5,2]
+                f = self.correction_parameters[planet_number-5,3]
+            else:
+                b = 0
+                c = 0
+                s = 0
+                f = 0
+            #print(b,c,s,f)
+            self.ComputeCoordinates(this_planet,T,b,c,s,f)
+            satellites.append(this_planet)
+            planet_number += 1
         return satellites
 
     def ComputeCoordinates(self,planet,T,b,c,s,f):
-        print('Computing Planet Coordinates')
-        print('i = ',planet.initial_i)
-        print('e = ',planet.initial_enorm)
+        #print('Computing Planet Coordinates')
+        #print('i = ',planet.initial_i)
+        #print('e = ',planet.initial_enorm)
         #Compute estar
         planet.initial_enormstar = planet.initial_enorm*180./np.pi
-        print('estar = ',planet.initial_enormstar)
+        #print('estar = ',planet.initial_enormstar)
         #Argument of the perihelion
         planet.initial_w = planet.wbar - planet.initial_OMEGA
         #Mean Anomaly
         planet.initial_M = planet.initial_L - planet.wbar + b*T**2 + c*np.cos(f*T) + s*np.sin(f*T)
-        print('M = ',planet.initial_M)
+        #print('M = ',planet.initial_M)
         #Need to modulus M
         while planet.initial_M > 180:
             planet.initial_M -= 360
         while planet.initial_M < -180:
             planet.initial_M += 360
-        print('M(modulus) = ',planet.initial_M)
+        #print('M(modulus) = ',planet.initial_M)
         #Solve for Eccentric Anomaly
         #M = E - estar*sin(E)
         M = planet.initial_M
@@ -151,7 +208,7 @@ class JPL():
             #print('dM = ',dM)
             dE = dM/(1.0-e*np.cos(E*np.pi/180.0))
             E += dE
-        print('E = ',E)#,'E-estar*sin(E)',E-estar*np.sin(E*np.pi/180.0)
+        #print('E = ',E)#,'E-estar*sin(E)',E-estar*np.sin(E*np.pi/180.0)
         
         #Compute coordinate of planet in ecliptic plane of the planet
         xprime = planet.a*(np.cos(E*np.pi/180.0)-planet.initial_enorm)
@@ -160,7 +217,7 @@ class JPL():
 
         #Compute the semi latus rectum
         planet.initial_semilatus = planet.a*(1-planet.initial_enorm**2)
-        print('p = ',planet.initial_semilatus)
+        #print('p = ',planet.initial_semilatus)
 
         #Convert certain parameters to radians
         planet.initial_w *= np.pi/180.0
@@ -178,11 +235,11 @@ class JPL():
         ##Convert to numpy array
         planet.initial_pos = np.asarray([planet.x0,planet.y0,planet.z0])
 
-        print('Current Position of Planet = ',planet.x0,planet.y0,planet.z0)
+        #print('Current Position of Planet = ',planet.x0,planet.y0,planet.z0)
 
         #Compute Period of Planet
         T = planet.a**(3./2.)*2*np.pi/(np.sqrt(self.G*self.Sun.M))
-        print('Period (days) = ',T/86400.)
+        #print('Period (days) = ',T/86400.)
 
 class UniverseParameters():
     def __init__(self):
@@ -209,6 +266,9 @@ class Satellite():
         self.y0 = pos[1]
         self.z0 = pos[2]
         self.initial_vel = vel
+
+        self.tracex = []
+        self.tracey = []
         
         self.nominal_pos = pos #Used for rk4 step
         self.nominal_vel = vel
@@ -236,7 +296,7 @@ class Satellite():
         self.rnorm = []
         self.phi = []
 
-        print('Created Satellite = ',name)
+        #print('Created Satellite = ',name)
 
     def Gravity(self,r):
         ##Assume that r is a vector in IJK frame
@@ -277,7 +337,7 @@ class Satellite():
 class SolarSystem():
     def __init__(self,satellites,name):
         self.AU = 149597870700.0
-        self.satellites = C.deepcopy(satellites)
+        self.satellites = satellites
         self.numsatellites = len(satellites)
         self.name = name
         print('Created Solar System = ',self.name)

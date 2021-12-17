@@ -50,30 +50,31 @@ planets.MilkyWay.Orbit()
 
 ##Finally Plot the Output of the Systems
 print('Creating Plots')
-pp = PDF(0,plt)
+#pp = PDF(0,plt)
 
 ##Plot All planets
-planets.MilkyWay.PlotOrbit(pp,-1)
+#planets.MilkyWay.PlotOrbit(pp,-1)
 
 ##Only plot inner planets
-planets.MilkyWay.numsatellites = 5
-planets.MilkyWay.PlotOrbit(pp,-1)
-pp.close()
-sys.exit()
+#planets.MilkyWay.numsatellites = 5
+#planets.MilkyWay.PlotOrbit(pp,-1)
+#pp.close()
+#sys.exit()
 
-##Animation??
-#planets.MilkyWay.numsatellites = 6 + 1 #The plus one is because of loops in Python. I know I probably need to fix the loop but whatever
-#pa = PDF(1,plt)
+##Animation
+planets.MilkyWay.numsatellites = 4 + 1 #The plus one is because of loops in Python. I know I probably need to fix the loop but whatever
+pa = PDF(1,plt)
 ###
 #Inputs are the 
 #julian_day = defined above
 #day_skip = how many days to skip
-#day_skip = 1.0
+day_skip = 1.0
 #num_skips = the number of skips (must be integer!!)
-#num_skips = 365
+num_skips = 100000
 #pause_time = how long to pause
-#pause_time = 0.1
-#planets.AnimateOrbits(pa,julian_day,day_skip,num_skips,pause_time)
+pause_time = 0.00001
+os.system('rm Frames/*.png')
+planets.AnimateOrbits(pa,julian_day,day_skip,num_skips,pause_time)
 
 ##Use Mayavi if you're using Python3
 #planets.MilkyWay.numsatellites = 10
