@@ -14,6 +14,19 @@ W  = 22.6; %%%width of satellite in centirmeter
 D = 22.6; %%depth of satellite in centimeters
 CD = 1.0; %%drag coefficient of satellite
 m = 25.0; %%%mass of satellite in kg
+mps = 0.65; %%%Mass of 1 solar panel
+nps = 2.0; %%%number of solar panels
+%##Size of Solar Panels
+Length_sp = 3.0/1000.0;
+Width_sp = 296.90/1000.0;
+Depth_sp = 543.90/1000.0;
+LWDsp = [Length_sp,Width_sp,Depth_sp];
+%###Distance to Solar Panel Centroid from Satellite Centroid
+%#Center of mass of the solar panel = lx = 100 mm, 113 mm
+lx = 0.0;
+ly = 261.45/1000.0;
+lz = -183.0/1000.0;
+xyz_sp = [[lx,ly,lz];[lx,-ly,lz]];
 w0 = 10.0; %%%initial angular velocity of sat in deg/s
 SF = 2.0; %%%safety factor of detumbling
 HxRW = 0.1; %%%Size of reaction wheel in Nms
@@ -27,7 +40,7 @@ f = 0.5; %%%a factor from 0(non-inclusive) to 0.5 which dictate the speed of the
 constants %%Other constants
 
 %%%% Inertia Calculator
-[Ixx,Iyy,Izz,max_moment_arm,max_area] = inertia(L,W,D,m);
+[Inertia,max_moment_arm,max_area] = inertia(L,W,D,m,mps,nps,LWDsp,xyz_sp);
 
 %%%Run the orbit model
 [x,y,z,t,r,T_orbit,vx,vy,vz,v] = orbit_model(apogee,perigee,N);
@@ -40,7 +53,7 @@ addpath('../../igrf') %%%Hey you need to make sure you download igrf from mathwo
 disp(['Magnetic Field Strength @ 500 km (nT) = ',num2str(B500)])
 
 %%%%Initial Tumbling
-[Hx0,Hy0,Hz0] = initial_angular_momentum(Ixx,Iyy,Izz,w0,SF);
+[Hx0,Hy0,Hz0] = initial_angular_momentum(Inertia,w0,SF);
 disp(['Initial Angular Momentum (N-m-s) ',num2str(Hx0),' ',num2str(Hy0),' ',num2str(Hz0)])
 
 %%%DISTURBANCE TORQUES
@@ -60,4 +73,4 @@ magnetorquers(t,magnetic_moment,Btotal,Hdist,Hx0,Hy0,Hz0,HxRW,HyRW,HzRW);
 reaction_wheels(t,Hx0,Hy0,Hz0,HxRW,HyRW,HzRW,Hdist,mission_duration);
 
 %%%Maneuver time with reaction wheels
-maneuver_time(Power,MaxT,maneuver_angle,f,Ixx,Iyy,Izz);
+maneuver_time(Power,MaxT,maneuver_angle,f,Inertia);

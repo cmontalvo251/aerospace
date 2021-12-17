@@ -1,6 +1,9 @@
-function maneuver_time(Power,MaxT,maneuver_angle,f,Ixx,Iyy,Izz)
+function maneuver_time(Power,MaxT,maneuver_angle,f,Inertia)
 
 %%Maximum Acceleration per axis
+Ixx = Inertia(1,1);
+Iyy = Inertia(2,2);
+Izz = Inertia(3,3);
 alfax = MaxT/Ixx;
 alfay = MaxT/Iyy;
 alfaz = MaxT/Izz;
