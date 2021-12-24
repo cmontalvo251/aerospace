@@ -1,5 +1,5 @@
 %%%Update Rate
-nextSensorUpdate = 1;
+nextSensorUpdate = 5;
 
 %%%Bias and Noise
 MagscaleBias = (4e-7); %%T

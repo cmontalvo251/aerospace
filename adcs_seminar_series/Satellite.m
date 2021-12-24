@@ -2,7 +2,7 @@ function dstatedt = Satellite(t,state)
 %%%stateinitial = [x0;y0;z0;xdot0;ydot0;zdot0];
 global BB invI I m nextMagUpdate lastMagUpdate lastSensorUpdate 
 global nextSensorUpdate BfieldMeasured pqrMeasured BfieldNav pqrNav
-global BfieldNavPrev pqrNavPrev
+global BfieldNavPrev pqrNavPrev current
 x = state(1);
 y = state(2);
 z = state(3);
@@ -65,6 +65,10 @@ end
 %%%CONTROL BLOCK
 current = Control(BfieldNav,pqrNav);
 magtorquer_params
+%%%Add in saturation filter
+if sum(abs(current)) > maxCurrent/1000
+   current = (current/sum(abs(current)))*maxCurrent/1000; 
+end
 muB = current*n*A;
 
 %%%Magtorquer Model
