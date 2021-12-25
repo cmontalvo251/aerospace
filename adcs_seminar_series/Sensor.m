@@ -1,4 +1,4 @@
-function [BB,pqr] = Sensor(BB,pqr)
+function [BB,pqr,ptp] = Sensor(BB,pqr,ptp)
 
 for idx = 1:3
     %%%Get our sensor params
@@ -6,6 +6,7 @@ for idx = 1:3
     %%%Pollute the data
     BB(idx) = BB(idx) + MagFieldBias + MagFieldNoise;
     pqr(idx) = pqr(idx) + AngFieldBias + AngFieldNoise;
+    ptp(idx) = ptp(idx) + EulerBias + EulerNoise;
 end
 
 

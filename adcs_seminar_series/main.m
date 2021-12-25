@@ -6,12 +6,15 @@ close all
 tic
 
 %%%Globals
-global BB m I invI lastMagUpdate nextMagUpdate lastSensorUpdate 
-global nextSensorUpdate BfieldMeasured pqrMeasured BfieldNav pqrNav
-global BfieldNavPrev pqrNavPrev current
-
+global BB m I Is invI lastMagUpdate nextMagUpdate lastSensorUpdate 
+global nextSensorUpdate BfieldMeasured pqrMeasured ptpMeasured BfieldNav pqrNav ptpNav
+global BfieldNavPrev pqrNavPrev ptpNavPrev current Ir1Bcg Ir2Bcg Ir3Bcg n1 n2 n3
+global maxSpeed maxAlpha Ir1B Ir2B Ir3B rwalphas
+ 
+%%%%Initialize Nav Filter
 BfieldNavPrev = [0;0;0];
 pqrNavPrev = [0;0;0];
+ptpNavPrev = [0;0;0];
 
 %%%%Simulation of a Low Earth Satellite
 disp('Simulation Started')
@@ -51,15 +54,19 @@ q0123_0 = EulerAngles2Quaternions(ptp0);
 p0 = 0.08;
 q0 = -0.02;
 r0 = 0.03;
+%%%Initial conditions of my reaction wheels
+w10 = 0;
+w20 = 0;
+w30 = 0;
 
-state = [x0;y0;z0;xdot0;ydot0;zdot0;q0123_0;p0;q0;r0];
+state = [x0;y0;z0;xdot0;ydot0;zdot0;q0123_0;p0;q0;r0;w10;w20;w30];
 
 %%%Need time window
 period = 2*pi/sqrt(mu)*semi_major^(3/2);
 number_of_orbits = 1;
 tfinal = period*number_of_orbits;
-tfinal = 500;
-timestep = 1;
+%tfinal = 500;
+timestep = 1.0;
 tout = 0:timestep:tfinal;
 stateout = zeros(length(tout),length(state));
 %%%This is where we integrate the equations of motion
@@ -73,6 +80,9 @@ ByBm = BxBout;
 BzBm = BxBout;
 pqrm = zeros(length(tout),3);
 
+ptpm = zeros(length(tout),3);
+ptpN = 0*ptpm;
+
 BxBN = 0*stateout(:,1);
 ByBN = BxBout;
 BzBN = BxBout;
@@ -82,9 +92,14 @@ ix = 0*stateout(:,1);
 iy = ix;
 iz = ix;
 
+rwa = 0*ptpm;
+
 %%%Sensor Parameters
 lastSensorUpdate = 0;
 sensor_params
+
+%%%%Call the Derivatives Routine to initialize vars
+k1 = Satellite(tout(1),state);
 
 %%%Print Next
 next = 100;
@@ -93,23 +108,13 @@ for idx = 1:length(tout)
     %%%Save the current state
     stateout(idx,:) = state';
     
-    if tout(idx) > lastPrint
-        disp(['Time = ',num2str(tout(idx)),' out of ',num2str(tfinal)])
-        lastPrint = lastPrint + next;
-    end
-    
-    %%%%Then we make our 4 function calls for the RK4
-    k1 = Satellite(tout(idx),state);
-    k2 = Satellite(tout(idx)+timestep/2,state+k1*timestep/2);
-    k3 = Satellite(tout(idx)+timestep/2,state+k2*timestep/2);
-    k4 = Satellite(tout(idx)+timestep,state+k3*timestep);
-    k = (1/6)*(k1 + 2*k2 + 2*k3 + k4);
-    state = state + k*timestep;
-    
     %%%Save the Current
     ix(idx) = current(1);
     iy(idx) = current(2);
     iz(idx) = current(3);
+    
+    %%%%Save reaction wheel acceleration
+    rwa(idx,:) = rwalphas';
     
     %%%Save the magnetic field
     BxBout(idx) = BB(1);
@@ -129,6 +134,24 @@ for idx = 1:length(tout)
     pqrm(idx,:) = pqrMeasured';
     %%%Save the Nav pqr signal
     pqrN(idx,:) = pqrNav';
+    %%%Save ptp
+    ptpm(idx,:) = ptpMeasured';
+    ptpN(idx,:) = ptpNav';
+    
+    if tout(idx) > lastPrint
+        disp(['Time = ',num2str(tout(idx)),' out of ',num2str(tfinal)])
+        lastPrint = lastPrint + next;
+    end
+    
+    %%%%Then we make our 4 function calls for the RK4
+    k1 = Satellite(tout(idx),state);
+    k2 = Satellite(tout(idx)+timestep/2,state+k1*timestep/2);
+    k3 = Satellite(tout(idx)+timestep/2,state+k2*timestep/2);
+    k4 = Satellite(tout(idx)+timestep,state+k3*timestep);
+    k = (1/6)*(k1 + 2*k2 + 2*k3 + k4);
+    state = state + k*timestep;
+    
+    
 end
 
 disp('Simulation Complete')
@@ -144,6 +167,7 @@ zout = stateout(:,3);
 q0123out = stateout(:,7:10);
 ptpout = Quaternions2EulerAngles(q0123out);
 pqrout = stateout(:,11:13);
+w123 = stateout(:,14:16);
 
 %%%Make an Earth
 [X,Y,Z] = sphere(100);
@@ -205,11 +229,15 @@ grid on
 %%%plot Euler Angles
 fig4 = figure();
 set(fig4,'color','white')
-plot(tout,ptpout*180/pi,'LineWidth',2)
+p1 = plot(tout,ptpout*180/pi,'-','LineWidth',2);
+hold on
+p2 = plot(tout,ptpm*180/pi,'-s','LineWidth',2);
+p3 = plot(tout,ptpN*180/pi,'--','LineWidth',2);
 grid on
 xlabel('Time (sec)')
 ylabel('Euler Angles (deg)')
 legend('Phi','Theta','Psi')
+legend([p1(1),p2(1),p3(1)],'Actual','Measured','Nav')
 
 %%%Plot Angular Velocity
 fig5 = figure();
@@ -235,6 +263,15 @@ xlabel('Time (sec)')
 ylabel('Current (mAmps)')
 legend('X','Y','Z')
 
+%%%Plot the acceleration in reaction wheels
+fig10 = figure();
+set(fig10,'color','white')
+plot(tout,rwa,'LineWidth',2)
+grid on
+xlabel('Time (sec)')
+ylabel('Angular Acceleration RWs (rad/s^2)')
+legend('X','Y','Z')
+
 %%%Plot the Total current
 fig6 = figure();
 set(fig6,'color','white')
@@ -242,6 +279,14 @@ plot(tout,(abs(ix)+abs(iy)+abs(iz))*1000,'LineWidth',2)
 grid on
 xlabel('Time (sec)')
 ylabel('Total Current (mAmps)')
+
+%%%Plot the angular velocity of the RWs
+fig7 = figure();
+set(fig7,'color','white')
+plot(tout,w123,'LineWidth',2)
+grid on
+xlabel('Time (sec)')
+ylabel('Angular Velocity of RWs (rad/s)')
 
 toc
 

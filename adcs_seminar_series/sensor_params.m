@@ -1,5 +1,5 @@
 %%%Update Rate
-nextSensorUpdate = 5;
+nextSensorUpdate = 1.0;
 
 %%%Bias and Noise
 MagscaleBias = (4e-7); %%T
@@ -13,3 +13,6 @@ AngFieldBias = AngscaleBias*(2*rand()-1); %%% -1 to 1 (0 to 1) (0 to 2
 
 AngscaleNoise = 0.001; %%rad/s
 AngFieldNoise = AngscaleNoise*(2*rand()-1); %%% -1 to 1 (0 to 1) (0 to 2
+
+EulerBias = 2*pi/180; %%rad
+EulerNoise = EulerBias*(2*rand()-1);
