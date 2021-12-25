@@ -13,13 +13,12 @@ current = k*cross(pqrNav,BfieldNav)/(n*A);
 
 %%%%%%%%%%%%%%RW CONTROLLER%%%%%%%%%%%%%%%
 %%%%Assume for the moment that n1 - along the x-axis , n2 = y , n3 = z
-%KP = eye(3)*1.0;
-%ptpcommand = [0;0;0];
-%pqrcommand = KP*(ptpcommand - ptpNav);
 if sum(abs(pqrNav)) < 0.1
+    KP = eye(3)*1.0;
+    ptpcommand = [1;0;0];
     pqrcommand = [0;0;0];
-    KD = eye(3)*350;
-    rwalphas = -KD*(pqrcommand - pqrNav);
+    KD = eye(3)*45;
+    rwalphas = -KD*(pqrcommand - pqrNav) - KP*(ptpcommand-ptpNav);
 else
     rwalphas = [0;0;0];
 end

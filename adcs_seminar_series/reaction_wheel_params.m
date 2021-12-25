@@ -16,9 +16,9 @@ n2 = [0;1;0];
 n3 = [0;0;1];
 
 %%%Move the reaction wheels a bit from the cg
-r1 = [20;0;0]/1000;
-r2 = [0;20;0]/1000;
-r3 = [0;0;20]/1000;
+r1 = [4;0;0]/1000;
+r2 = [0;4;0]/1000;
+r3 = [0;0;4]/1000;
 
 %%%Compute the inertia of the reaction wheels
 Idisk = (1/12)*(3*rr^2+hr^2);
