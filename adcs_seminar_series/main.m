@@ -287,7 +287,7 @@ plot(tout,w123,'LineWidth',2)
 grid on
 xlabel('Time (sec)')
 ylabel('Angular Velocity of RWs (rad/s)')
-
+legend('X','Y','Z')
 toc
 
 

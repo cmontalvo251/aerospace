@@ -13,14 +13,19 @@ current = k*cross(pqrNav,BfieldNav)/(n*A);
 
 %%%%%%%%%%%%%%RW CONTROLLER%%%%%%%%%%%%%%%
 %%%%Assume for the moment that n1 - along the x-axis , n2 = y , n3 = z
+reaction_wheel_params
 if sum(abs(pqrNav)) < 0.1
-    KP = eye(3)*1.0;
+    KP = eye(3)*1.0*IrR(1,1);
     ptpcommand = [1;0;0];
     pqrcommand = [0;0;0];
-    KD = eye(3)*45;
-    rwalphas = -KD*(pqrcommand - pqrNav) - KP*(ptpcommand-ptpNav);
+    KD = eye(3)*45*IrR(1,1);
+    Mdesired = -KD*(pqrcommand - pqrNav) - KP*(ptpcommand-ptpNav);
 else
-    rwalphas = [0;0;0];
+    Mdesired = [0;0;0];
 end
+
+%%%Invert Mdesired
+%rwalphas = Mdesired/IrR(1,1);
+rwalphas = Jinv*Mdesired;
 
 

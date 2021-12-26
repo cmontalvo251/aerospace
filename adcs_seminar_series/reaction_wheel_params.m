@@ -11,9 +11,11 @@ maxSpeed = rpm*2*pi/60;
 maxTorque = 0.004; %%N-m
 
 %%%Orientation of Reaction Wheel
-n1 = [1;0;0];
-n2 = [0;1;0];
-n3 = [0;0;1];
+n3 = [1;0;0];
+n1 = [0;1;0];
+%n3 = [0;0;1];
+n2 = [1;1;1];
+n2 = n2/norm(n2);
 
 %%%Move the reaction wheels a bit from the cg
 r1 = [4;0;0]/1000;
@@ -35,6 +37,11 @@ T3 = Rscrew(n3);
 Ir1B = T1'*IrR*T1;
 Ir2B = T2'*IrR*T2;
 Ir3B = T3'*IrR*T3;
+
+%%%Compute J for control
+J = [Ir1B*n1,Ir2B*n2,Ir3B*n3];
+%Jinv = inv(J'*J)*J'; %%%if using 3 reaction wheels this one will work
+Jinv = J'*(inv(J*J')); %%Use this if using more than 3 reaction wheels
 
 %%%Compute the inertia of the reaciotn wheel in the body frame in ref to the cg of the satellite
 %%%which means we need to use the parallel axis theorem
