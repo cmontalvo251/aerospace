@@ -1,0 +1,100 @@
+To Whom it May concern,
+
+This routine was initially developed for JagSAT at USA in 2015 and a
+software tool was developed called MultiSAT (Multiple Satellite
+Simulation). Current on a private repo. (More on that later)
+
+The routine was then heavily modified to include a tether model in
+2017 for Electric Sail work at NASA Marshall Space Flight Center. The
+software was codenames MultiSAT++ (Multiple Satellite Simulation +
+Tether Simulation) The ++ is also a nod to C++. The language the
+software was written in. Again still a private repo. 
+
+In 2018 the Facility for Aerospace Systems and Technology was hired as
+a contractor to make the E-Sail routine capable of running with
+multiple satellites as well as a module in Simscape/Simulink
+Multibody. As such the software became proprietary software. This is
+why MultiSAT++ is in a private repo.
+
+Since JagSAT still required software simulations the MultiSAT++ needed
+to splinter into something more useful for students. As such the
+cubeLAB software was created (built from other smaller DIS projects).
+cubeLAB is currently available in this repo in the
+adcs_seminar_series/archive folder. I do not recommend using it but
+there may be some useful software in there.
+
+cubeLAB was a horrible frankenstein of software and needed to be
+re-written. Initially the thought was to create the simulation in
+Python and thus the beginnings of some software is in
+sixdof/sixdof_quat.py
+
+The equations of motion exist in that software but there is no
+external force and moment model. The JagSAT team felt that a MATLAB
+simulation would be more appropriate and thus the adcs_seminar_series
+was born. As of this writing (Dec 2021) this software is currently the
+latest and most maintained CubeSAT simulation in MATLAB built by FAST
+and is public domain. You can find it in this repo one folder above. I
+recommend watching my youtube videos and my playlist to understand the
+history of the software.
+
+Although the MATLAB utility served its purpose as an education tool
+for youtubers as well as students at South Alabama, it was not a good
+tool for realtime simulations or hardware in the loop simulations. As
+such two things were done.
+
+First, the MultiSAT++ simulation was copied to this repo but removing
+all proprietary software. The only code left was the orbit model plus
+the magnetorquer model. As such the software was codenamed Orbit++ so
+that everyone could use it for realtime simulations.
+
+The second item was the creation of a Hardware in the loop (HIL) simulation
+in the Fall of 2020. This included the creation of the Serial class
+for HIL sims. The goal of this simulation was to run the physics
+engine on a computer and the magnetorquer control law on actual
+hardware. That software merely simulates the orbit analytically and is
+just used to evaluate detumbling mechanics. Currently the hardware
+portion uses standards created by the Electrical Engineering
+department rather than standards created by FAST. As such all hardware
+specific software written for JagSAT is in a private repo. Since the
+HIL simulation cannot run currently without that software the HIL
+simulation has been left in the private MultiSAT++ repo. However, the
+FAST simulation (explained in the next paragraph) is currently being
+augmented with HIL capabilities so that HIL simulations can be run via
+the open source FAST simulation. 
+
+Since the creation of those two pieces of software a few things have
+happened. Again orbit++ was created to run a C++ in real time and use
+magnetorquers to detumble. An openGL routine was also used to animate
+the satellite. Since so much software was in so many places the team
+at FAST made the decision to consolidate software. As such the FAST
+simulation currently located at FAST.git on Github can do almost
+everything that orbit++ can do. As such Orbit++ is kept as an archive
+here in the event old software is needed.
+
+
+TL;DR
+
+1.) Archive Software
+
+-cubeLAB - frankenstein MATLAB CubeSAT simulation
+-Orbit++ - C++ openGL CubeSAT simulation
+
+2.) Private Software
+
+-MultiSAT++ - Currently owned by NASA to run Electric Sail simulations
+-HIL - simplified version of MultiSAT++ that has hardware in the loop
+     support. This software will eventually be archived once FAST is
+     fully operational
+-JagSAT - software specific for JagSAT-1 hardware.
+
+3.) Currently Supported Software
+
+-adcs_seminar_series (MATLAB)
+	- MATLAB simulation currently explained on Youtube
+	- Magtorquers and Reaction Wheels included in simulation
+-FAST (C++)
+	- C++ simulation that can simulate everything from Airplanes to Satellites
+	- Magtorquers currently included - No plans for Reaction
+	wheels at the moment
+	- Hardware in the loop capabilities is also currently in
+	process to support HIL sims
