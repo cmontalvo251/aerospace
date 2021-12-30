@@ -1,0 +1,26 @@
+1.0 !Mass(kg)
+0.01 !Area(m^2)
+0.0 !Drag Coefficient
+0.0 !Density
+0.0 !Gravity(m/s^2)
+2.0 !X (m)
+-50.0 !Y (m)
+10.0 !Z (m)
+1.0 !Psi
+0.0 !Theta
+0.0 !Phi
+0.0 !U (m/s)
+0.0 !V (m/s)
+0.0 !W (m/s)
+0.0 !P
+0.0 !Q
+0.0 !R
+0.1 !chord (m)
+0.1 !base (m)
+0.001667 !Ixx (kg*m^2)
+0.001667 !Iyy (kg*m^2)
+0.001667 !Izz (kg*m^2)
+0.0 !clp
+0.0 !cmq
+0.0 !cnr
+
