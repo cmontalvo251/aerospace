@@ -10,10 +10,12 @@ sweep_angle = np.arctan2(8.5,18)*180.0/np.pi ##in degrees
 wing_span = 2.0*18.0 ##wingspan
 
 ##Random Wing
-#cr = 8.0
-#ct = 8.0
-#wing_span = 18.0
-#sweep_angle  = 0.0
+'''
+cr = 8.0
+ct = 8.0
+wing_span = 18.0
+sweep_angle  = 0.0
+'''
 
 ###Debug Prints
 print('Root Chord = ',cr)
@@ -39,7 +41,7 @@ def quarter_chord_line(y):
   return ly + c/4.0
 
 ###Plot Chord vs Wingspan
-y = np.linspace(0,wing_span/2.0,100)
+y = np.linspace(0,wing_span/2.0,1000)
 plt.figure()
 plt.plot(y,chord(y))
 plt.xlabel('y')
@@ -60,6 +62,13 @@ for yi in y:
   xMAC += quarter_chord_line(yi)*chord(yi)*dy
 xMAC*=2.0/S
 print('xMAC = ',xMAC)
+
+###MEAN AERODYNAMIC CHORD
+MAC = 0.0
+for yi in y:
+    MAC += chord(yi)
+MAC/=len(y)
+print('MAC = ',MAC)
 
 ###Plot the Wing for kicks to make sure it looks right
 plt.figure()
