@@ -3,6 +3,10 @@ function ptp = Quaternions2EulerAngles(q0123)
 %input is a Nx4 vector with quaternions.
 %output is a Nx3 vector of 3-2-1 euler angles
 
+s = size(q0123);
+if s(1) == 4 && s(2) == 1
+    q0123=q0123';
+end
 q0 = q0123(:,1);
 q1 = q0123(:,2);
 q2 = q0123(:,3);

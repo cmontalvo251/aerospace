@@ -1,8 +1,9 @@
 function dstatedt = Satellite(t,state)
 %%%stateinitial = [x0;y0;z0;xdot0;ydot0;zdot0];
-global BB invI I m nextMagUpdate lastMagUpdate lastSensorUpdate 
+global BB invI I m nextMagUpdate lastMagUpdate lastSensorUpdate maxSpeed
 global nextSensorUpdate BfieldMeasured pqrMeasured BfieldNav pqrNav
-global BfieldNavPrev pqrNavPrev
+global BfieldNavPrev pqrNavPrev current Is Ir1Bcg Ir2Bcg Ir3Bcg n1 n2 n3
+global maxAlpha Ir1B Ir2B Ir3B ptpMeasured ptpNavPrev ptpNav rwalphas
 x = state(1);
 y = state(2);
 z = state(3);
@@ -10,10 +11,12 @@ z = state(3);
 %ydot = state(5);
 %zdot = state(6);
 q0123 = state(7:10);
+ptp = Quaternions2EulerAngles(q0123)';
 p = state(11);
 q = state(12);
 r = state(13);
 pqr = state(11:13);
+w123 = state(14:16);
 
 %%%Translational Kinematics
 vel = state(4:6);
@@ -55,29 +58,55 @@ end
 if t >= lastSensorUpdate
     %%%%SENSOR BLOCK
     lastSensorUpdate = lastSensorUpdate + nextSensorUpdate;
-    [BfieldMeasured,pqrMeasured] = Sensor(BB,pqr); 
+    [BfieldMeasured,pqrMeasured,ptpMeasured] = Sensor(BB,pqr,ptp); 
     
     %%%NAVIGATION BLOCK
-    [BfieldNav,pqrNav] = Navigation(BfieldMeasured,pqrMeasured);   
+    [BfieldNav,pqrNav,ptpNav] = Navigation(BfieldMeasured,pqrMeasured,ptpMeasured);   
 end
 
 
 %%%CONTROL BLOCK
-current = Control(BfieldNav,pqrNav);
-magtorquer_params
-muB = current*n*A;
+[current,rwalphas] = Control(BfieldNav,pqrNav,ptpNav);
 
 %%%Magtorquer Model
+magtorquer_params
+%%%Add in saturation filter
+if sum(abs(current)) > maxCurrent/1000
+   current = (current/sum(abs(current)))*maxCurrent/1000; 
+end
+muB = current*n*A;
 LMN_magtorquers = cross(muB,BB);
+
+%%%Reaction Wheels
+w123dot = [0;0;0];
+for idx = 1:3
+    if abs(w123(idx)) > maxSpeed
+        w123dot(idx) = 0;
+    else
+        if abs(rwalphas(idx)) > maxAlpha
+            rwalphas(idx) = sign(rwalphas(idx))*maxAlpha;
+        end
+        w123dot(idx) = rwalphas(idx);
+    end
+end
+LMN_RWs = Ir1B*w123dot(1)*n1 + Ir2B*w123dot(2)*n2 + Ir3B*w123dot(3)*n3;
+
+%%%TOTAL MOMENTS
+LMN = LMN_magtorquers - LMN_RWs;
 
 %%%Translational Dynamics
 F = Fgrav;
 accel = F/m;
 
+%%%Compute the total angular momentum
+w1 = w123(1);
+w2 = w123(2);
+w3 = w123(3);
+H = Is*pqr + Ir1B*w1*n1 + Ir2B*w2*n2 + Ir3B*w3*n3;
+
 %%%Rotational Dynamics
-H = I*pqr;
-pqrdot = invI*(LMN_magtorquers - cross(pqr,H));
+pqrdot = invI*(LMN - cross(pqr,H));
 
 %%%Return derivatives vector
-dstatedt = [vel;accel;q0123dot;pqrdot];
+dstatedt = [vel;accel;q0123dot;pqrdot;w123dot];
 

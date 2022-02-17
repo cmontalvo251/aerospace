@@ -1,0 +1,16 @@
+Notes On Nicholas' Paper
+
+
+No explanation of plots
+
+Controller description could use some work
+
+only 1 simulation example
+
+Magnet model very primitive
+
+No contact model or discussion of sensors using machine vision
+
+A few spelling errors
+
+References cited appropriately
