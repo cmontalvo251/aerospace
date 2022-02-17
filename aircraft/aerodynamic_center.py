@@ -66,8 +66,8 @@ print('xMAC = ',xMAC)
 ###MEAN AERODYNAMIC CHORD
 MAC = 0.0
 for yi in y:
-    MAC += chord(yi)
-MAC/=len(y)
+    MAC += chord(yi)*dy
+MAC*=2.0/(wing_span)
 print('MAC = ',MAC)
 
 ###Plot the Wing for kicks to make sure it looks right
