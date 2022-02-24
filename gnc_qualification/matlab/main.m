@@ -9,24 +9,34 @@ apogee = 600; %%km above surface
 perigee = 600; %km above surface
 N = 1000; %%%precision of orbit
 magnetic_moment = 0.6;  %%number of turns times current time area of magnetorquers
-L = 36.6; %%%length of satellite in centimeters
-W  = 22.6; %%%width of satellite in centirmeter
-D = 22.6; %%depth of satellite in centimeters
+Lx = 36.6/100; %%%length of satellite in meters
+Wy  = 22.6/100; %%%width of satellite in meters
+Dz = 22.6/100; %%depth of satellite in meters
 CD = 1.0; %%drag coefficient of satellite
 m = 25.0; %%%mass of satellite in kg
 mps = 0.65; %%%Mass of 1 solar panel
-nps = 2.0; %%%number of solar panels
+nps = 8.0; %%%number of solar panels
 %##Size of Solar Panels
-Length_sp = 3.0/1000.0;
-Width_sp = 296.90/1000.0;
-Depth_sp = 543.90/1000.0;
-LWDsp = [Length_sp,Width_sp,Depth_sp];
+Length_sp = 3.0/1000.0; %%Meter
+Width_sp = 20.23/100.0; %%meters
+Depth_sp = 22.6/100.0; %%meters
+LWDsp1 = [Length_sp;Width_sp;Depth_sp];
+LWDsp = [];
+for idx = 1:nps
+    LWDsp = [LWDsp,LWDsp1];
+end
 %###Distance to Solar Panel Centroid from Satellite Centroid
 %#Center of mass of the solar panel = lx = 100 mm, 113 mm
-lx = 0.0;
-ly = 261.45/1000.0;
-lz = -183.0/1000.0;
-xyz_sp = [[lx,ly,lz];[lx,-ly,lz]];
+lx = -183/1000.0;
+xyz1 = [lx,Wy/2+Width_sp/2,0]';
+xyz2 = [lx,-Wy/2-Width_sp/2,0]';
+xyz3 = [lx,Wy/2+Width_sp/2,Dz/2+Depth_sp/2]';
+xyz4 = [lx,-Wy/2-Width_sp/2,Dz/2+Depth_sp/2]';
+xyz5 = [lx,Wy/2+Width_sp/2,-Dz/2-Depth_sp/2]';
+xyz6 = [lx,-Wy/2-Width_sp/2,-Dz/2-Depth_sp/2]';
+xyz7 = [lx,Wy/2+1.5*Width_sp,0]';
+xyz8 = [lx,-Wy/2-1.5*Width_sp,0]';
+xyz_sp = [xyz1,xyz2,xyz3,xyz4,xyz5,xyz6,xyz7,xyz8];
 w0 = 10.0; %%%initial angular velocity of sat in deg/s
 SF = 2.0; %%%safety factor of detumbling
 HxRW = 0.1; %%%Size of reaction wheel in Nms
@@ -40,7 +50,7 @@ f = 0.5; %%%a factor from 0(non-inclusive) to 0.5 which dictate the speed of the
 constants %%Other constants
 
 %%%% Inertia Calculator
-[Inertia,max_moment_arm,max_area] = inertia(L,W,D,m,mps,nps,LWDsp,xyz_sp);
+[Inertia,max_moment_arm,max_area] = inertia(Lx,Wy,Dz,m,mps,nps,LWDsp,xyz_sp);
 
 %%%Run the orbit model
 [x,y,z,t,r,T_orbit,vx,vy,vz,v] = orbit_model(apogee,perigee,N);
