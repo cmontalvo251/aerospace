@@ -4,18 +4,18 @@ import matplotlib.pyplot as plt
 
 ###Inputs
 ##BARFOOT WING
+"""
 cr = 7.5 ##root chord (use consistent units)
 ct = 5.2 ##tip chord
 sweep_angle = np.arctan2(8.5,18)*180.0/np.pi ##in degrees
 wing_span = 2.0*18.0 ##wingspan
+"""
 
 ##Random Wing
-'''
-cr = 8.0
-ct = 8.0
-wing_span = 18.0
+cr = 10.0
+ct = 10.0
+wing_span = 50.0
 sweep_angle  = 0.0
-'''
 
 ###Debug Prints
 print('Root Chord = ',cr)
