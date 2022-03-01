@@ -82,5 +82,5 @@ plt.plot([0,wing_span/2.0],[quarter_chord_line(0),quarter_chord_line(wing_span/2
 plt.plot([0,-wing_span/2.0],[quarter_chord_line(0),quarter_chord_line(wing_span/2.0)]) #quarter chord line of left side
 plt.plot([0,0],[xMAC,xMAC],'b*')
 plt.grid()
-
+plt.axis('equal')
 plt.show()
