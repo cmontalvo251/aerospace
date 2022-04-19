@@ -1,0 +1,22 @@
+2.8307	!Weight_(N)_(assume_m1=m2) 
+0	!SLCG(m) 
+0	!BLCG(m) 
+0	!WLCG(m) 
+0.0002603        !Ixx(kg*m^2) 
+0.0029334	!Iyy 
+0.0030179	!Izz 
+0	!Ixy 
+3.5505e-06	!Ixz 
+0	!Iyz 
+0 -0.1057 0  !vector_from_cg1_to_plane(m)
+-0.05 0.05 -0.1057 0.1057 -0.01 0.01 !Limits_of_contact_cube
+9    	   !Nverts
+0 0.2115 0   !vector_from_cg_to_vertex(m)
+0.005 0.2115 0.005   !vector_from_cg_to_vertex(m)
+-0.005 0.2115 -0.005   !vector_from_cg_to_vertex(m)
+-0.005 0.2115 0.005   !vector_from_cg_to_vertex(m)
+0.005 0.2115 -0.005   !vector_from_cg_to_vertex(m)
+0.005 0.1 0.005   !vector_from_cg_to_vertex(m)
+-0.005 0.1 -0.005   !vector_from_cg_to_vertex(m)
+-0.005 0.1 0.005   !vector_from_cg_to_vertex(m)
+0.005 0.1 -0.005   !vector_from_cg_to_vertex(m)

@@ -1,0 +1,7 @@
+load Airfoil.txt
+Airfoil.txt
+oper
+alfa 15.0
+cpwr Cp15.0.txt
+
+quit 
