@@ -47,6 +47,7 @@ mass = weight / g0 ##slugs
 Ix = 18.2e6 #slugs-ft^2
 Iy = 33.1e6 #slugs-ft^2
 Iz = 49.7e6 #slugs-ft^2
+Ixz = 0.97e6 #slugs-ft^2
 
 ###Trim ###
 Vtrim = 279.1 #ft/s
@@ -56,7 +57,7 @@ Q = 0.5*density*Vtrim**2
 
 ####COMPUTE STABILITY DERIVATIVES
 XU = -(Q*main_wing_S*(2*CD0))/(mass*Vtrim)
-CXA = -CDA #This is wrong 
+CXA = -CDA+CL0
 XW = Q*main_wing_S*CXA/(mass*Vtrim)
 XWDOT = 0
 XQ = 0
@@ -118,7 +119,9 @@ dutch_roll1 = -b/(2*a) + 0.5*cm.sqrt(b**2-4*a*c)
 dutch_roll2 = -b/(2*a) - 0.5*cm.sqrt(b**2-4*a*c)
 
 ##Approximation to Roll Mode
-roll_mode = (LP + Ix*NP)/(1-Ix*Iz)
+ix = Ixz/Ix
+iz = Ixz/Iz
+roll_mode = (LP + ix*NP)/(1-ix*iz)
 
 ##Approximation to Spiral
 spiral_mode = (NR-LR*NV/LV)
