@@ -15,8 +15,8 @@ main_wing_chord = 27.3 #ft
 main_wing_wingspan = 195.7 #ft
 
 #######CONSTANTS#######
-g0 = 32.2 #ft/s^2
-density = 0.00238 #slugs/ft^3
+g0 = 32.174 #ft/s^2
+density = 0.002377 #slugs/ft^3
 
 ###COEFFIICENTS
 CL0 = 1.11
