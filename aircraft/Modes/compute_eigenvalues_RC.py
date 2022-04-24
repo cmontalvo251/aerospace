@@ -36,7 +36,7 @@ CD0w = 0.015342 ##unitless
 CDAw = 0.713431 ## /rad^2
 Claw = 4.8872 ## /rad
 CMACw = -0.065 ## unitless
-alfa_maxLD = 8.0 ##degrees
+alfa_maxLD = 4.5 ##degrees
 
 ###HORIZONTAL WING AERODYNAMICS PARAMETERS####
 ###NACA 0008 
@@ -46,7 +46,7 @@ CDAh = 1.09145 ## /rad^2
 Clah = 6.28 ## /rad
 CMACh = 0.0 ## unitless
 
-###MAIN WING AERODYNAMICS PARAMETERS####
+###VERTICAL WING AERODYNAMICS PARAMETERS####
 ###NACA 0008 
 CL0v = 0.0 ##unitless
 CD0v = 0.006 ##unitless
