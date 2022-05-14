@@ -59,6 +59,7 @@ CMACv = 0.0 ## unitless
 ###MODULES NEEDED######
 import numpy as np
 import matplotlib.pyplot as plt
+plt.rcParams.update({'font.size': 14})
 import cmath as cm
 
 #######CONSTANTS#######
@@ -268,7 +269,7 @@ print(roll_mode)
 plt.plot(np.real(roll_mode),np.imag(roll_mode),'go',label='Roll Approximation')
 print('Spiral Mode Approx:')
 print(spiral_mode)
-plt.plot(np.real(spiral_mode),np.imag(spiral_mode),'mo',label='Sprial Approximation')
+#plt.plot(np.real(spiral_mode),np.imag(spiral_mode),'mo',label='Spiral Approximation')
 plt.legend()
 plt.show()
 

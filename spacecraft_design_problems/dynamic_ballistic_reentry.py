@@ -22,6 +22,8 @@ dVdh = (Va[0:-2]-Va[1:-1])/(ha[0:-2]-ha[1:-1])
 accela = dVdh*dhdt[0:-2]
 amax = -(beta*Ve**2)/(2*np.exp(1))*np.sin(gammae)
 print('Max Accel = ',amax,' Max G = ',amax/9.81)
+##COmpute Altitude
+h_analytic = Va*np.sin(gammae)
 ##############################################################
 
 ##########################NUMERICAL##########################
@@ -76,7 +78,7 @@ plt.legend()
 plt.figure()
 plt.plot(ha[0:-2],accela/9.81,label='Analytic')
 plt.plot(hnum[0:-2],accelnum/9.81,label='Numerical')
-plt.xlabel('Time (sec)')
+plt.xlabel('Altitude (m)')
 plt.ylabel('Gs')
 plt.grid()
 plt.legend()
