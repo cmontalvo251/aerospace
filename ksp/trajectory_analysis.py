@@ -45,6 +45,7 @@ def kerbin_parameters():
     sidereal_period = 21549.425 ##seconds
     sidereal_angular_velocity = 2*np.pi/sidereal_period
     sidereal_rotational_velocity = sidereal_angular_velocity*R
+    print('Kerbin Sidereal Rotational Velocity = ',sidereal_rotational_velocity)
     surface_gravity = mu*R/R**3
     return sidereal_rotational_velocity,mu,surface_gravity,R
 
@@ -82,6 +83,7 @@ periaps_parking_altitude = 90.0 #km
 vsideKerbin,muKerbin,gKerbin,RKerbin = kerbin_parameters()
 v_aps,v_peri,a_aps,a_peri = orbit_parameters(apoaps_parking_altitude,periaps_parking_altitude,muKerbin,RKerbin)
 print('Parking Orbit = ',a_aps,a_peri,v_aps,v_peri)
+print('DV = ',(v_aps-vsideKerbin)/(2./3.))
 
 ###PLOT KERBIN IN BLUE
 plt.figure()
