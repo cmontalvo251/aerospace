@@ -2,7 +2,7 @@ import numpy as np
 import copy as C
 import matplotlib.pyplot as plt
 import plotting as P
-import mio as fileIO
+import mio as fileIO ##This file can be found in this repo https://github.com/cmontalvo251/Python/blob/master/io/mio.py
 import sys
 
 ##This code will eventually simulate the entire solar system but for now I'd 
