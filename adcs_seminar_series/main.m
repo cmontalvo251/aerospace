@@ -153,12 +153,15 @@ for idx = 1:length(tout)
     
     
 end
+%%%Save original State
+stateout_original = stateout;
 
+%%
 disp('Simulation Complete')
 
 
 %%%Convert state to kilometers
-stateout(:,1:6) = stateout(:,1:6)/1000;
+stateout(:,1:6) = stateout_original(:,1:6)/1000;
 
 %%%Extract the state vector
 xout = stateout(:,1);
