@@ -11,10 +11,10 @@ from gpscomms import GPSCOMMS
 GPS = GPSCOMMS()
 
 ###CREATE AN ORBIT AROUND THE EARTH
-KEPLER = True
+KEPLER = False
 if KEPLER:
 	height_at_perigee_km = 600.0 #in kilometers
-	ECC = 0.0 #0 is circular orbit
+	ECC = 0.3 #0 is circular orbit
 	INC = 56. #degrees
 	LAN = 0.0 #Longitude of the ascending node in degrees
 	ARG = 0. #argument of the periaps in degrees
@@ -23,15 +23,24 @@ if KEPLER:
 	#The trailing 0 just means give the coordinate at a true anomaly of 0
 	x0,y0,z0,u0,v0,w0 = GPS.getStateVector(height_at_perigee_km,ECC,INC,LAN,ARG,0)
 else:
-	##Sometimes though we are given a state vector
-	x0 = 6.97814000e6
-	y0 = 0.0
-	z0 = 0.0
-	u0 = 0.0
-	v0 = 4.22627963e3
-	w0 = 6.26571722e3
-	##And then we can get orbital elements from the state vector
-	height_at_perigee_km,ECC,INC,LAN,ARG = GPS.getOrbitalElements(x0,y0,z0,u0,v0,w0)
+        print('State Vector Given')
+        ##Sometimes though we are given a state vector
+        #CIRCULAR 56 INC
+        #x0 = 6.97814000e6
+        #y0 = 0.0
+        #z0 = 0.0
+        #u0 = 0.0
+        #v0 = 4.22627963e3
+        #w0 = 6.26571722e3
+        #CIRCULAR 56 INC ECC 0.3
+        x0 = 6.97814000e+06
+        y0 = 0.00000000e+00
+        z0 = 0.00000000e+00
+        u0 = 0.00000000e+00
+        v0 = 4.81870017e+03
+        w0 = 7.14401679e+03
+        ##And then we can get orbital elements from the state vector
+        height_at_perigee_km,ECC,INC,LAN,ARG = GPS.getOrbitalElements(x0,y0,z0,u0,v0,w0)
 
 ##Now we integrate the EOMs with out state vecto
 xsat_n,ysat_n,zsat_n,xdot_n,ydot_n,zdot_n,tsat = GPS.sixdof_orbit(x0,y0,z0,u0,v0,w0)
@@ -46,6 +55,7 @@ ax = fig.add_subplot(111,projection='3d')
 ax.plot(xsat_a,ysat_a,zsat_a,color = 'red', linestyle = 'solid')
 ax.plot(xsat_n,ysat_n,zsat_n,color = 'blue', linestyle = 'solid')
 ax.plot(xsat_a[0:1],ysat_a[0:1],zsat_a[0:1],'m*',markersize = 20)
+ax.plot([x0,x0],[y0,y0],[z0,z0],'y*',markersize = 20)
 plt.title('Satellite Orbit')
 ax.set_xlabel('X')
 ax.set_ylabel('Y')

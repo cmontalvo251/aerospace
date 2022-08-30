@@ -150,6 +150,7 @@ class GPSCOMMS():
         return np.asarray([xdoti,ydoti,zdoti,xddoti,yddoti,zddoti])
 
     def sixdof_orbit(self,x0,y0,z0,u0,v0,w0):
+        print('Computing Orbit with State Vector')
         #We want to simulate until we complete 1 orbit
         orbit = True
 
@@ -213,15 +214,47 @@ class GPSCOMMS():
         return x,y,z,u,v,w,t
 
     def getOrbitalElements(self,x0,y0,z0,u0,v0,w0):
-        height_at_perigee_km = 0.0
-        ECC = 0.0
-        INC = 0.0
-        LAN = 0.0
-        ARG = 0.0
+        print('Computing Orbital Elements from State Vector')
+        #Create numpy vectors
+        r = np.asarray([x0,y0,z0])
+        v = np.asarray([u0,v0,w0])
+        #Compute angular momentum vector
+        h = np.cross(r,v)
+        #Compute line of nodes vector
+        K = np.asarray([0,0,1])
+        n = np.cross(K,h)
+        #Compute the eccentricity vector and the eccentricity
+        vnorm = np.linalg.norm(v)
+        rnorm = np.linalg.norm(r)
+        e = (1.0/self.muEarth)*((vnorm**2-self.muEarth/rnorm)*r-np.dot(r,v)*v)
+        ECC = np.linalg.norm(e)
+        print('ECC = ',ECC)
+        ##Compute Inclination
+        hnorm = np.linalg.norm(h)
+        i = np.arccos(h[2]/hnorm)
+        INC = i*180.0/np.pi
+        print('INC = ',INC)
+        ##Compute Longitude of the ascending node
+        nnorm = np.linalg.norm(n)
+        W = np.arccos(n[0]/nnorm)
+        LAN = W*180.0/np.pi
+        print('LAN = ',LAN)
+        ##Compute the argument of the periaps
+        w = np.arccos(np.dot(n,e)/(nnorm*ECC))
+        ARG = w*180.0/np.pi
+        print('ARG = ',ARG)
+        ##Compute the perigee
+        ##First we need the paramter
+        p = hnorm**2/self.muEarth
+        #Then the perigee
+        rp = p/(1+ECC)
+        #Then we can get the height_at_perigee_km
+        height_at_perigee_km = (rp - self.EarthRadius_ae)/1000.0
         return height_at_perigee_km,ECC,INC,LAN,ARG
 
     def computeOrbitalElements(self,height_at_perogee_km,ECC,INC,LAN,ARG):
         if self.elements == False:
+            print('Computing the Full Orbital Elements')
             ##PEROGEE IS GIVEN
             self.rp = height_at_perogee_km*1000 + self.EarthRadius_ae
             #SOLVE FOR APOGEE
@@ -276,6 +309,7 @@ class GPSCOMMS():
         return xi,yj,zk,ui,vj,wk
 
     def kepler_orbit(self,height_at_perogee_km,ECC,INC,LAN,ARG):
+        print('Computing Analytic Orbit with Orbital Elements')
         ##First compute the orbital elements if needed
         self.computeOrbitalElements(height_at_perogee_km,ECC,INC,LAN,ARG)
 
