@@ -37,7 +37,7 @@ class GPSCOMMS():
         self.MEarth = 5.97219e24 #kg
         self.muEarth = self.G*self.MEarth
         #23 hours 56 minutes 4 seconds
-        self.solar_day_sec = 23*3600.0 + 56*60.0 + 4.0
+        self.solar_day_sec = 23.*3600.0 + 56.*60.0 + 4.0
         self.wEarth = 2*np.pi/self.solar_day_sec
         self.elements = False
 
@@ -81,7 +81,7 @@ class GPSCOMMS():
         xprime = np.sqrt(x**2 + y**2)
         zprime = z
         latitude = np.arctan2(zprime,xprime)*180/np.pi
-        longitude = np.asarray(np.arctan2(y,x)*180.0/np.pi)-180.0/np.pi*wEarth*t
+        longitude = np.asarray(np.arctan2(y,x)*180.0/np.pi)-180.0/np.pi*self.wEarth*t
         #longitude[longitude<0]+=360.0
         #norm = np.sqrt(x**2 + y**2 + z**2)
         #phi = np.arccos(self.zsat / rho)
@@ -130,8 +130,87 @@ class GPSCOMMS():
         xsph = np.cos(u)*np.sin(v)*self.EarthRadius_ae
         ysph = np.sin(u)*np.sin(v)*self.EarthRadius_ae
         zsph = np.cos(v)*self.EarthRadius_ae
-        ax.plot_wireframe(xsph,ysph,zsph,color='blue')
+        ax.plot_wireframe(xsph,ysph,zsph,color='green')
         return
+
+    def Derivatives(self,statei):
+        xi = statei[0]
+        yi = statei[1]
+        zi = statei[2]
+        ui = statei[3]
+        vi = statei[4]
+        wi = statei[5]
+        xdoti = ui
+        ydoti = vi
+        zdoti = wi
+        r = np.sqrt(xi**2 + yi**2 + zi**2)
+        xddoti = -self.muEarth*xi/r**3
+        yddoti = -self.muEarth*yi/r**3
+        zddoti = -self.muEarth*zi/r**3
+        return np.asarray([xdoti,ydoti,zdoti,xddoti,yddoti,zddoti])
+
+    def sixdof_orbit(self,x0,y0,z0,u0,v0,w0):
+        #We want to simulate until we complete 1 orbit
+        orbit = True
+
+        #Setup vectors
+        x = [x0]
+        y = [y0]
+        z = [z0]
+        u = [u0]
+        v = [v0]
+        w = [w0]
+        t = [0]
+        xi = x0
+        yi = y0
+        zi = z0
+        ui = u0
+        vi = v0
+        wi = w0
+        ti = 0.
+        statei = np.asarray([xi,yi,zi,ui,vi,wi])
+        print('Initial State = ',statei)
+        timestep = 1.0
+        
+        while orbit:
+            ###RK4 Function Calls
+            k1 = self.Derivatives(statei)
+            k2 = self.Derivatives(statei+k1*timestep/2)
+            k3 = self.Derivatives(statei+k2*timestep/2)
+            k4 = self.Derivatives(statei+k3*timestep)
+            phi = (1./6.)*(k1 + 2*k2 + 2*k3 + k4)
+            statei = statei + phi*timestep
+            ti = ti + timestep
+            
+            ##Need some way to determine if we've completed 1 orbit
+            xi = statei[0]
+            yi = statei[1]
+            zi = statei[2]
+            ui = statei[3]
+            vi = statei[4]
+            wi = statei[5]
+            r = np.sqrt(xi**2 + yi**2 + zi**2)
+            if np.sqrt((x0-xi)**2 + (y0-yi)**2 + (z0 - zi)**2) < 10000.0 and ti > 100:
+                print('1 Orbit complete')
+                orbit = False
+            ##Need a check for inside the Earth
+            if r < self.EarthRadius_ae:
+                print('Inside Earth')
+                orbit = False
+            ##Finally we need a fail safe
+            if ti > 20000:
+                print('Maximum time of 20000 seconds has been reached')
+                orbit = False
+            #Append Vectors
+            x.append(xi)
+            y.append(yi)
+            z.append(zi)
+            u.append(ui)
+            v.append(vi)
+            w.append(wi)
+            t.append(ti)
+                
+        return x,y,z,u,v,w,t
 
     def computeOrbitalElements(self,height_at_perogee_km,ECC,INC,LAN,ARG):
         if self.elements == False:

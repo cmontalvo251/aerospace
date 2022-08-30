@@ -10,11 +10,14 @@ from gpscomms import GPSCOMMS
 GPS = GPSCOMMS()
 
 ###CREATE AN ORBIT AROUND THE EARTH
-height_at_perigee_km = 6000.0 #in kilometers
-ECC = 0.3 #0 is circular orbit
-INC = 56.0 #degrees
-LAN = 30.0 #Longitude of the ascending node in degrees
-ARG = 30. #argument of the periaps in degrees
+height_at_perigee_km = 600.0 #in kilometers
+ECC = 0.0 #0 is circular orbit
+INC = 56. #degrees
+LAN = 0.0 #Longitude of the ascending node in degrees
+ARG = 0. #argument of the periaps in degrees
+
+##Sometimes though we are given a state vector
+
 
 ##USING THE ORBITAL ELEMENTS YOU CAN GET ANALYTIC ORBITS JUST USING KEPLERS EQUATIONS
 xsat_a,ysat_a,zsat_a,xdot_a,ydot_a,zdot_a,nu_deg = GPS.kepler_orbit(height_at_perigee_km,ECC,INC,LAN,ARG)
@@ -24,11 +27,15 @@ xsat_a,ysat_a,zsat_a,xdot_a,ydot_a,zdot_a,nu_deg = GPS.kepler_orbit(height_at_pe
 #The trailing 0 just means give the coordinate at a true anomaly of 0
 x0,y0,z0,u0,v0,w0 = GPS.getStateVector(height_at_perigee_km,ECC,INC,LAN,ARG,0)
 
+##Now we integrate the EOMs
+xsat_n,ysat_n,zsat_n,xdot_n,ydot_n,zdot_n,tsat = GPS.sixdof_orbit(x0,y0,z0,u0,v0,w0)
+
 ###PLOT 3D ORBIT
 fig = plt.figure('3-D')
 ax = fig.add_subplot(111,projection='3d')
 ax.plot(xsat_a,ysat_a,zsat_a,color = 'red', linestyle = 'solid')
-ax.plot(xsat_a[0:1],ysat_a[0:1],zsat_a[0:1],'g*',markersize = 20)
+ax.plot(xsat_n,ysat_n,zsat_n,color = 'blue', linestyle = 'solid')
+ax.plot(xsat_a[0:1],ysat_a[0:1],zsat_a[0:1],'m*',markersize = 20)
 plt.title('Satellite Orbit')
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
@@ -45,18 +52,30 @@ plt.legend()
 plt.xlabel('True Anamoly (deg)')
 plt.ylabel('Velocity (m/s)')
 
-plt.show()
-sys.exit()
+fig = plt.figure()
+plt.plot(tsat,xdot_n,label='X')
+plt.plot(tsat,ydot_n,label='Y')
+plt.plot(tsat,zdot_n,label='Z')
+plt.grid()
+plt.legend()
+plt.xlabel('Time (sec)')
+plt.ylabel('Velocity (m/s)')
 
-#tsat = data_sat[:,0] #time
-
+#Plot delta
+#plt.figure()
+#plt.plot(time,np.sqrt((x0-xsat_n)**2 + (y0-ysat_n)**2 + (z0 - zsat_n)**2),'b*')
+#plt.grid()
 
 ##Compute Distance from centroid of Earth
-norm = np.sqrt(xsat**2 + ysat**2 + zsat**2) 
+xsat_n = np.array(xsat_n)
+ysat_n = np.array(ysat_n)
+zsat_n = np.array(zsat_n)
+tsat = np.array(tsat)
+norm = np.sqrt(xsat_n**2 + ysat_n**2 + zsat_n**2) 
 
 ##Compute Latitude Longitude and (Geocentric)
 print('Computing Geocentric Lat/Lon')
-latitude,longitude = GPS.computeGeocentricLATLON(xsat,ysat,zsat,0*tsat)
+latitude,longitude = GPS.computeGeocentricLATLON(xsat_n,ysat_n,zsat_n,0*tsat)
 #Convert to Radians because degrees suck
 longitude_rad = longitude*np.pi/180.0
 latitude_rad = latitude*np.pi/180.0
@@ -80,16 +99,16 @@ latitudesw2 = 0*latitude
 longitudesw1 = 0*latitude
 longitudesw2 = 0*latitude
 print('Computing Swath Vectors and Swath Lat/Lons')
-for n in range(0,len(xsat)):
-    xyz = np.asarray([xsat[n],ysat[n],zsat[n]])
-    vxyz = np.asarray([xdot[n],ydot[n],zdot[n]])
+for n in range(0,len(xsat_n)):
+    xyz = np.asarray([xsat_n[n],ysat_n[n],zsat_n[n]])
+    vxyz = np.asarray([xdot_n[n],ydot_n[n],zdot_n[n]])
     hn = np.cross(xyz,vxyz)
     #h[:,n] = hn
     yn = yscalar[n]*hn/np.linalg.norm(hn)
     sw1 = xyz + yn
     sw2 = xyz - yn
     lat1,long1 = GPS.computeGeocentricLATLON(sw1[0],sw1[1],sw1[2],0*tsat[n]) #0 is here so that gps.py does not turn the Earth
-    lat2,long2 = GPS.computeGeocentricLATLON(sw2[0],sw2[1],sw2[2],0*tsat[n]) #we will be turning the Earth in MultiSAT++
+    lat2,long2 = GPS.computeGeocentricLATLON(sw2[0],sw2[1],sw2[2],0*tsat[n]) #Eventually we need to turn the Earth
     latitudesw1[n] = lat1
     latitudesw2[n] = lat2
     longitudesw1[n] = long1
@@ -108,16 +127,16 @@ n = 0
 az_deg = np.linspace(0,180,100)
 az_rad = az_deg * np.pi/180.0
 
-nframes = 1000.0
-skip = int(len(xsat)/nframes)
+nframes = 10.0
+skip = int(len(xsat_n)/nframes)
 
 ##Location of Ground Station
 #KMOB
-#lonG = -88.175228
-#latG = 30.691615
-#MOB Shifted
+lonG = -88.175228
 latG = 30.691615
-lonG = 25.0
+#MOB Shifted
+#latG = 30.691615
+#lonG = 25.0
 #Origin
 #lonG = 0.0
 #latG = 0.0
@@ -128,14 +147,14 @@ lonG = 25.0
 INSIDE = 0
 if skip < 0:
 	skip = 1
-if skip > len(xsat):
-	skip = len(xsat)
+if skip > len(xsat_n):
+	skip = len(xsat_n)
 
 startTime = []
 endTime = []
 deltaTime = []
 
-for ifov in range(0,len(xsat),skip):
+for ifov in range(0,len(xsat_n),skip):
 	#Clear the axis
 	plt.cla()
 
@@ -219,11 +238,7 @@ for ifov in range(0,len(xsat),skip):
 			deltaTime.append((tend - tstart)/60.0)
 			print('OUT OF VIEW = ',tend)
 			print('Delta Time (min) = ',(tend - tstart)/60.0)
-			
 		INSIDE = 0
-
-	
-	
 	plt.xlabel('Longitude (Deg)')
 	plt.ylabel('Latitude (Deg)')
 	plt.title(str(tsat[ifov]))
@@ -232,3 +247,4 @@ for ifov in range(0,len(xsat),skip):
 
 
 
+plt.show()
