@@ -11,25 +11,34 @@ from gpscomms import GPSCOMMS
 GPS = GPSCOMMS()
 
 ###CREATE AN ORBIT AROUND THE EARTH
-height_at_perigee_km = 600.0 #in kilometers
-ECC = 0.0 #0 is circular orbit
-INC = 56. #degrees
-LAN = 0.0 #Longitude of the ascending node in degrees
-ARG = 0. #argument of the periaps in degrees
+KEPLER = True
+if KEPLER:
+	height_at_perigee_km = 600.0 #in kilometers
+	ECC = 0.0 #0 is circular orbit
+	INC = 56. #degrees
+	LAN = 0.0 #Longitude of the ascending node in degrees
+	ARG = 0. #argument of the periaps in degrees
+	##The problem with Keplerian orbits is we don't have the time component. In order to do that we
+	##Need to get an initial state vector and then integrate the equations of motion
+	#The trailing 0 just means give the coordinate at a true anomaly of 0
+	x0,y0,z0,u0,v0,w0 = GPS.getStateVector(height_at_perigee_km,ECC,INC,LAN,ARG,0)
+else:
+	##Sometimes though we are given a state vector
+	x0 = 6.97814000e6
+	y0 = 0.0
+	z0 = 0.0
+	u0 = 0.0
+	v0 = 4.22627963e3
+	w0 = 6.26571722e3
+	##And then we can get orbital elements from the state vector
+	height_at_perigee_km,ECC,INC,LAN,ARG = GPS.getOrbitalElements(x0,y0,z0,u0,v0,w0)
 
-##Sometimes though we are given a state vector
-
+##Now we integrate the EOMs with out state vecto
+xsat_n,ysat_n,zsat_n,xdot_n,ydot_n,zdot_n,tsat = GPS.sixdof_orbit(x0,y0,z0,u0,v0,w0)
 
 ##USING THE ORBITAL ELEMENTS YOU CAN GET ANALYTIC ORBITS JUST USING KEPLERS EQUATIONS
 xsat_a,ysat_a,zsat_a,xdot_a,ydot_a,zdot_a,nu_deg = GPS.kepler_orbit(height_at_perigee_km,ECC,INC,LAN,ARG)
 
-##The problem with Keplerian orbits is we don't have the time component. In order to do that we
-##Need to get an initial state vector and then integrate the equations of motion
-#The trailing 0 just means give the coordinate at a true anomaly of 0
-x0,y0,z0,u0,v0,w0 = GPS.getStateVector(height_at_perigee_km,ECC,INC,LAN,ARG,0)
-
-##Now we integrate the EOMs
-xsat_n,ysat_n,zsat_n,xdot_n,ydot_n,zdot_n,tsat = GPS.sixdof_orbit(x0,y0,z0,u0,v0,w0)
 
 ###PLOT 3D ORBIT
 fig = plt.figure('3-D')

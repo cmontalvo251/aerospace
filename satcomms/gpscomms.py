@@ -212,6 +212,14 @@ class GPSCOMMS():
                 
         return x,y,z,u,v,w,t
 
+    def getOrbitalElements(self,x0,y0,z0,u0,v0,w0):
+        height_at_perigee_km = 0.0
+        ECC = 0.0
+        INC = 0.0
+        LAN = 0.0
+        ARG = 0.0
+        return height_at_perigee_km,ECC,INC,LAN,ARG
+
     def computeOrbitalElements(self,height_at_perogee_km,ECC,INC,LAN,ARG):
         if self.elements == False:
             ##PEROGEE IS GIVEN
