@@ -128,6 +128,19 @@ while len(BALLISTICSTR) < 10:
 #CONVERT RADIATION PRESSURE
 RADSTR = str(RADIATIONPRESSURE)
 RADSTR = RADSTR.replace('.','-')
+##CONVERT INCLINATION
+INCSTR = str(INC)
+DEC = INCSTR.find('.')
+INCSTRPRE = INCSTR[0:DEC]
+INCSTRPOST = INCSTR[DEC+1:]
+if len(INCSTRPOST) > 4:
+        INCSTRPOST = INCSTRPOST[0:4]
+while len(INCSTRPRE) < 3:
+        INCSTRPRE = ' ' + INCSTRPRE
+#CONVERT THE LONGITUDE OF THE ASCENDING NODE
+#MAKE A FUNCTION FOR EVERYTHING I'M DOING ABOVE
+# def convert(LEADING_DIGITS,TRAILING_DIGITS):
+
 
 ##PRINT THE TLE FORMAT FILE
 #Check out this page - https://en.wikipedia.org/wiki/Two-line_element_set
@@ -135,6 +148,7 @@ print('============================')
 print('TLE:')
 print(NAME)
 print('1 '+ CATALOG + CLASS + ' ' + LAUNCHYR + LAUNCHNO + LAUNCHPIECE + ' ' + YR + JULIANSTR + ' ' + BALLISTICSTR + ' 00000-0 ' + RADSTR + ' 0 ' + ' ' + str(TLENO) + str(CHECKSUM))
+print('2 '+ CATALOG + ' ' + INCSTRPRE + '.' + INCSTRPOST + ' ')
 print('============================')
 
 sys.exit()
