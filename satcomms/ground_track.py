@@ -13,15 +13,26 @@ GPS = GPSCOMMS()
 ###CREATE AN ORBIT AROUND THE EARTH
 KEPLER = False
 if KEPLER:
-	height_at_perigee_km = 600.0 #in kilometers
-	ECC = 0.3 #0 is circular orbit
-	INC = 56. #degrees
-	LAN = 0.0 #Longitude of the ascending node in degrees
-	ARG = 0. #argument of the periaps in degrees
-	##The problem with Keplerian orbits is we don't have the time component. In order to do that we
-	##Need to get an initial state vector and then integrate the equations of motion
-	#The trailing 0 just means give the coordinate at a true anomaly of 0
-	x0,y0,z0,u0,v0,w0 = GPS.getStateVector(height_at_perigee_km,ECC,INC,LAN,ARG,0)
+        print('Orbital Elements Given')
+        #height_at_perigee_km = 600.0 #in kilometers
+        #ECC = 0.5 #0 is circular orbit
+        #INC = 56. #degrees
+        #LAN = 30.0 #Longitude of the ascending node in degrees
+        #ARG = 30. #argument of the periaps in degrees
+        height_at_perigee_km = 412.4219041130347
+        ECC =  0.0016186250257476963
+        INC =  51.65411785007067
+        LAN =  3.5434576048176436
+        ARG =  75.9857377967462
+        ##The problem with Keplerian orbits is we don't have the time component. In order to do that we
+        ##Need to get an initial state vector and then integrate the equations of motion
+        #The trailing 0 just means give the coordinate at a true anomaly of 0
+        print('ECC = ',ECC)
+        print('INC = ',INC)
+        print('LAN = ',LAN)
+        print('ARG = ',ARG)
+        print('Height At Perigee = ',height_at_perigee_km)
+        x0,y0,z0,u0,v0,w0 = GPS.getStateVector(height_at_perigee_km,ECC,INC,LAN,ARG,0)
 else:
         print('State Vector Given')
         ##Sometimes though we are given a state vector
@@ -33,12 +44,48 @@ else:
         #v0 = 4.22627963e3
         #w0 = 6.26571722e3
         #CIRCULAR 56 INC ECC 0.3
-        x0 = 6.97814000e+06
-        y0 = 0.00000000e+00
-        z0 = 0.00000000e+00
-        u0 = 0.00000000e+00
-        v0 = 4.81870017e+03
-        w0 = 7.14401679e+03
+        #x0 = 6.97814000e+06
+        #y0 = 0.00000000e+00
+        #z0 = 0.00000000e+00
+        #u0 = 0.00000000e+00
+        #v0 = 4.81870017e+03
+        #w0 = 7.14401679e+03
+        #CIRCULAR 56 INC ECC 0.5 LAN 30.0 ARG 30.0
+        #x0 = 4258073.408143662
+        #y0 = 4711293.537065895
+        #z0 = 2892570.123274619
+        #u0 = -6249.462870766547
+        #v0 = 1567.9852296033864
+        #w0 = 6645.79670240959
+        #SAME ORBIT BUT A DIFFERNT POINT IN THE ORBIT
+        #x0 = -11373129.869698685
+        #y0 = -1582590.9250512433
+        #z0 = 6398734.607771511
+        #u0 = -3824.3727885792405
+        #v0 = -3708.0441704344503
+        #w0 = -1925.9564901311678
+        #CUBESAT F1 FILE CONVERTED TO ORBITAL ELEMENTS AND THEN BACK TO STATE
+        #x0 = 1388650.3862920234
+        #y0 = 4181338.8491511224
+        #z0 = 5167183.614583657
+        #u0 = -7496.5015435881705
+        #v0 = 689.9959793034844
+        #w0 = 1456.2890215638377
+        ##SAME ORBIT BUT RANDOM SPOT IN ORBIT
+        #x0 = -3450261.6064182753
+        #y0 = -3778046.447778934
+        #z0 = -4497266.240788944
+        #u0 = 6578.214958392202
+        #v0 = -2159.4810810827257
+        #w0 = -3238.621725744133
+        #EXAMPLE CUBESAT F1 FILE
+        x0 = 6639069.208831
+        y0 = 627950.722629
+        z0 = 1311013.452319
+        u0 = -1606.655729
+        v0 = 4713.714334
+        w0 = 5821.859626
+        print(x0,y0,z0,u0,v0,w0)
         ##And then we can get orbital elements from the state vector
         height_at_perigee_km,ECC,INC,LAN,ARG = GPS.getOrbitalElements(x0,y0,z0,u0,v0,w0)
 
@@ -48,19 +95,19 @@ xsat_n,ysat_n,zsat_n,xdot_n,ydot_n,zdot_n,tsat = GPS.sixdof_orbit(x0,y0,z0,u0,v0
 ##USING THE ORBITAL ELEMENTS YOU CAN GET ANALYTIC ORBITS JUST USING KEPLERS EQUATIONS
 xsat_a,ysat_a,zsat_a,xdot_a,ydot_a,zdot_a,nu_deg = GPS.kepler_orbit(height_at_perigee_km,ECC,INC,LAN,ARG)
 
-
 ###PLOT 3D ORBIT
 fig = plt.figure('3-D')
 ax = fig.add_subplot(111,projection='3d')
-ax.plot(xsat_a,ysat_a,zsat_a,color = 'red', linestyle = 'solid')
-ax.plot(xsat_n,ysat_n,zsat_n,color = 'blue', linestyle = 'solid')
-ax.plot(xsat_a[0:1],ysat_a[0:1],zsat_a[0:1],'m*',markersize = 20)
-ax.plot([x0,x0],[y0,y0],[z0,z0],'y*',markersize = 20)
+ax.plot(xsat_a,ysat_a,zsat_a,color = 'red', linestyle = 'solid',label='Analytic Orbit')
+ax.plot(xsat_n,ysat_n,zsat_n,color = 'blue', linestyle = 'solid',label='Numerical Orbit')
+ax.plot(xsat_a[0:1],ysat_a[0:1],zsat_a[0:1],'m*',markersize = 20,label='Perigee')
+ax.plot([x0,x0],[y0,y0],[z0,z0],'y*',markersize = 20,label='Initial Position')
 plt.title('Satellite Orbit')
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
 GPS.plotEARTH(ax)
+ax.legend()
 
 ##PLOT VELOCITY
 fig = plt.figure()
@@ -95,7 +142,7 @@ norm = np.sqrt(xsat_n**2 + ysat_n**2 + zsat_n**2)
 
 ##Compute Latitude Longitude and (Geocentric)
 print('Computing Geocentric Lat/Lon')
-latitude,longitude = GPS.computeGeocentricLATLON(xsat_n,ysat_n,zsat_n,0*tsat)
+latitude,longitude = GPS.computeGeocentricLATLON(xsat_n,ysat_n,zsat_n,tsat)
 #Convert to Radians because degrees suck
 longitude_rad = longitude*np.pi/180.0
 latitude_rad = latitude*np.pi/180.0
@@ -127,8 +174,8 @@ for n in range(0,len(xsat_n)):
     yn = yscalar[n]*hn/np.linalg.norm(hn)
     sw1 = xyz + yn
     sw2 = xyz - yn
-    lat1,long1 = GPS.computeGeocentricLATLON(sw1[0],sw1[1],sw1[2],0*tsat[n]) #0 is here so that gps.py does not turn the Earth
-    lat2,long2 = GPS.computeGeocentricLATLON(sw2[0],sw2[1],sw2[2],0*tsat[n]) #Eventually we need to turn the Earth
+    lat1,long1 = GPS.computeGeocentricLATLON(sw1[0],sw1[1],sw1[2],tsat[n]) #0 is here so that gps.py does not turn the Earth
+    lat2,long2 = GPS.computeGeocentricLATLON(sw2[0],sw2[1],sw2[2],tsat[n]) #Eventually we need to turn the Earth
     latitudesw1[n] = lat1
     latitudesw2[n] = lat2
     longitudesw1[n] = long1
@@ -147,7 +194,7 @@ n = 0
 az_deg = np.linspace(0,180,100)
 az_rad = az_deg * np.pi/180.0
 
-nframes = 10.0
+nframes = 1.0
 skip = int(len(xsat_n)/nframes)
 
 ##Location of Ground Station

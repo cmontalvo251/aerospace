@@ -31,7 +31,7 @@ class GPSCOMMS():
     def __init__(self):
         self.NM2FT=6076.115485560000
         self.FT2M=0.3048
-        self.G = 6.6742*10**-11; #%%Gravitational constant
+        self.G = 6.6743*10**-11; #%%Gravitational constant
         self.GPSVAL = 60.0*self.NM2FT*self.FT2M
         self.EarthRadius_ae = 6378140. ##meters mean eq radius
         self.MEarth = 5.97219e24 #kg
@@ -152,7 +152,8 @@ class GPSCOMMS():
     def sixdof_orbit(self,x0,y0,z0,u0,v0,w0):
         print('Computing Orbit with State Vector')
         #We want to simulate until we complete 1 orbit
-        orbit = True
+        orbit = 0.0
+        maxOrbit = 1.0
 
         #Setup vectors
         x = [x0]
@@ -170,10 +171,14 @@ class GPSCOMMS():
         wi = w0
         ti = 0.
         statei = np.asarray([xi,yi,zi,ui,vi,wi])
-        print('Initial State = ',statei)
+        print('Initial State = ')
+        for s in statei:
+            print(s)
         timestep = 1.0
+
+        PRINTRANDOM = True
         
-        while orbit:
+        while orbit < maxOrbit:
             ###RK4 Function Calls
             k1 = self.Derivatives(statei)
             k2 = self.Derivatives(statei+k1*timestep/2)
@@ -182,6 +187,11 @@ class GPSCOMMS():
             phi = (1./6.)*(k1 + 2*k2 + 2*k3 + k4)
             statei = statei + phi*timestep
             ti = ti + timestep
+            if ti > 2500 and PRINTRANDOM:
+                print('Random State = ')
+                PRINTRANDOM = False
+                for s in statei:
+                    print(s)
             
             ##Need some way to determine if we've completed 1 orbit
             xi = statei[0]
@@ -193,15 +203,16 @@ class GPSCOMMS():
             r = np.sqrt(xi**2 + yi**2 + zi**2)
             if np.sqrt((x0-xi)**2 + (y0-yi)**2 + (z0 - zi)**2) < 10000.0 and ti > 100:
                 print('1 Orbit complete')
-                orbit = False
+                orbit += 1
             ##Need a check for inside the Earth
             if r < self.EarthRadius_ae:
                 print('Inside Earth')
-                orbit = False
+                orbit = maxOrbit
             ##Finally we need a fail safe
-            if ti > 20000:
-                print('Maximum time of 20000 seconds has been reached')
-                orbit = False
+            tmax = 40000
+            if ti > tmax:
+                print('Maximum time of ',tmax,' seconds has been reached')
+                orbit = maxOrbit
             #Append Vectors
             x.append(xi)
             y.append(yi)
@@ -236,8 +247,9 @@ class GPSCOMMS():
         print('INC = ',INC)
         ##Compute Longitude of the ascending node
         nnorm = np.linalg.norm(n)
-        W = np.arccos(n[0]/nnorm)
+        W = np.arccos(n[0]/nnorm)*np.sign(n[1])
         LAN = W*180.0/np.pi
+        #print('nj = ',n[1])
         print('LAN = ',LAN)
         ##Compute the argument of the periaps
         w = np.arccos(np.dot(n,e)/(nnorm*ECC))
@@ -250,6 +262,7 @@ class GPSCOMMS():
         rp = p/(1+ECC)
         #Then we can get the height_at_perigee_km
         height_at_perigee_km = (rp - self.EarthRadius_ae)/1000.0
+        print('Height At Perigee = ',height_at_perigee_km)
         return height_at_perigee_km,ECC,INC,LAN,ARG
 
     def computeOrbitalElements(self,height_at_perogee_km,ECC,INC,LAN,ARG):
