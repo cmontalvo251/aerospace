@@ -12,6 +12,12 @@ GPS = GPSCOMMS()
 
 ###CREATE AN ORBIT AROUND THE EARTH
 KEPLER = False
+NAME = 'JagSat-1'
+CATALOG = 'XXXXX'
+CLASS = 'U'
+LAUNCHYR = '22'
+LAUNCHNO = 'XXX'
+LAUNCHPIECE = 'A  '
 if KEPLER:
         print('Orbital Elements Given')
         #height_at_perigee_km = 600.0 #in kilometers
@@ -24,6 +30,11 @@ if KEPLER:
         INC =  51.65411785007067
         LAN =  3.5434576048176436
         ARG =  75.9857377967462
+        YR = '22'
+        JULIANDAY = 165
+        JULIANHR = 9
+        JULIANMIN = 5
+        JULIANSEC = 0
         ##The problem with Keplerian orbits is we don't have the time component. In order to do that we
         ##Need to get an initial state vector and then integrate the equations of motion
         #The trailing 0 just means give the coordinate at a true anomaly of 0
@@ -85,8 +96,15 @@ else:
         u0 = -1606.655729
         v0 = 4713.714334
         w0 = 5821.859626
-        #Check out this page - https://en.wikipedia.org/wiki/Two-line_element_set
-        #MAKE SURE TO LOOK INTO THE CHECKOUT FILE THAT YOU GOT FROM NASA
+        YR = '22'
+        JULIANDAY = 165
+        JULIANHR = 9
+        JULIANMIN = 5
+        JULIANSEC = 0
+        BALLISTIC = -0.081629
+        RADIATIONPRESSURE = '-00000-0'
+        TLENO = 292
+        CHECKSUM = 7
         #ANOTHER EXAMPLE SAT FROM 2004
         #x0 = 9686275.84
         #y0 = 41043317.21
@@ -97,6 +115,29 @@ else:
         print(x0,y0,z0,u0,v0,w0)
         ##And then we can get orbital elements from the state vector
         height_at_perigee_km,ECC,INC,LAN,ARG = GPS.getOrbitalElements(x0,y0,z0,u0,v0,w0)
+
+##COMPUTE FRACTIONAL PORTION OF THE DAY
+JULIANFRACTION = JULIANDAY + (JULIANHR + JULIANMIN/60. + JULIANSEC/3600.)/24.
+JULIANSTR = str(JULIANFRACTION)
+JULIANSTR = JULIANSTR[0:12]
+##CONVERT BALLISTIC COEFFICIENT
+BALLISTICSTR = str(BALLISTIC)
+BALLISTICSTR = BALLISTICSTR[:1] + BALLISTICSTR[2:]
+while len(BALLISTICSTR) < 10:
+        BALLISTICSTR+='0'
+#CONVERT RADIATION PRESSURE
+RADSTR = str(RADIATIONPRESSURE)
+RADSTR = RADSTR.replace('.','-')
+
+##PRINT THE TLE FORMAT FILE
+#Check out this page - https://en.wikipedia.org/wiki/Two-line_element_set
+print('============================')
+print('TLE:')
+print(NAME)
+print('1 '+ CATALOG + CLASS + ' ' + LAUNCHYR + LAUNCHNO + LAUNCHPIECE + ' ' + YR + JULIANSTR + ' ' + BALLISTICSTR + ' 00000-0 ' + RADSTR + ' 0 ' + ' ' + str(TLENO) + str(CHECKSUM))
+print('============================')
+
+sys.exit()
 
 ##Now we integrate the EOMs with out state vecto
 xsat_n,ysat_n,zsat_n,xdot_n,ydot_n,zdot_n,tsat = GPS.sixdof_orbit(x0,y0,z0,u0,v0,w0)
