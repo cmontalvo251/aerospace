@@ -275,6 +275,7 @@ class GPSCOMMS():
             self.ra = self.rp*(1+ECC)/(1-ECC)
             ##SEMI MAJOR AXIS
             self.a = (self.ra + self.rp)/2.0
+            print('Semi Major (km) = ',self.a/1000.0)
             #inclination in radians
             self.i = INC*np.pi/180.0
             ###Longitude of the Ascending Node in radians

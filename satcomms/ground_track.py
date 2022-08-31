@@ -78,13 +78,22 @@ else:
         #u0 = 6578.214958392202
         #v0 = -2159.4810810827257
         #w0 = -3238.621725744133
-        #EXAMPLE CUBESAT F1 FILE
+        #EXAMPLE CUBESAT F1 FILE from 2020
         x0 = 6639069.208831
         y0 = 627950.722629
         z0 = 1311013.452319
         u0 = -1606.655729
         v0 = 4713.714334
         w0 = 5821.859626
+        #Check out this page - https://en.wikipedia.org/wiki/Two-line_element_set
+        #MAKE SURE TO LOOK INTO THE CHECKOUT FILE THAT YOU GOT FROM NASA
+        #ANOTHER EXAMPLE SAT FROM 2004
+        #x0 = 9686275.84
+        #y0 = 41043317.21
+        #z0 = 370926.32
+        #u0 = -2976.641143
+        #v0 = 699.873647
+        #w0 = 315.983197
         print(x0,y0,z0,u0,v0,w0)
         ##And then we can get orbital elements from the state vector
         height_at_perigee_km,ECC,INC,LAN,ARG = GPS.getOrbitalElements(x0,y0,z0,u0,v0,w0)
