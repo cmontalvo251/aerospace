@@ -249,6 +249,8 @@ class GPSCOMMS():
         nnorm = np.linalg.norm(n)
         W = np.arccos(n[0]/nnorm)*np.sign(n[1])
         LAN = W*180.0/np.pi
+        if LAN < 0:
+            LAN+=360.0
         #print('nj = ',n[1])
         print('LAN = ',LAN)
         ##Compute the argument of the periaps
@@ -263,7 +265,18 @@ class GPSCOMMS():
         #Then we can get the height_at_perigee_km
         height_at_perigee_km = (rp - self.EarthRadius_ae)/1000.0
         print('Height At Perigee = ',height_at_perigee_km)
-        return height_at_perigee_km,ECC,INC,LAN,ARG
+        #Compute the Mean Anomaly
+        V0 = np.arccos(np.dot(e,r)/(ECC*rnorm))*180.0/np.pi
+        if np.dot(r,v) > 0:
+            print('V0 must be less than 180')
+        else:
+            print('V0 must be greater than 180')
+            if V0 < 180:
+                V0 = 360 - V0
+                
+        print('V0 = ',V0)
+        
+        return height_at_perigee_km,ECC,INC,LAN,ARG,V0
 
     def computeOrbitalElements(self,height_at_perogee_km,ECC,INC,LAN,ARG):
         if self.elements == False:
@@ -276,6 +289,12 @@ class GPSCOMMS():
             ##SEMI MAJOR AXIS
             self.a = (self.ra + self.rp)/2.0
             print('Semi Major (km) = ',self.a/1000.0)
+            #Compute the Period of the Orbit
+            self.TP = (2*np.pi/np.sqrt(self.muEarth))*self.a**(3.0/2.0)
+            print('Period of Orbit (sec) = ',self.TP)
+            #Mean MOTION
+            self.MM = 86400.0/self.TP
+            print('Mean Motion (Orbits per Day) = ',self.MM)
             #inclination in radians
             self.i = INC*np.pi/180.0
             ###Longitude of the Ascending Node in radians

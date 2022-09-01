@@ -24,10 +24,9 @@ def convertTLE(LEADING_DIGITS,TRAILING_DIGITS,INSTR):
 GPS = GPSCOMMS()
 
 #####NOTES####
-#1.) Mean Anamoaly must be incorporated into keplerian elements
-#2.) Mean motion will come from computing the period of the orbit and dividing it into a day
 #3.) Fix the Decimal assumed numbers and convert to scientific notation
 #4.) Double check Checksum.txt file from NASA
+#5.) Run KEPLER False and KEPLER True and make sure you get the same TLE file
 
 ###CREATE AN ORBIT AROUND THE EARTH
 KEPLER = False
@@ -47,10 +46,9 @@ if KEPLER:
         height_at_perigee_km = 412.4219041130347
         ECC =  0.0016186250257476963
         INC =  51.65411785007067
-        LAN =  3.5434576048176436
+        LAN =  356.4565
         ARG =  75.9857377967462
-        V0 = 0.0
-        MM = 0.0
+        V0 = 298.2527
         YR = '22'
         JULIANDAY = 165
         JULIANHR = 9
@@ -135,9 +133,13 @@ else:
         #w0 = 315.983197
         print(x0,y0,z0,u0,v0,w0)
         ##And then we can get orbital elements from the state vector
-        height_at_perigee_km,ECC,INC,LAN,ARG = GPS.getOrbitalElements(x0,y0,z0,u0,v0,w0)
-        V0 = 0.0
-        MM = 0.0
+        height_at_perigee_km,ECC,INC,LAN,ARG,V0 = GPS.getOrbitalElements(x0,y0,z0,u0,v0,w0)
+
+##Now we integrate the EOMs with out state vecto
+xsat_n,ysat_n,zsat_n,xdot_n,ydot_n,zdot_n,tsat = GPS.sixdof_orbit(x0,y0,z0,u0,v0,w0)
+
+##USING THE ORBITAL ELEMENTS YOU CAN GET ANALYTIC ORBITS JUST USING KEPLERS EQUATIONS
+xsat_a,ysat_a,zsat_a,xdot_a,ydot_a,zdot_a,nu_deg = GPS.kepler_orbit(height_at_perigee_km,ECC,INC,LAN,ARG)
 
 ##COMPUTE FRACTIONAL PORTION OF THE DAY
 JULIANFRACTION = JULIANDAY + (JULIANHR + JULIANMIN/60. + JULIANSEC/3600.)/24.
@@ -170,7 +172,7 @@ ARGSTR = convertTLE(3,4,ARGSTR)
 V0STR = str(V0)
 V0STR = convertTLE(3,4,V0STR)
 ##MEAN MOTION
-MMSTR = str(MM)
+MMSTR = str(GPS.MM)
 MMSTR = convertTLE(2,8,MMSTR)
 
 ##PRINT THE TLE FORMAT FILE
@@ -183,12 +185,6 @@ print('2 '+ CATALOG + ' ' + INCSTR + ' ' + LANSTR + ' ' + ECCSTR + ' ' + ARGSTR 
 print('============================')
 
 sys.exit()
-
-##Now we integrate the EOMs with out state vecto
-xsat_n,ysat_n,zsat_n,xdot_n,ydot_n,zdot_n,tsat = GPS.sixdof_orbit(x0,y0,z0,u0,v0,w0)
-
-##USING THE ORBITAL ELEMENTS YOU CAN GET ANALYTIC ORBITS JUST USING KEPLERS EQUATIONS
-xsat_a,ysat_a,zsat_a,xdot_a,ydot_a,zdot_a,nu_deg = GPS.kepler_orbit(height_at_perigee_km,ECC,INC,LAN,ARG)
 
 ###PLOT 3D ORBIT
 fig = plt.figure('3-D')
