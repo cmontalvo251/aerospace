@@ -7,8 +7,27 @@ import os
 import sys
 from gpscomms import GPSCOMMS
 
+def convertTLE(LEADING_DIGITS,TRAILING_DIGITS,INSTR):
+        DEC = INSTR.find('.')
+        INSTRPRE = INSTR[0:DEC]
+        INSTRPOST = INSTR[DEC+1:]
+        if len(INSTRPOST) > TRAILING_DIGITS:
+                INSTRPOST = INSTRPOST[0:TRAILING_DIGITS]
+        else:
+                while len(INSTRPOST) < TRAILING_DIGITS:
+                        INSTRPOST+='0'
+        while len(INSTRPRE) < LEADING_DIGITS:
+                INSTRPRE = ' ' + INSTRPRE
+        return INSTRPRE + '.' + INSTRPOST
+
 ##Make the GPS class
 GPS = GPSCOMMS()
+
+#####NOTES####
+#1.) Mean Anamoaly must be incorporated into keplerian elements
+#2.) Mean motion will come from computing the period of the orbit and dividing it into a day
+#3.) Fix the Decimal assumed numbers and convert to scientific notation
+#4.) Double check Checksum.txt file from NASA
 
 ###CREATE AN ORBIT AROUND THE EARTH
 KEPLER = False
@@ -30,6 +49,8 @@ if KEPLER:
         INC =  51.65411785007067
         LAN =  3.5434576048176436
         ARG =  75.9857377967462
+        V0 = 0.0
+        MM = 0.0
         YR = '22'
         JULIANDAY = 165
         JULIANHR = 9
@@ -115,6 +136,8 @@ else:
         print(x0,y0,z0,u0,v0,w0)
         ##And then we can get orbital elements from the state vector
         height_at_perigee_km,ECC,INC,LAN,ARG = GPS.getOrbitalElements(x0,y0,z0,u0,v0,w0)
+        V0 = 0.0
+        MM = 0.0
 
 ##COMPUTE FRACTIONAL PORTION OF THE DAY
 JULIANFRACTION = JULIANDAY + (JULIANHR + JULIANMIN/60. + JULIANSEC/3600.)/24.
@@ -130,17 +153,25 @@ RADSTR = str(RADIATIONPRESSURE)
 RADSTR = RADSTR.replace('.','-')
 ##CONVERT INCLINATION
 INCSTR = str(INC)
-DEC = INCSTR.find('.')
-INCSTRPRE = INCSTR[0:DEC]
-INCSTRPOST = INCSTR[DEC+1:]
-if len(INCSTRPOST) > 4:
-        INCSTRPOST = INCSTRPOST[0:4]
-while len(INCSTRPRE) < 3:
-        INCSTRPRE = ' ' + INCSTRPRE
+INCSTR = convertTLE(3,4,INCSTR)
 #CONVERT THE LONGITUDE OF THE ASCENDING NODE
-#MAKE A FUNCTION FOR EVERYTHING I'M DOING ABOVE
-# def convert(LEADING_DIGITS,TRAILING_DIGITS):
-
+if LAN < 0:
+        LAN+=360.
+LANSTR = str(LAN)
+LANSTR = convertTLE(3,4,LANSTR)
+#CONVERT ECCENTRICITY
+ECCSTR = str(ECC)
+ECCSTR = convertTLE(0,7,ECCSTR)
+ECCSTR = ECCSTR[2:]
+#ARGUMENT OF PERIGEE
+ARGSTR = str(ARG)
+ARGSTR = convertTLE(3,4,ARGSTR)
+#MEAN ANOMALY
+V0STR = str(V0)
+V0STR = convertTLE(3,4,V0STR)
+##MEAN MOTION
+MMSTR = str(MM)
+MMSTR = convertTLE(2,8,MMSTR)
 
 ##PRINT THE TLE FORMAT FILE
 #Check out this page - https://en.wikipedia.org/wiki/Two-line_element_set
@@ -148,7 +179,7 @@ print('============================')
 print('TLE:')
 print(NAME)
 print('1 '+ CATALOG + CLASS + ' ' + LAUNCHYR + LAUNCHNO + LAUNCHPIECE + ' ' + YR + JULIANSTR + ' ' + BALLISTICSTR + ' 00000-0 ' + RADSTR + ' 0 ' + ' ' + str(TLENO) + str(CHECKSUM))
-print('2 '+ CATALOG + ' ' + INCSTRPRE + '.' + INCSTRPOST + ' ')
+print('2 '+ CATALOG + ' ' + INCSTR + ' ' + LANSTR + ' ' + ECCSTR + ' ' + ARGSTR + ' ' + V0STR + ' ' + MMSTR + '00000' + str(CHECKSUM))
 print('============================')
 
 sys.exit()
