@@ -40,9 +40,11 @@ JULIANHR = 9
 JULIANMIN = 5
 JULIANSEC = 0
 BALLISTIC = -0.081629
+MEANMOTION2 = ' 00000-0 ' 
 RADIATIONPRESSURE = '-00000-0'
 TLENO = 292
 CHECKSUM = 7
+REVNUMBER = '00000'
 if KEPLER:
         print('Orbital Elements Given')
         #height_at_perigee_km = 600.0 #in kilometers
@@ -173,8 +175,8 @@ MMSTR = convertTLE(2,8,MMSTR)
 print('============================')
 print('TLE:')
 print(NAME)
-print('1 '+ CATALOG + CLASS + ' ' + LAUNCHYR + LAUNCHNO + LAUNCHPIECE + ' ' + YR + JULIANSTR + ' ' + BALLISTICSTR + ' 00000-0 ' + RADSTR + ' 0 ' + ' ' + str(TLENO) + str(CHECKSUM))
-print('2 '+ CATALOG + ' ' + INCSTR + ' ' + LANSTR + ' ' + ECCSTR + ' ' + ARGSTR + ' ' + V0STR + ' ' + MMSTR + '00000' + str(CHECKSUM))
+print('1 '+ CATALOG + CLASS + ' ' + LAUNCHYR + LAUNCHNO + LAUNCHPIECE + ' ' + YR + JULIANSTR + ' ' + BALLISTICSTR + MEANMOTION2 + RADSTR + ' 0 ' + ' ' + str(TLENO) + str(CHECKSUM))
+print('2 '+ CATALOG + ' ' + INCSTR + ' ' + LANSTR + ' ' + ECCSTR + ' ' + ARGSTR + ' ' + V0STR + ' ' + MMSTR + REVNUMBER + str(CHECKSUM))
 print('============================')
 
 ###PLOT 3D ORBIT
