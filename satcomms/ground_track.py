@@ -24,8 +24,6 @@ def convertTLE(LEADING_DIGITS,TRAILING_DIGITS,INSTR):
 GPS = GPSCOMMS()
 
 #####NOTES####
-#3.) Fix the Decimal assumed numbers and convert to scientific notation
-#4.) Double check Checksum.txt file from NASA
 #5.) Run KEPLER False and KEPLER True and make sure you get the same TLE file
 
 ###CREATE AN ORBIT AROUND THE EARTH
@@ -36,6 +34,15 @@ CLASS = 'U'
 LAUNCHYR = '22'
 LAUNCHNO = 'XXX'
 LAUNCHPIECE = 'A  '
+YR = '22'
+JULIANDAY = 165
+JULIANHR = 9
+JULIANMIN = 5
+JULIANSEC = 0
+BALLISTIC = -0.081629
+RADIATIONPRESSURE = '-00000-0'
+TLENO = 292
+CHECKSUM = 7
 if KEPLER:
         print('Orbital Elements Given')
         #height_at_perigee_km = 600.0 #in kilometers
@@ -49,11 +56,6 @@ if KEPLER:
         LAN =  356.4565
         ARG =  75.9857377967462
         V0 = 298.2527
-        YR = '22'
-        JULIANDAY = 165
-        JULIANHR = 9
-        JULIANMIN = 5
-        JULIANSEC = 0
         ##The problem with Keplerian orbits is we don't have the time component. In order to do that we
         ##Need to get an initial state vector and then integrate the equations of motion
         #The trailing 0 just means give the coordinate at a true anomaly of 0
@@ -62,7 +64,7 @@ if KEPLER:
         print('LAN = ',LAN)
         print('ARG = ',ARG)
         print('Height At Perigee = ',height_at_perigee_km)
-        x0,y0,z0,u0,v0,w0 = GPS.getStateVector(height_at_perigee_km,ECC,INC,LAN,ARG,0)
+        x0,y0,z0,u0,v0,w0 = GPS.getStateVector(height_at_perigee_km,ECC,INC,LAN,ARG,V0)
 else:
         print('State Vector Given')
         ##Sometimes though we are given a state vector
@@ -115,15 +117,6 @@ else:
         u0 = -1606.655729
         v0 = 4713.714334
         w0 = 5821.859626
-        YR = '22'
-        JULIANDAY = 165
-        JULIANHR = 9
-        JULIANMIN = 5
-        JULIANSEC = 0
-        BALLISTIC = -0.081629
-        RADIATIONPRESSURE = '-00000-0'
-        TLENO = 292
-        CHECKSUM = 7
         #ANOTHER EXAMPLE SAT FROM 2004
         #x0 = 9686275.84
         #y0 = 41043317.21
@@ -183,8 +176,6 @@ print(NAME)
 print('1 '+ CATALOG + CLASS + ' ' + LAUNCHYR + LAUNCHNO + LAUNCHPIECE + ' ' + YR + JULIANSTR + ' ' + BALLISTICSTR + ' 00000-0 ' + RADSTR + ' 0 ' + ' ' + str(TLENO) + str(CHECKSUM))
 print('2 '+ CATALOG + ' ' + INCSTR + ' ' + LANSTR + ' ' + ECCSTR + ' ' + ARGSTR + ' ' + V0STR + ' ' + MMSTR + '00000' + str(CHECKSUM))
 print('============================')
-
-sys.exit()
 
 ###PLOT 3D ORBIT
 fig = plt.figure('3-D')

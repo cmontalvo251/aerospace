@@ -316,6 +316,9 @@ class GPSCOMMS():
         ##First compute the orbital elements if needed
         self.computeOrbitalElements(height_at_perogee_km,ECC,INC,LAN,ARG)
 
+        #Convert nu to radians
+        nu = nu*np.pi/180.0
+
         #Then we compute the following:
         ##Radius
         r = self.p/(1+ECC*np.cos(nu))
@@ -347,7 +350,7 @@ class GPSCOMMS():
         self.computeOrbitalElements(height_at_perogee_km,ECC,INC,LAN,ARG)
 
         ##True Anamoly
-        nu = np.linspace(0,2*np.pi,100)
+        nu = np.linspace(0,360.0,100)
 
         #Then run through the true anomaly vector and get the state vector
         xi = 0*nu
@@ -364,7 +367,7 @@ class GPSCOMMS():
             ui[x] = uii
             vj[x] = vjj
             wk[x] = wkk
-        return xi,yj,zk,ui,vj,wk,nu*180.0/np.pi
+        return xi,yj,zk,ui,vj,wk,nu
 
 
     def HHMM_Format(self,time_vec,del_min):
