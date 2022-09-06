@@ -24,9 +24,10 @@ def convertTLE(LEADING_DIGITS,TRAILING_DIGITS,INSTR):
 GPS = GPSCOMMS()
 
 ###TLE FILE FORMAT
-Line 0 - Satellite name
-Line 1 - Line Number, Catalog Number, Classification, Last two digits of launch year, launch number of the year, piece of the launch, last two digits of current year, current julian day, first derivative of mean motion, second derivative of mean motion, drag term, ephemeris type, element set number, checksum
-Line 2 - Line Number, Catalog Number, INC, RAAN, ECC, ARG, V0, Mean Motion, Revolution number at current TLE, checksum 
+#Line 0 - Satellite name
+#Line 1 - Line Number, Catalog Number, Classification, Last two digits of launch year, launch number of the year, piece of the launch, last two digits of current year, current julian day, first derivative of mean motion, second derivative of mean motion, drag term, ephemeris type, element set number, checksum
+#Line 2 - Line Number, Catalog Number, INC, RAAN, ECC, ARG, V0, Mean Motion, Revolution number at current TLE, checksum 
+#The checksums for each line are calculated by adding all numerical digits on that line, including the line number. One is added to the checksum for each negative sign (-) on that line. All other non-digit characters are ignored.
 
 ###CREATE AN ORBIT AROUND THE EARTH
 KEPLER = False
