@@ -23,12 +23,14 @@ def convertTLE(LEADING_DIGITS,TRAILING_DIGITS,INSTR):
 ##Make the GPS class
 GPS = GPSCOMMS()
 
-#####NOTES####
-#5.) Run KEPLER False and KEPLER True and make sure you get the same TLE file
+###TLE FILE FORMAT
+Line 0 - Satellite name
+Line 1 - Line Number, Catalog Number, Classification, Last two digits of launch year, launch number of the year, piece of the launch, last two digits of current year, current julian day, first derivative of mean motion, second derivative of mean motion, drag term, ephemeris type, element set number, checksum
+Line 2 - Line Number, Catalog Number, INC, RAAN, ECC, ARG, V0, Mean Motion, Revolution number at current TLE, checksum 
 
 ###CREATE AN ORBIT AROUND THE EARTH
 KEPLER = False
-NAME = 'JagSat-1'
+NAME = 'ISS' 
 CATALOG = 'XXXXX'
 CLASS = 'U'
 LAUNCHYR = '22'
