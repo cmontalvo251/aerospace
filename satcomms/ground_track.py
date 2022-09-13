@@ -29,6 +29,13 @@ GPS = GPSCOMMS()
 #Line 2 - Line Number, Catalog Number, INC, RAAN, ECC, ARG, V0, Mean Motion, Revolution number at current TLE, checksum 
 #The checksums for each line are calculated by adding all numerical digits on that line, including the line number. One is added to the checksum for each negative sign (-) on that line. All other non-digit characters are ignored.
 
+#A couple of potential references:
+#https://digitalcommons.usu.edu/cgi/viewcontent.cgi?article=3222&context=smallsat&httpsredir=1&referer=
+#If you have STK: https://agiweb.secure.force.com/faqs/articles/HowTo/How-to-Create-a-TLE-File112760#:~:text=To%20create%20a%20TLE%20file%2C%20you%20must%20first%20start%20with,select%20Satellite%20%3E%20Generate%20TLE%E2%80%A6.
+#Something random you may or may not want to use: https://oraas.orekit.space/oraas-tools-tlegenerator.html
+#TLE Description: http://mmt.mmto.arizona.edu/obscats/tle.html  https://celestrak.org/NORAD/documentation/tle-fmt.php
+#I think primarily you just have to go form Position, velocity, time into orbital elements and that into the TLE file.
+
 ###CREATE AN ORBIT AROUND THE EARTH
 KEPLER = False
 NAME = 'ISS' 
