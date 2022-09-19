@@ -11,9 +11,9 @@ import scipy.integrate as I
 
 ###Closes all Figures
 plt.close("all")
-
+#
 def atmosphere_model(altitude):
-    global altx,deny
+#    #global altx,deny
     return 1.225
 
 def planet_parameters():
@@ -138,9 +138,9 @@ def Derivatives(state,t):
 ##############END OF FUNCTION SEPARATED BY TABS#######
     
 #Read in Atmospher models
-atm_model = np.loadtxt('kerbin_atmosphere.txt')
-altx = atm_model[:,0]
-deny = atm_model[:,3]
+#atm_model = np.loadtxt('kerbin_atmosphere.txt')
+#altx = atm_model[:,0]
+#deny = atm_model[:,3]
 #And planet parameters
 sidereal_rotational_velocity,mu,surface_gravity,R = planet_parameters()
 
