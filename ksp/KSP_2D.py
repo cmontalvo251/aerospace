@@ -80,7 +80,7 @@ def Derivatives(state,t):
     #https://www.youtube.com/watch?v=ASHRPo4sw80
     #A few problems here. First Cd is a function of Mach Number and Reynolds number
     #so......I think I'll just leave this off
-    qinf = -np.pi*rho*S*Cd/mass
+    qinf = -np.pi/4.0*rho*S*Cd/mass
     aerox = qinf*abs(velx)*velx
     aeroz = qinf*abs(velz)*velz
 
