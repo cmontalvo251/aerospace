@@ -8,6 +8,10 @@ Created on Thu May 28 07:22:57 2020
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.integrate as I
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data = pd.read_csv('First_Open_Rocket_Design.csv')
 
 ###Closes all Figures
 plt.close("all")
@@ -111,7 +115,8 @@ def Derivatives(state,t):
         thrustx = thrust*np.sin(thetaSat)
         thrustz = thrust*np.cos(thetaSat)
             
-    if mass < 1.0:
+    if mass < 200./1000.:
+        print('Mass < 0')
         thrustx = 0.0
         thrustz = 0.0
         
@@ -122,6 +127,7 @@ def Derivatives(state,t):
         ve = Isp*abs(surface_gravity)
         mdot = -thrust/ve
     else:
+        print('Mdot = 0')
         mdot = 0.0
     
     ##Now we can put Newton's EOMs together
@@ -150,16 +156,16 @@ x0 = R
 z0 = 0.
 velx0 = 0.0
 velz0 = 0.0
-#masstons = 2.5
-T1 = 210.0/1000.0
-massflowrate = 0.081
+mass0 = 0.920
+T1 = 350/1000.0
+massflowrate = (374./1000.0)/1.9863
 exit_velocity = T1*1000 / massflowrate
 Isp = exit_velocity / 9.81
 print('Isp = ',Isp)
-Cd = 0.42
-D = 15./100.
+Cd = 0.65
+D = 7.5/100.
 S = np.pi*D**2/4.0
-stage_1_time = 1.05
+stage_1_time = 1.9863
 stage_2_start = -99
 stage_2_end = -99
 period = 100.0
@@ -237,7 +243,6 @@ apogee = 70000.
 """
 
 ###################################################################
-mass0 = 1.86
 tout = np.linspace(0,period,100000)  #linspace(start,end,number of data points)
 stateinitial = np.asarray([x0,z0,velx0,velz0,mass0])
 stateout = I.odeint(Derivatives,stateinitial,tout) ##This is the ode toolbox from scipy (Scientific Python)
@@ -273,8 +278,10 @@ plt.xlabel('Time (sec)')
 plt.ylabel('Z (m)')
 
 plt.figure()
-plt.plot(tout,np.sqrt(xout**2+zout**2)-R)
+plt.plot(tout,np.sqrt(xout**2+zout**2)-R,label='Python Simulation')
+plt.plot(data['time'],data['altitude'],label='OpenRocket Simulation')
 plt.grid()
+plt.legend()
 plt.xlabel('Time (sec)')
 plt.ylabel('AGL (m)')
 
