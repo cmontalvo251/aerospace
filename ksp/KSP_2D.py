@@ -163,27 +163,26 @@ GNC = 0
 apogee = 10000.
 """
 
-"""
+
 ###Conditions for Sub orbital flight
 
 x0 = R
 z0 = 0.
 velx0 = 0.0
 velz0 = 0.0
-masstons = 5.3
-mass_end = 2.8
-stage_1_time = 38.0
+masstons = 8.0
+mass_end = 3.0
+stage_1_time = 63.0
 stage_2_start = -99
 stage_2_end = -99
-T1 = 167.97*0.8
-Isp = 250.
-Cd = 0.0
-S = 0.18
-period = 200.0
-GNC = 1
+T1 = 205.16
+Isp = 265.
+Cd = 0.23
+D = 1.25
+S = np.pi*D**2/4.0
+period = 1000.0
+GNC = 0
 apogee = 80000.
-"""
-
 
 """
 ###Let's make an orbit
@@ -211,7 +210,7 @@ period = 2*np.pi/np.sqrt(mu)*semi_major**(3.0/2.0)
 GNC = 0
 """
 
-
+"""
 ###Two Stage Rocket
 x0 = R
 z0 = 0.0
@@ -229,7 +228,7 @@ stage_2_end = stage_2_start + 35.0
 period = 3000.0
 GNC = 1
 apogee = 70000.
-
+"""
 
 ###################################################################
 mass0 = masstons*2000/2.2
