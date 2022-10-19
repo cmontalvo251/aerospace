@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 ####CONSTANTS
 
 ###MILY WAY GALAXY
+"""
 Radius_of_Planet = 6379000 #meters of Planet
 Altitude_of_Parking_Orbit_Planet = 200000 #meters
 G = 6.67e-11 #SI
@@ -12,9 +13,8 @@ Radius_of_Satellite_from_Center_of_Satellite = 1738100 #meters of Satellite we i
 Distance_bt_Planet_Center_2_Satellite_Center = 384467000 #meters (bt = between)
 mSatellite = 0.07346e24
 Altitude_of_Parking_Orbit_Satellite = 112000 #meter - This is what Apollo
-
-###KERMS SOLAR SYSTEM - Kerbin to Mun
 """
+###KERMS SOLAR SYSTEM - Kerbin to Mun
 Radius_of_Planet = 600000 #meters of Planet
 Altitude_of_Parking_Orbit_Planet = 80000 #meters
 G = 6.67e-11 #SI
@@ -23,7 +23,6 @@ Radius_of_Satellite_from_Center_of_Satellite = 200000 #meters of Satellite we in
 Distance_bt_Planet_Center_2_Satellite_Center = 12000000 #meters (bt = between)
 mSatellite = 9.759e20
 Altitude_of_Parking_Orbit_Satellite = 5000 #meter - This is what Apollo
-"""
 
 ###COMPUTATION
 
