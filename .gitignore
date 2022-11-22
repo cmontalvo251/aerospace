@@ -12,7 +12,6 @@ spice/SELF_TRAINING
 *.gif
 *.java
 *.wav
-*.dat
 *.xlsx
 *.slx
 *.mp4
