@@ -1,0 +1,40 @@
+ THIS FILE IS WRONG
+ Body Input File: 
+ Input_Files/Parameters.Body
+  
+ Module off or on:            1
+ Model (0=Integration,1=Constant, 2=Table,3=Quad 6DOF Model):            3
+ Gravity Flag (0=Off, 1=On):            1
+ Aerodynamics Flag (0=Off, 1=On):            1
+ Contact Flag (0=Off, 1=On):            0
+ Mass (kg):    8.7774844720496889E-002
+ Weight (N):    2.8263500000000001     
+ Stationline of Mass Center (m):    0.0000000000000000     
+ Buttline of Mass Center (m):    0.0000000000000000     
+ Waterline of Mass Center (m):    0.0000000000000000     
+ Ixx (kg m^2):    3.6731933030511501E-003
+ Iyy (kg m^2):    3.6731933030511501E-003
+ Izz (kg m^2):    6.4860248447205001E-003
+ Ixy (kg m^2):    0.0000000000000000     
+ Ixz (kg m^2):    0.0000000000000000     
+ Iyz (kg m^2):    0.0000000000000000     
+ Ixx Inverse (1/(kg m^2)):    272.24268299992457     
+ Iyy Inverse (1/(kg m^2)):    272.24268299992457     
+ Izz Inverse (1/(kg m^2)):    154.17763945415362     
+ Ixy Inverse (1/(kg m^2)):    0.0000000000000000     
+ Ixz Inverse (1/(kg m^2)):    0.0000000000000000     
+ Iyz Inverse (1/(kg m^2)):    0.0000000000000000     
+ Turn Radius of AC(m):    1.0000000000000000     
+ Quadcopter Aero Parameter:    1.0000000000000000E-002
+ Quadcopter Aero Parameter:    1.0000000000000000E-002
+ Quadcopter Aero Parameter:    1.0940000000000000E-002
+ Quadcopter Aero Parameter:    1.0940000000000000E-002
+ Quadcopter Aero Parameter:   0.37500000000000000     
+ Quadcopter Aero Parameter:    3.3529124536246901E-002
+ Quadcopter Aero Parameter:    4.3412852535334697E-003
+ Quadcopter Aero Parameter:   0.72834650000000001     
+ Quadcopter Aero Parameter:   0.67585300000000004     
+ Quadcopter Aero Parameter:   0.44619419999999999     
+ Quadcopter Aero Parameter:   0.42650199999999999     
+ Quadcopter Aero Parameter:    1250.0000000000000     
+ Data Quality Flag (nd, 0=Data Not Loaded Successfully, 1=Data Loaded Successfully):            1

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+make
+./SUAM.exe
+./plot_sim.py

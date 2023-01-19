@@ -1,0 +1,78 @@
+1		!Turn module off(0) or on(1)                                 
+3		!Body Module Type(0=Integration Model(Very simple, not 6DOF),1=Constant Speed,2=Table Lookup,3=Body(6DOF) Model)
+1		!Gravity on(1) or off(0)
+1		!Aerodynamics on(1) or off(0)
+0		!Contact Forces on(1) or off(0)
+2.82635		!Weight (lbf) OR 1.282 (kg)
+32.2            !Gravity (ft/s^2)
+0.0		!Stationline center of mass(m)
+0.0		!buttline center of mass(m)
+0.0		!waterline center off mass(m)
+0.0		!Stationline of reel point in heli reference frame(ft)
+0.0		!Buttline of reel point in heli reference frame(ft)                             
+0.125*0.0		!Waterline of reel point in heli reference frame(z-axis connection point)                                 
+0.00367319330305115		!Ixx (slugs*ft^2)
+0.00367319330305115		!Iyy (slugs*ft^2)
+0.0064860248447205		!Izz (slugs*ft^2)
+0.000		!Ixy
+0.000		!Ixz
+0.00576*0	!Iyz (lb*ft^2) OR 2.428e-4 (kg*m^2)
+1			!Turn_Radius(ft) (The turn radius of a body is super small so I just set it to 1)
+0.01			!Alc - Some of these parameters are wrong. Using body_drag.m 
+0.01			!Als - Lisa Schibelius created these and should be
+0.01094		!dxD - Lateral drag factor (max speed u = 52 ft/s) We are assuming wmax = 8.2 ft/s or 2.5 m/s
+0.01094		!dyD - Longitudinal drag factor (max speed v = 52 ft/s)
+0.475		!Rnew (ft) this is the rotor radius. Rotors used are 9.5"x4.5"
+0.0335291245362469	!C_T 0.1
+0.00434128525353347	!C_Q 0.222 0.02725
+0.7283465	! lphi12 (ft) , roll length of front two rotors
+0.6758530 	! lphi34 (ft) , roll length of back two rotors
+0.4461942	! ltheta12 (ft) , Since the pitching moment differs by less than 1 cm
+0.4265020	! ltheta34 (ft) , we are assuming these two distances are the same for symmetry.
+1450		!OMEGAMAX (rad/s) ; 950kV *12.6V = 11970 RPM based on battery specs
+0.002089	!Ir OR 8.801e-5 (kg*m^2)
+1100		! PWM_min (microseconds)
+1900		! PWM_max (microseconds)
+1   	!Body Control
+0.5		!kpx (bodybody)
+0.00001        		!kix (bodybody)
+0.1      	!kdx  (bodybody)
+0.004741   		!kpy (bodybody)
+0				!kiy (bodybody)
+0.01757  		!kdy (bodybody)
+144.0  			!kpz (bodybody)
+0.53001011*0.0			!kiz (bodybody) 	! You can turn this on if you want
+150.420    			!kdz  (bodybody)
+200.42 		!kpphi Proportional Gain (bodybody)
+0				!kiphi (bodybody)
+47.420   	 	!kdphi Damping Gain (bodybody)
+150.42 		!kptheta (bodybody)
+0.0				!kitheta (bodybody)
+45.0			!kdtheta (bodybody)
+150.5    	 	!kppsi (bodybody)
+0				!kipsi (bodybody)
+170   			!kdpsi (bodybody)
+0.0			!XINTEGRAL , integral term for x in PID controller
+0.0			!YINTEGRAL , integral term for y in PID controller
+0.0			!ZINTEGRAL , integral term for z in PID controller
+0.0			!PHIINTEGRAL , integral term for phi in PID controller
+0.0			!THETAINTEGRAL , integral term for theta in PID controller
+0.0			!PSIINTEGRAL , integral term for psi in PID controller
+0.0			!XCOMMAND x setpoint, body (ft)
+0.0			!YCOMMAND y setpoint, body (ft)
+0.0			!ZCOMMAND z setpoint, body (ft)
+1 		!WAYPOINT waypoint index
+
+
+0.7283465	! lphi12 (ft) , roll length of front two rotors
+0.6758530 	! lphi34 (ft) , roll length of back two rotors
+0.4461942	! ltheta12 (ft) , pitch length of front two rotors
+0.4265020	! ltheta34 (ft) , pitch length of back two rotors
+
+0.7020997	! lphi12 (ft) , roll length of front two rotors
+0.7020997 	! lphi34 (ft) , roll length of back two rotors
+0.4363517	! ltheta12 (ft) , pitch length of front two rotors
+0.4363517	! ltheta34 (ft) , pitch length of back two rotors
+
+0.7020997	!lphi (ft) OR 0.214 (m)
+0.4363517	!ltheta (ft) OR 0.133 (m)

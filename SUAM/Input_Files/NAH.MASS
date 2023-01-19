@@ -1,0 +1,8 @@
+0.0502	!Mass (slugs)
+0.0545	!Ixx (slugs-ft^2)
+0.0545	!Iyy (slugs-ft^2)
+0.109	!Izz (slugs-ft^2)
+0.33	!rx (ft)
+0.33	!ry (ft)
+0.17	!rz (ft)
+0.5	!rxpusher (ft)
