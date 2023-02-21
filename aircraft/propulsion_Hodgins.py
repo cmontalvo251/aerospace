@@ -12,11 +12,11 @@ import numpy as np
 print('Computing Propulsion of a RC Rotor')
 
 rho = 1.225 ##Density of air
-P = 600.0 * 1.0 ##Extra 1.5 I think is for induced power; not used in modification
-R = (12.5/(12*3.281*2)) ##Radius in meters for a 12.5 inch prop
-pitch=5/39.37
+P = 10*11.1 ##Extra 1.5 I think is for induced power; not used in modification
+R = (8.0/(12*3.281*2)) ##Radius in meters for a 12.5 inch prop
+pitch=2/39.37
 A = np.pi*R**2
-KV = 800  ##KV rpm per volt from the data sheet 
+KV = 1400  ##KV rpm per volt from the data sheet 
 V = 11.1  #voltage in the battery
 omega_rpm = KV*V ##angular velocity in rpm
 omega_rads = omega_rpm * 2*np.pi / 60.
@@ -35,8 +35,14 @@ print('Thrust (g) = ',Tg)
 print('Thrust (lbs) =',Tlbs)
 
 
+##This doesn't make sense. You're assuming the flight speed
+#of the aircraft is a function of the pitch of the propellor.
+#You also assume that thrust increases with flight speed which is quite
+#the opposite.
+print('Dr. Montalvo note here: I do not believe the math below')
 omega_rps=omega_rpm/60
 acV=pitch*omega_rps#m/s aircraft speed
+print('acV = ',acV,' m/s')
 windV=0#windvelocity
 delp=0.5*rho*(acV**2-windV**2)#kg*(m/s)**2/m**3=N/(m**2)
 TN=A*delp#N

@@ -3,10 +3,10 @@ import numpy as np
 print('Computing Propulsion of a RC Rotor')
 
 rho = 1.225 ##Density of air
-P = 600.0 * 1.0 ##Extra 1.5 I think is for induced power
-R = (12/(12*3.28*2)) ##Radius in meters for a 12.5 inch prop
+P = 10.*11.1 ##Extra 1.5 I think is for induced power
+R = (8.0/(12*3.28*2)) ##Radius in meters for a 12.5 inch prop
 A = np.pi*R**2
-KV = 800  ##KV rpm per volt from the data sheet 
+KV = 1400  ##KV rpm per volt from the data sheet 
 V = 11.1  #voltage in the battery
 omega_rpm = KV*V ##angular velocity in rpm
 omega_rads = omega_rpm * 2*np.pi / 60.
