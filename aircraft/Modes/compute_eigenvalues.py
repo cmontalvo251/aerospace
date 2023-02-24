@@ -31,15 +31,15 @@ vertical_wing_chord = vertical_wing_S / vertical_wing_wingspan
 
 ###MAIN WING AERODYNAMICS PARAMETERS####
 ###Clark Y Airfoil
-Cl0w = 0.34995 ##unitless
-Cd0w = 0.015342 ##unitless
-Cdaw = 0.713431 ## /rad^2
-Claw = 4.8872 ## /rad
-Cm_acw = -0.065 ## unitless (pitch moment of the airfoil at AoA=0.0)
-alfa_maxLD = 8.0 ##degrees
+Cl0w = 0.34995 ##unitless - Point at which Cl vs alpha crosses the y-axis - Note when grabbing from airfoiltools.com you won't be this accurate
+Cd0w = 0.015342 ##unitless - minimum drag coefficient - use Cd vs Alpha
+Cdaw = 0.713431 ## /rad^2 - Drag polar coefficient - use the drag_polar_2.py code - 
+Claw = 4.8872 ## /rad - compute the slope of the cl vs alpha graph
+Cm_acw = -0.065 ## unitless (Cm - pitch moment of the airfoil at AoA=0.0)
+alfa_maxLD = 8.0 ##degrees - angle of attack for maximum L/D
 
 ###HORIZONTAL TAIL STABILIZER AERODYNAMICS PARAMETERS####
-###NACA 0008 
+###NACA 0008 - If you have a flat plate. Just assume 0008
 Cl0h = 0.0 ##unitless
 Cd0h = 0.006 ##unitless
 Cdah = 1.09145 ## /rad^2
