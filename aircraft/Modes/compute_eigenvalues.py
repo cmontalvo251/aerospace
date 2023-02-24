@@ -16,13 +16,13 @@ main_wing_S = 500./(12.0**2) ##ft^2
 gamma = 0 #radians of dihedral
 sweep = 0 #radians of wing sweep
 
-###HORIZONTAL TAIL GEOMETRIC PARAMETERS###
+###HORIZONTAL TAIL STABILIZER GEOMETRIC PARAMETERS###
 horizontal_wing_wingspan = 26.0/12.0 ##ft
 horizontal_wing_S = (175.0)/(12.0**2) ##ft^2
 horizontal_wing_chord = horizontal_wing_S / horizontal_wing_wingspan
 horizontal_xac = 25.0/12.0 #ft  #distance from main wing aerodynamic chord to tail aerodynamic chord
 
-###VERTICAL TAIL GEOMETRIC PARAMETERS###
+###VERTICAL TAIL STABILIZER GEOMETRIC PARAMETERS###
 vertical_wing_wingspan = 13.0/12.0 ##ft
 vertical_wing_S = (87.5)/(12.0**2) ##ft^2
 vertical_wing_chord = vertical_wing_S / vertical_wing_wingspan
@@ -38,7 +38,7 @@ Claw = 4.8872 ## /rad
 Cm_acw = -0.065 ## unitless (pitch moment of the airfoil at AoA=0.0)
 alfa_maxLD = 8.0 ##degrees
 
-###HORIZONTAL WING AERODYNAMICS PARAMETERS####
+###HORIZONTAL TAIL STABILIZER AERODYNAMICS PARAMETERS####
 ###NACA 0008 
 Cl0h = 0.0 ##unitless
 Cd0h = 0.006 ##unitless
@@ -46,7 +46,7 @@ Cdah = 1.09145 ## /rad^2
 Clah = 6.28 ## /rad
 Cm_ach = 0.0 ## unitless
 
-###MAIN WING AERODYNAMICS PARAMETERS####
+###VERTICAL TAIL STABILIZER AERODYNAMICS PARAMETERS####
 ###NACA 0008 
 Cl0v = 0.0 ##unitless
 Cd0v = 0.006 ##unitless
