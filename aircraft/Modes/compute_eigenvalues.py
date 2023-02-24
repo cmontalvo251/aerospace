@@ -16,13 +16,13 @@ main_wing_S = 500./(12.0**2) ##ft^2
 gamma = 0 #radians of dihedral
 sweep = 0 #radians of wing sweep
 
-###HORIZONTAL TAIL GEOMETRIC PARAMETERS###
+###HORIZONTAL TAIL STABILIZER GEOMETRIC PARAMETERS###
 horizontal_wing_wingspan = 26.0/12.0 ##ft
 horizontal_wing_S = (175.0)/(12.0**2) ##ft^2
 horizontal_wing_chord = horizontal_wing_S / horizontal_wing_wingspan
 horizontal_xac = 25.0/12.0 #ft  #distance from main wing aerodynamic chord to tail aerodynamic chord
 
-###VERTICAL TAIL GEOMETRIC PARAMETERS###
+###VERTICAL TAIL STABILIZER GEOMETRIC PARAMETERS###
 vertical_wing_wingspan = 13.0/12.0 ##ft
 vertical_wing_S = (87.5)/(12.0**2) ##ft^2
 vertical_wing_chord = vertical_wing_S / vertical_wing_wingspan
@@ -31,28 +31,28 @@ vertical_wing_chord = vertical_wing_S / vertical_wing_wingspan
 
 ###MAIN WING AERODYNAMICS PARAMETERS####
 ###Clark Y Airfoil
-CL0w = 0.34995 ##unitless
-CD0w = 0.015342 ##unitless
-CDAw = 0.713431 ## /rad^2
+Cl0w = 0.34995 ##unitless
+Cd0w = 0.015342 ##unitless
+Cdaw = 0.713431 ## /rad^2
 Claw = 4.8872 ## /rad
-CMACw = -0.065 ## unitless
+Cm_acw = -0.065 ## unitless (pitch moment of the airfoil at AoA=0.0)
 alfa_maxLD = 8.0 ##degrees
 
-###HORIZONTAL WING AERODYNAMICS PARAMETERS####
+###HORIZONTAL TAIL STABILIZER AERODYNAMICS PARAMETERS####
 ###NACA 0008 
-CL0h = 0.0 ##unitless
-CD0h = 0.006 ##unitless
-CDAh = 1.09145 ## /rad^2
+Cl0h = 0.0 ##unitless
+Cd0h = 0.006 ##unitless
+Cdah = 1.09145 ## /rad^2
 Clah = 6.28 ## /rad
-CMACh = 0.0 ## unitless
+Cm_ach = 0.0 ## unitless
 
-###MAIN WING AERODYNAMICS PARAMETERS####
+###VERTICAL TAIL STABILIZER AERODYNAMICS PARAMETERS####
 ###NACA 0008 
-CL0v = 0.0 ##unitless
-CD0v = 0.006 ##unitless
-CDAv = 1.09145 ## /rad^2
+Cl0v = 0.0 ##unitless
+Cd0v = 0.006 ##unitless
+Cdav = 1.09145 ## /rad^2
 Clav = 6.28 ## /rad
-CMACv = 0.0 ## unitless
+Cm_acv = 0.0 ## unitless
 
 #############################################################
 
@@ -95,12 +95,17 @@ def airfoil2wing(Cla,AR):
 CLAw = airfoil2wing(Claw,main_wing_aspect_ratio)
 CLAh = airfoil2wing(Clah,horizontal_wing_aspect_ratio)
 CLAv = airfoil2wing(Clav,vertical_wing_aspect_ratio)
+CMACw = Cm_acw
+CMACh = Cm_ach
+CMACv = Cm_acv
+CL0w = Cl0w
+CD0w = Cd0w
 def wing_body(coeffw,coeffh,coeffv,Sh,Sv,S):
     return coeffw + coeffh * (Sh / S) + coeffv * (Sv / S)
-CD0wb = wing_body(CD0w,CD0h,CD0v,horizontal_wing_S,vertical_wing_S,main_wing_S)
+CD0wb = wing_body(Cd0w,Cd0h,Cd0v,horizontal_wing_S,vertical_wing_S,main_wing_S)
 print('CD0wb = ',CD0wb)
-CDAwb = wing_body(CDAw,CDAh,0.0,horizontal_wing_S,vertical_wing_S,main_wing_S)
-CL0wb = wing_body(CL0w,CL0h,0.0,horizontal_wing_S,vertical_wing_S,main_wing_S)
+CDAwb = wing_body(Cdaw,Cdah,0.0,horizontal_wing_S,vertical_wing_S,main_wing_S)
+CL0wb = wing_body(Cl0w,Cl0h,0.0,horizontal_wing_S,vertical_wing_S,main_wing_S)
 print('CL0wb = ',CL0wb)
 CLAwb = wing_body(CLAw,CLAh,0.0,horizontal_wing_S,vertical_wing_S,main_wing_S)
 CM0wb = CMACw + smbar*CL0w + CMACh * (horizontal_wing_S / main_wing_S)
@@ -263,9 +268,9 @@ plt.plot(np.real(dutch_roll2),np.imag(dutch_roll2),'ro')
 print('Roll Mode Approx:')
 print(roll_mode)
 plt.plot(np.real(roll_mode),np.imag(roll_mode),'go',label='Roll Approximation')
-print('Spiral Mode Approx:')
-print(spiral_mode)
-plt.plot(np.real(spiral_mode),np.imag(spiral_mode),'mo',label='Sprial Approximation')
+#print('Spiral Mode Approx:')
+#print(spiral_mode)
+#plt.plot(np.real(spiral_mode),np.imag(spiral_mode),'mo',label='Sprial Approximation')
 plt.legend()
 plt.show()
 
