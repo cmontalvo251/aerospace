@@ -21,7 +21,8 @@ julian_day = 2446796 ##this is jan 1 1987 -- really? yes really. You can
 #julian_day = 2458485 ##this is jan 1 2019
 #julian_day = 2458850 ##this is jan 1 2020
 #julian_day = 2459215 #this is jan 1 2021
-julian_day = 2459580  #this is jan 1 2022
+#julian_day = 2459580  #this is jan 1 2022
+julian_day = 2459945 #this is jan 1 2023
 #julian_day -= 15
 #julian_day += 275 #October 2
 # - 10 to get to the winter solstice from the next year
@@ -30,7 +31,8 @@ julian_day = 2459580  #this is jan 1 2022
 # + 245 to get to Sep 2nd
 # + 265 to get to the fall equinox
 # + 355 to get to the winter solstice
-julian_day += 245 #Sep 2nd
+julian_day += 36 #February 5th
+#julian_day += 245 #Sep 2nd
 #julian_day += 276
 #julian_day += 284
 ##julian_day += 49
