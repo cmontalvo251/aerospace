@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 a0 = 4.0
-a = np.linsapce(-4,12,1000)
+a = np.linspace(-4,12,1000)
 Cd0 = 0.025
 
 #Cd = Cd0 + Cda*(a-a0)^2
