@@ -6,7 +6,7 @@ weight = 3.08 #lbf
 
 ###AIRCRAFT GEOMETRY####
 NoseTail = 50.0/12 #ft #Distance from nose to tail
-Depth = 7.25/12 #ft    #Height from bottom of fuselage to top of wing
+Depth = 7.25/12 #ft    #Height from bottom of fuselage to top of the fuselage or the main wing which ever is higher
 xcg = (2.0)/12.0 #ft center of mass from leading edge of aircraft
 
 ###MAIN WING GEOMETRIC PARAMETERS###
@@ -37,6 +37,7 @@ Cdaw = 0.713431 ## /rad^2 - Drag polar coefficient - use the drag_polar_2.py cod
 Claw = 4.8872 ## /rad - compute the slope of the cl vs alpha graph
 Cm_acw = -0.065 ## unitless (Cm - pitch moment of the airfoil at AoA=0.0)
 alfa_maxLD = 8.0 ##degrees - angle of attack for maximum L/D
+xac = main_wing_chord / 4.0 ###Aerodynamic Center - This code assume c/4 but if you have a better idea put it here
 
 ###HORIZONTAL TAIL STABILIZER AERODYNAMICS PARAMETERS####
 ###NACA 0008 - If you have a flat plate. Just assume 0008
@@ -81,9 +82,6 @@ def volume_coeff(Si,xaci,S,c):
 VH = volume_coeff(horizontal_wing_S,horizontal_xac,main_wing_S,main_wing_chord)
 VV = volume_coeff(vertical_wing_S,horizontal_xac,main_wing_S,main_wing_chord)
 zvprime = -vertical_wing_wingspan/2.0
-
-###Aerodynamic Center
-xac = main_wing_chord / 4.0
 
 ##Stability Margin
 sm = xcg - xac
@@ -272,5 +270,10 @@ plt.plot(np.real(roll_mode),np.imag(roll_mode),'go',label='Roll Approximation')
 #print(spiral_mode)
 #plt.plot(np.real(spiral_mode),np.imag(spiral_mode),'mo',label='Sprial Approximation')
 plt.legend()
+
+print('Smbar = ',smbar)
+if smbar > 0:
+    print('YOUR AIRCRAFT MAY BE DYNAMICALLY STABLE BUT YOU HAVE A STATICALLY UNSTABLE AIRCRAFT BECAUSE YOUR CENTER OF MASS IS BEHIND THE AERODYNAMIC CENTER')
+
 plt.show()
 
