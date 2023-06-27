@@ -156,7 +156,7 @@ end
 %%%Save original State
 stateout_original = stateout;
 
-%%
+%%%
 disp('Simulation Complete')
 
 
@@ -254,7 +254,7 @@ xlabel('Time (sec)')
 ylabel('Angular Velocity (rad/s)')
 legend([p1(1),p2(1),p3(1)],'Actual','Measured','Nav')
 
-%%%Plot the current
+%%%Plot the current in the magnetorquers
 fig6 = figure();
 set(fig6,'color','white')
 plot(tout,ix*1000,'LineWidth',2)
@@ -263,8 +263,17 @@ plot(tout,iy*1000,'LineWidth',2)
 plot(tout,iz*1000,'LineWidth',2)
 grid on
 xlabel('Time (sec)')
-ylabel('Current (mAmps)')
+ylabel('Current Magnetorquers (mA)')
 legend('X','Y','Z')
+
+%%%Plot the Total current in magnetorquers
+mag_current_total = abs(ix)+abs(iy)+abs(iz);
+fig6 = figure();
+set(fig6,'color','white')
+plot(tout,(mag_current_total)*1000,'LineWidth',2)
+grid on
+xlabel('Time (sec)')
+ylabel('Total Current Magnetorquers (mA)')
 
 %%%Plot the acceleration in reaction wheels
 fig10 = figure();
@@ -275,14 +284,6 @@ xlabel('Time (sec)')
 ylabel('Angular Acceleration RWs (rad/s^2)')
 legend('X','Y','Z')
 
-%%%Plot the Total current
-fig6 = figure();
-set(fig6,'color','white')
-plot(tout,(abs(ix)+abs(iy)+abs(iz))*1000,'LineWidth',2)
-grid on
-xlabel('Time (sec)')
-ylabel('Total Current (mAmps)')
-
 %%%Plot the angular velocity of the RWs
 fig7 = figure();
 set(fig7,'color','white')
@@ -291,6 +292,34 @@ grid on
 xlabel('Time (sec)')
 ylabel('Angular Velocity of RWs (rad/s)')
 legend('X','Y','Z')
+
+%%%Plot the current in the reaction wheels
+current_rwa = Amps2Alpha * rwa; 
+fig11 = figure();
+set(fig11,'color','white')
+plot(tout,current_rwa*1000,'LineWidth',2)
+grid on
+xlabel('Time (sec)')
+ylabel('Current RWs (mA)')
+legend('X','Y','Z')
+
+%%%Plot the current in the reaction wheels
+rw_current_total = abs(current_rwa(:,1)) + abs(current_rwa(:,2)) + abs(current_rwa(:,3));
+fig14 = figure();
+set(fig14,'color','white')
+plot(tout,rw_current_total*1000,'LineWidth',2)
+grid on
+xlabel('Time (sec)')
+ylabel('Total Current RWs (mA)')
+
+%%%Plot the total current in the entire system 
+fig12 = figure();
+set(fig12,'color','white')
+plot(tout,(mag_current_total + rw_current_total)*1000,'LineWidth',2)
+grid on
+xlabel('Time (sec)')
+ylabel('Total Current Magnetorquers+RWs (mA)')
+
 toc
 
 

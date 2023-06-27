@@ -5,10 +5,14 @@ hr = 19/1000;
 
 %%%Maximum Speed
 rpm = 8000; %%%rpm
-maxSpeed = rpm*2*pi/60;
+maxSpeed = rpm*2*pi/60; %%%convert to rad/s
 
 %%%Maximum Torque
 maxTorque = 0.004; %%N-m
+
+%%%Power Consumption Parameters
+dc_voltage = 5.0; %%%(Volts) This is from a random RW (not the one in this m-file)
+peak_power = 3.25; %%%Watts
 
 %%%Orientation of Reaction Wheel
 n3 = [1;0;0];
@@ -23,11 +27,15 @@ r2 = [0;4;0]/1000;
 r3 = [0;0;4]/1000;
 
 %%%Compute the inertia of the reaction wheels
-Idisk = (1/12)*(3*rr^2+hr^2);
-IrR = mr*[(1/2)*rr^2 0 0 ;0 Idisk 0; 0 0 Idisk];
+Idisk = (1/12)*(3*rr^2+hr^2); %%%Moment of inertia
+IrR = mr*[(1/2)*rr^2 0 0 ;0 Idisk 0; 0 0 Idisk]; %%Mass moment of inertia
 
 %%%Compute maximum angular acceleration
-maxAlpha = maxTorque/IrR(1,1);
+maxAlpha = maxTorque/IrR(1,1); %%%N-m / (kg - m^2) - kg m^2/s^2 / kg - m^2 - nd / s^2 - rad/s^2
+
+%%%Compute Power Consumption ratio
+Power2Alpha = peak_power / maxAlpha; %%% Watts / rad/s^2
+Amps2Alpha = Power2Alpha / dc_voltage; %%% Amps / rad/s^2
 
 %%%Transofrmation from RR frame to body frame of satellite
 T1 = Rscrew(n1);
