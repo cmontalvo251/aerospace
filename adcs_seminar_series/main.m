@@ -1,4 +1,4 @@
-%%%Initialize
+%%Initialize
 clear
 clc
 close all
@@ -6,13 +6,15 @@ close all
 tic
 
 %%%Globals
-global BB m I Is invI lastMagUpdate nextMagUpdate lastSensorUpdate 
+global BB m I Is invI mu lastMagUpdate nextMagUpdate lastSensorUpdate 
 global nextSensorUpdate BfieldMeasured pqrMeasured ptpMeasured BfieldNav pqrNav ptpNav
 global BfieldNavPrev pqrNavPrev ptpNavPrev current Ir1Bcg Ir2Bcg Ir3Bcg n1 n2 n3
 global maxSpeed maxAlpha Ir1B Ir2B Ir3B rwalphas
+global fsensor MagFieldBias AngFieldBias EulerBias R Amax lmax CD
+global MagFieldNoise AngFieldNoise EulerNoise IrR Jinv
  
 %%%%Initialize Nav Filter
-BfieldNavPrev = [0;0;0];
+BfieldNavPrev = [-99;0;0];
 pqrNavPrev = [0;0;0];
 ptpNavPrev = [0;0;0];
 
@@ -65,7 +67,8 @@ state = [x0;y0;z0;xdot0;ydot0;zdot0;q0123_0;p0;q0;r0;w10;w20;w30];
 period = 2*pi/sqrt(mu)*semi_major^(3/2);
 number_of_orbits = 1;
 tfinal = period*number_of_orbits;
-%tfinal = 200;
+%tfinal = 100;
+next = 10;
 timestep = 1.0;
 tout = 0:timestep:tfinal;
 stateout = zeros(length(tout),length(state));
@@ -102,7 +105,6 @@ sensor_params
 k1 = Satellite(tout(1),state);
 
 %%%Print Next
-next = 100;
 lastPrint = 0;
 for idx = 1:length(tout)
     %%%Save the current state
@@ -158,9 +160,9 @@ stateout_original = stateout;
 
 %%%
 disp('Simulation Complete')
+toc
 
-
-%%%Convert state to kilometers
+%%Convert state to kilometers
 stateout(:,1:6) = stateout_original(:,1:6)/1000;
 
 %%%Extract the state vector
@@ -179,15 +181,15 @@ Y = Y*R/1000;
 Z = Z*R/1000;
 
 %%%Plot X,Y,Z as a function of time
-%fig0 = figure();
-%set(fig0,'color','white')
-%plot(tout,xout,'b-','LineWidth',2)
+fig0 = figure();
+set(fig0,'color','white')
+plot(tout,sqrt(xout.^2+yout.^2+zout.^2)-R/1000,'b-','LineWidth',2)
 %hold on
-%grid on
+grid on
 %plot(tout,yout,'r-','LineWidth',2)
 %plot(tout,zout,'g-','LineWidth',2)
-%xlabel('Time (sec)')
-%ylabel('Position (m)')
+xlabel('Time (sec)')
+ylabel('Altitude (km)')
 %legend('X','Y','Z')
 
 %%%Plot 3D orbit

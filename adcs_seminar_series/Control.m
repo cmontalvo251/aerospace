@@ -1,4 +1,5 @@
 function [current,rwalphas] = Control(BfieldNav,pqrNav,ptpNav)
+global IrR Jinv
 
 %%%%%%%%%%%%%%%%BDOT CONTROLLER%%%%%%%%%%%%%
 k = 67200;
@@ -12,8 +13,7 @@ current = k*cross(pqrNav,BfieldNav)/(n*A);
 %%%curent to be in amps ~= 40mA = 40e-3 = 4e-2 
 
 %%%%%%%%%%%%%%RW CONTROLLER%%%%%%%%%%%%%%%
-%%%%Assume for the moment that n1 - along the x-axis , n2 = y , n3 = z
-reaction_wheel_params
+%reaction_wheel_params
 if sum(abs(pqrNav)) < 0.1
     KP = eye(3)*1.0*IrR(1,1);
     ptpcommand = [1;0;0];

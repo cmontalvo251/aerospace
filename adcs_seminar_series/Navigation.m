@@ -3,7 +3,7 @@ global BfieldNavPrev pqrNavPrev ptpNavPrev
 
 s = 0.3;
 
-if sum(BfieldNavPrev) + sum(pqrNavPrev) + sum(ptpNavPrev) == 0
+if BfieldNavPrev(1,1) == -99
    BfieldNav = BfieldMeasured;
    pqrNav = pqrMeasured;
    ptpNav = ptpMeasured;
