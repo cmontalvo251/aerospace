@@ -10,11 +10,12 @@ import matplotlib.pyplot as plt
 #The Julian period is a chronological interval of 7980 years; year 1 of the Julian Period was 4713 BC (−4712)
 #julian_day = 2444240 ##this is jan 1 1980 #this was a leap year
 #julian_day = 2445701 #this is jan 1 1984 #1984 was a leap year
-julian_day = 2446796 ##this is jan 1 1987 -- really? yes really. You can
+#julian_day = 2446796 ##this is jan 1 1987 -- really? yes really. You can
 #double check on this website
 #https://www.heavens-above.com/planets.aspx
 #julian_day = 2446797
 #julian_day = 2447162 ##this is jan 1 1988 #1988 was a leap year
+julian_day = 2450449         ##1997
 #julian_day = 2451545. ##this is jan 1 2000
 #julian_day = 2458120.-365 ##this is jan 1 2017
 #julian_day = 2458120. ##this is jan 1 2018
@@ -22,7 +23,7 @@ julian_day = 2446796 ##this is jan 1 1987 -- really? yes really. You can
 #julian_day = 2458850 ##this is jan 1 2020
 #julian_day = 2459215 #this is jan 1 2021
 #julian_day = 2459580  #this is jan 1 2022
-julian_day = 2459945 #this is jan 1 2023
+#julian_day = 2459945 #this is jan 1 2023
 #julian_day -= 15
 #julian_day += 275 #October 2
 # - 10 to get to the winter solstice from the next year
@@ -31,7 +32,8 @@ julian_day = 2459945 #this is jan 1 2023
 # + 245 to get to Sep 2nd
 # + 265 to get to the fall equinox
 # + 355 to get to the winter solstice
-julian_day += 36 #February 5th
+#julian_day += 36 #February 5th
+julian_day += 146 #May 26th
 #julian_day += 245 #Sep 2nd
 #julian_day += 276
 #julian_day += 284
