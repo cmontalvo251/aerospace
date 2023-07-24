@@ -16,7 +16,10 @@ ptp(:,1) = (atan2(2.*(q0.*q1 + q2.*q3),1-2.*(q1.^2 + q2.^2))); %phi
 ptp(:,2) = asin(2.*(q0.*q2-q3.*q1)); %theta
 ptp(:,3) = atan2(2.*(q0.*q3 + q1.*q2),1-2.*(q2.^2 + q3.^2)); %psi
 
-%ptp = real(ptp);
+%%This line of code must stay because sometimes the atan2 and asin functions return
+%%small complex numbers. It may be possible to speed this up by forcing the imaginary component
+%%to zero but until that happens we'll just have to leave this here.
+ptp = real(ptp);
 
 % Copyright - Carlos Montalvo 2015
 % You may freely distribute this file but please keep my name in here
