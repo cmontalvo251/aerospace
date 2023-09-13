@@ -80,7 +80,8 @@ def Derivatives(state,t):
     #https://www.youtube.com/watch?v=ASHRPo4sw80
     #A few problems here. First Cd is a function of Mach Number and Reynolds number
     #so......I think I'll just leave this off
-    qinf = -np.pi/4.0*rho*S*Cd/mass
+    #Make sure that S is D^2
+    qinf = -np.pi/8.0*rho*S*Cd/mass #This aero model was checked with ARL work in 2012
     aerox = qinf*abs(velx)*velx
     aeroz = qinf*abs(velz)*velz
 
@@ -154,7 +155,7 @@ masstons = 2.4
 T1 = 38.28
 Isp = 140.
 Cd = 0.4
-S = 0.18
+S = 0.18 #This needs to be D^2
 stage_1_time = 38.0
 stage_2_start = -99
 stage_2_end = -99
