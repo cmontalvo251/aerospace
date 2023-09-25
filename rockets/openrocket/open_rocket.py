@@ -18,7 +18,7 @@ plt.close("all")
 #
 def atmosphere_model(altitude):
 #    #global altx,deny
-    return 1.225
+    return 1.225*np.exp(-altitude/1000.0*0.1354)
 
 def planet_parameters():
     ##https://wiki.kerbalspaceprogram.com/wiki/Kerbin
@@ -64,19 +64,17 @@ def Derivatives(state,t):
     rSat = np.sqrt((x**2) +(z**2))
     #MNeed to get parameters of the planet
     sidereal_rotational_velocity,mu,surface_gravity,R = planet_parameters()
-    if rSat < 1.0:
-        gravx = 0.0
-        gravz = 0.0
-    else:
-        gravx = -mu*x/(rSat**3)
-        gravz = -mu*z/(rSat**3)
-
+    gravx = -mu*x/(rSat**3)
+    gravz = -mu*z/(rSat**3)
+    
     ##Now let's do Aerodynamics 
     #https://wiki.kerbalspaceprogram.com/wiki/Atmosphere
     #https://wiki.kerbalspaceprogram.com/wiki/Kerbin#Atmosphere
     altitude = rSat-R
     if altitude < 0:
-        rho = 1.0
+        rho = atmosphere_model(0.0)
+        gravx = -surface_gravity
+        gravz = 0.0
     else:
         rho = atmosphere_model(altitude)
     #Need AeroGUI Mod to get these parameters
@@ -84,7 +82,13 @@ def Derivatives(state,t):
     #https://www.youtube.com/watch?v=ASHRPo4sw80
     #A few problems here. First Cd is a function of Mach Number and Reynolds number
     #so......I think I'll just leave this off
-    qinf = -np.pi/4.0*rho*S*Cd/mass
+    if t > t_parachute:
+        Cdi = Cd_parachute
+        Si = S_parachute
+    else:
+        Cdi = Cd
+        Si = S
+    qinf = -np.pi/8.0*rho*S*Cdi/mass
     aerox = qinf*abs(velx)*velx
     aeroz = qinf*abs(velz)*velz
 
@@ -126,8 +130,9 @@ def Derivatives(state,t):
         #But when thrust is fired we lose mass
         ve = Isp*abs(surface_gravity)
         mdot = -thrust/ve
+        #print('mdot = ',mdot)
     else:
-        print('Mdot = 0')
+        #print('Mdot = 0')
         mdot = 0.0
     
     ##Now we can put Newton's EOMs together
@@ -135,10 +140,12 @@ def Derivatives(state,t):
     zdbldot = thrustz/mass + gravz + aeroz
     
     statedot = np.asarray([xdot,zdot,xdbldot,zdbldot,mdot])
-    if altitude < 0:
-        statedot = np.asarray([0,0,0,0,0])
+    #if altitude < 0:
+    #    statedot = np.asarray([0.,0.,0.,0.,0.])
     
     #make [xdot,xdbldot] an array
+    #print('mass = ',mass,'time = ',t,'atitude = ',altitude)
+    #print('gx,gz = ',gravx,gravz,' t = ',t)
     return statedot
 
 ##############END OF FUNCTION SEPARATED BY TABS#######
@@ -156,91 +163,24 @@ x0 = R
 z0 = 0.
 velx0 = 0.0
 velz0 = 0.0
-mass0 = 0.920
-T1 = 350/1000.0
-massflowrate = (374./1000.0)/1.9863
+mass0 = 1.009
+T1 = 100./1000.0
+massflowrate = (1.009-0.890)/2.3
 exit_velocity = T1*1000 / massflowrate
 Isp = exit_velocity / 9.81
 print('Isp = ',Isp)
-Cd = 0.65
-D = 7.5/100.
-S = np.pi*D**2/4.0
-stage_1_time = 1.9863
+Cd = 0.45
+Cd_parachute = 13.0
+t_parachute = 14.0
+D = 9.0/100.
+S = D**2
+S_parachute = (45./100.0)**2
+stage_1_time = 2.3
 stage_2_start = -99
 stage_2_end = -99
-period = 100.0
+period = 75.0
 GNC = 0
 apogee = 10000.
-
-
-"""
-###Conditions for Sub orbital flight
-
-x0 = R
-z0 = 0.
-velx0 = 0.0
-velz0 = 0.0
-masstons = 5.3
-mass_end = 2.8
-stage_1_time = 38.0
-stage_2_start = -99
-stage_2_end = -99
-T1 = 167.97*0.8
-Isp = 250.
-Cd = 0.0
-S = 0.18
-period = 200.0
-GNC = 1
-apogee = 80000.
-"""
-
-
-"""
-###Let's make an orbit
-desired_orbit_altitude_km = 70. #kilometers
-r = R + desired_orbit_altitude_km*1000.
-vorbit = np.sqrt(mu/r)
-##Vorbit for 70 km is 2,295.9 m/s <- this is the delta v we 
-#need to get to orbit
-##Initial conditions in orbit
-x0 = r
-z0 = 0.
-velx0 = 0.0
-velz0 = vorbit
-T1 = 0.0
-Isp = 0.0
-Cd = 0.0
-S = 0.0
-masstons = 5.3
-stage_1_time = -99
-stage_2_start = -99
-stage_2_end = -99
-#Orbit Time
-semi_major = r
-period = 2*np.pi/np.sqrt(mu)*semi_major**(3.0/2.0)
-GNC = 0
-"""
-
-
-###Two Stage Rocket
-"""
-x0 = R
-z0 = 0.0
-velx0 = 0.0
-velz0 = 0.0
-T1 = 180.0
-T2 = 160.0
-Isp = 250.
-Cd = 0.1
-S = 0.01
-masstons = 5.3+2.0
-stage_1_time = 38.0
-stage_2_start = 150.0
-stage_2_end = stage_2_start + 35.0
-period = 3000.0
-GNC = 1
-apogee = 70000.
-"""
 
 ###################################################################
 tout = np.linspace(0,period,100000)  #linspace(start,end,number of data points)
@@ -286,7 +226,8 @@ plt.xlabel('Time (sec)')
 plt.ylabel('AGL (m)')
 
 plt.figure()
-plt.plot(tout,mout)
+plt.plot(tout,mout,label='Python Simulation')
+plt.plot(data['time'],data['mass']/1000.0,label='OpenRocket Simulation')
 plt.grid()
 plt.xlabel('Time (sec)')
 plt.ylabel('Mass (kg)')
