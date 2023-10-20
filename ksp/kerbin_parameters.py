@@ -46,8 +46,8 @@ xp = r*np.cos(nu)
 yq = r*np.sin(nu)
 
 plt.plot(xp,yq)
-plt.plot(xp[0],yq[0],'b*',markerSize=20)
-plt.plot(0,0,'ys',markerSize=20)
+plt.plot(xp[0],yq[0],'b*',markersize=20)
+plt.plot(0,0,'ys',markersize=20)
 plt.axis('equal')
 plt.title('Orbital Plane')
 
