@@ -4,26 +4,30 @@ from mpl_toolkits.mplot3d import Axes3D
 
 ##Kerbin Parameters
 G = 6.6742*10**-11; #%%Gravitational constant
-Mkerbin = 5.2915158*10**22 #
+M = 5.972*10**24  #Earth
+#Mkerbin = 5.2915158*10**22 #
 #MMun = 9.7599066*10**20 #
-muKerbin = G*Mkerbin
+#muKerbin = G*Mkerbin
 #muMun = G*MMun
-Rkerbin = 600000. #meters
-#RMun = 200000 #meters
+mu = G*M
+#Rkerbin = 600000. #meters Kerbin
+R = 6371000 #meters Earth
+#RMun = 200000 #meters Mun
 
 ##True Anamoly
 nu = np.linspace(0,2*np.pi,100)
 ##Semi Major Axis of an 80 km parking orbit
-alt_AGL = 80000.
-rp = Rkerbin + alt_AGL
-ra = 12000000.
+peri_AGL = 500000.
+rp = R + peri_AGL
+apo_AGL = 2000000.
+ra = R + apo_AGL
 #ra = rp
 a = (ra+rp)/2.
 #alt_AGL = 6000
 #a = RMun + alt_AGL
 ##Eccentricity
 e = (ra - rp)/(ra+rp)
-print(e)
+print('Eccentricity = ',e)
 ##inclination
 i = 0*98.0*np.pi/180.0 ##Drew's random satellite he wants a just slightly over polar retrograde orbit
 ###Longitude of the Ascending Node
@@ -41,14 +45,16 @@ yq = r*np.sin(nu)
 plt.plot(xp,yq,'r-')
 plt.plot(xp[0],yq[0],'r*',markersize=20)
 theta = np.linspace(0,2*np.pi,100)
-xkerbin = Rkerbin*np.cos(theta)
-ykerbin = Rkerbin*np.sin(theta)
-plt.plot(xkerbin,ykerbin,'b-')
+xplanet = R*np.cos(theta)
+yplanet = R*np.sin(theta)
+plt.plot(xplanet,yplanet,'b-')
 #xMun = RMun*np.cos(theta)
 #yMun = RMun*np.sin(theta)
 #plt.plot(xMun,yMun,'b-')
 #plt.axis('equal')
 plt.title('Orbital Plane')
+plt.xlabel('X')
+plt.ylabel('Y')
 
 ###Rotate to Kerbin Centered Inertial Frame (KCI)
 zr = 0*xp
@@ -74,15 +80,18 @@ u, v = np.mgrid[0:2*np.pi:20j, 0:np.pi:10j]
 xsph = np.cos(u)*np.sin(v)
 ysph = np.sin(u)*np.sin(v)
 zsph = np.cos(v)
-ax.plot_surface(Rkerbin*xsph,Rkerbin*ysph,Rkerbin*zsph,color='blue',zorder=1)
+ax.plot_surface(R*xsph,R*ysph,R*zsph,color='blue',zorder=1)
 ax.plot(xi,yj,zk,'r-',zorder=0)
 ax.scatter(xi[0],yj[0],zk[0],'r*',s=20)
 #ax.plot_wireframe(RMun*xsph,RMun*ysph,RMun*zsph,color='grey')
 #ax.axis('square')
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
 
 ###Now let's plot velocity
-vx = np.sqrt(muKerbin/p)*(-np.sin(nu))
-vy = np.sqrt(muKerbin/p)*(e+np.cos(nu))
+vx = np.sqrt(mu/p)*(-np.sin(nu))
+vy = np.sqrt(mu/p)*(e+np.cos(nu))
 #vx = np.sqrt(muMun/p)*(-np.sin(nu))
 #vy = np.sqrt(muMun/p)*(e+np.cos(nu))
 v = np.sqrt(vx**2 + vy**2)
