@@ -4,22 +4,22 @@ from mpl_toolkits.mplot3d import Axes3D
 
 ##Kerbin Parameters
 G = 6.6742*10**-11; #%%Gravitational constant
-M = 5.972*10**24  #Earth
-#Mkerbin = 5.2915158*10**22 #
+#M = 5.972*10**24  #Earth
+M = 5.2915158*10**22 #
 #MMun = 9.7599066*10**20 #
 #muKerbin = G*Mkerbin
 #muMun = G*MMun
 mu = G*M
-#Rkerbin = 600000. #meters Kerbin
-R = 6371000 #meters Earth
+R = 600000. #meters Kerbin
+#R = 6371000 #meters Earth
 #RMun = 200000 #meters Mun
 
 ##True Anamoly
-nu = np.linspace(0,2*np.pi,100)
+nu = np.linspace(0,2*np.pi,1000)
 ##Semi Major Axis of an 80 km parking orbit
-peri_AGL = 500000.
+peri_AGL = 100000.
 rp = R + peri_AGL
-apo_AGL = 2000000.
+apo_AGL = 46000000.
 ra = R + apo_AGL
 #ra = rp
 a = (ra+rp)/2.
@@ -29,11 +29,11 @@ a = (ra+rp)/2.
 e = (ra - rp)/(ra+rp)
 print('Eccentricity = ',e)
 ##inclination
-i = 0*98.0*np.pi/180.0 ##Drew's random satellite he wants a just slightly over polar retrograde orbit
+i = 0*np.pi/180.0 ##Drew's random satellite he wants a just slightly over polar retrograde orbit
 ###Longitude of the Ascending Node
 W = 0*45*np.pi/180.0
 #Argument of the periaps
-w = 0.
+w = 0.*np.pi/180.0
 
 ##plot in the orbital plane
 ###Phat and Qhat
@@ -44,7 +44,7 @@ yq = r*np.sin(nu)
 
 plt.plot(xp,yq,'r-')
 plt.plot(xp[0],yq[0],'r*',markersize=20)
-theta = np.linspace(0,2*np.pi,100)
+theta = np.linspace(0,2*np.pi,1000)
 xplanet = R*np.cos(theta)
 yplanet = R*np.sin(theta)
 plt.plot(xplanet,yplanet,'b-')

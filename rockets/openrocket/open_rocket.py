@@ -11,7 +11,7 @@ import scipy.integrate as I
 import pandas as pd
 import matplotlib.pyplot as plt
 
-data = pd.read_csv('First_Open_Rocket_Design.csv')
+#data = pd.read_csv('First_Open_Rocket_Design.csv')
 
 ###Closes all Figures
 plt.close("all")
@@ -163,19 +163,19 @@ x0 = R
 z0 = 0.
 velx0 = 0.0
 velz0 = 0.0
-mass0 = 1.009
-T1 = 100./1000.0
-massflowrate = (1.009-0.890)/2.3
+mass0 = 1.6 #kg
+T1 = 175/1000.0  
+massflowrate = (168./1000.)/2.4
 exit_velocity = T1*1000 / massflowrate
 Isp = exit_velocity / 9.81
 print('Isp = ',Isp)
-Cd = 0.45
+Cd = 0.75
 Cd_parachute = 13.0
-t_parachute = 14.0
-D = 9.0/100.
+t_parachute = 9.0
+D = 7.62/100.
 S = D**2
 S_parachute = (45./100.0)**2
-stage_1_time = 2.3
+stage_1_time = 2.4
 stage_2_start = -99
 stage_2_end = -99
 period = 75.0
@@ -219,7 +219,7 @@ plt.ylabel('Z (m)')
 
 plt.figure()
 plt.plot(tout,np.sqrt(xout**2+zout**2)-R,label='Python Simulation')
-plt.plot(data['time'],data['altitude'],label='OpenRocket Simulation')
+#plt.plot(data['time'],data['altitude'],label='OpenRocket Simulation')
 plt.grid()
 plt.legend()
 plt.xlabel('Time (sec)')
@@ -227,7 +227,7 @@ plt.ylabel('AGL (m)')
 
 plt.figure()
 plt.plot(tout,mout,label='Python Simulation')
-plt.plot(data['time'],data['mass']/1000.0,label='OpenRocket Simulation')
+#plt.plot(data['time'],data['mass']/1000.0,label='OpenRocket Simulation')
 plt.grid()
 plt.xlabel('Time (sec)')
 plt.ylabel('Mass (kg)')
