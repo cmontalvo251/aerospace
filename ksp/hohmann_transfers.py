@@ -15,25 +15,25 @@ R = 6371000 #meters Earth
 #RMun = 200000 #meters Mun
 
 ##True Anamoly
-nu = np.linspace(0,2*np.pi,100)
-##Semi Major Axis of an 80 km parking orbit
+nu = np.linspace(0,2*np.pi,1000)
+##Type in your apogee and perigee
 peri_AGL = 500000.
 rp = R + peri_AGL
-apo_AGL = 2000000.
+apo_AGL = 5000000.
 ra = R + apo_AGL
 #ra = rp
 a = (ra+rp)/2.
 #alt_AGL = 6000
 #a = RMun + alt_AGL
 ##Eccentricity
-e = (ra - rp)/(ra+rp)
+e = (ra - rp)/(ra+rp) 
 print('Eccentricity = ',e)
 ##inclination
-i = 0*98.0*np.pi/180.0 ##Drew's random satellite he wants a just slightly over polar retrograde orbit
+i = 45.0*np.pi/180.0 ##Drew's random satellite he wants a just slightly over polar retrograde orbit
 ###Longitude of the Ascending Node
-W = 0*45*np.pi/180.0
+W = 45*np.pi/180.0
 #Argument of the periaps
-w = 0.
+w = 45.*np.pi/180.0
 
 ##plot in the orbital plane
 ###Phat and Qhat
