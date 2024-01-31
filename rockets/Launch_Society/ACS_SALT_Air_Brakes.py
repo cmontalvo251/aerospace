@@ -7,7 +7,10 @@ Created on Fri Oct  6 10:06:13 2023
 
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy.integrate as sci 
+import scipy.integrate as sci
+import time
+import serial as S
+import struct
 
 plt.close("all")
 
@@ -17,6 +20,35 @@ plt.close("all")
 Rplanet = 6357000 #meters
 mplanet = 5.972e24 #kg
 G = 6.6742*10**-11; #Gravitational Constant (SI Unit)
+
+def binary(num):
+    return ''.join('{:0>8b}'.format(c) for c in struct.pack('!f', num))
+def SerialPutString(hComm,string):
+    for s in string:
+      SerialPutc(hComm,s)
+def SerialPutc(hComm,txchar):
+    if hComm is not None:
+      #print("Sending ASCII Code = " + str(ord(txchar)) + str(txchar))
+      hComm.write(txchar.encode("ascii"))
+def Serial_Init(ComPortName,BaudRate):
+    try:
+      print('Trying to open serial port.....',ComPortName,BaudRate)
+      hComm = S.Serial(ComPortName,BaudRate);
+      print('Success!!!!')
+      hComm.flush()
+    except:
+      print('Failed')
+      hComm = None
+    return hComm
+def SerialWrite(degree,hComm):
+    int_deg = int(binary(degree),2)
+    print("Sending = " + str(degree) + " " + str(int_deg))
+    hex_deg = hex(int_deg)
+    hex_deg = hex_deg.replace('0x','')
+    outline = str(0)+':'+hex_deg
+    #print("Hex = ",outline)
+    SerialPutString(hComm,outline)
+    SerialPutc(hComm,'\r')
 
 #Gravitational Acceleration Model
 def gravity(z):
@@ -29,9 +61,26 @@ def gravity(z):
         #print(accel) 
     return accel
 
-def control_system(zdot,z):
+#Second Order Diff Equations
+def Derivatives(state,t):  
+    #mass
+    mass = 1.0 ##LOOK UP MASS AFTER SECOND STAGE BURNOUT
+    
+    #######FEATHER CODE##############
+    
+    ##READ SENSOR DATA if running on Feather
+    #zdot = fjkdfjdklj
+    #altitude = fdjkfldjkgl
+    
+    #If runnning HIL
+    z = state[0]
+    altitude = z-Rplanet
+    velz = state[1]
+    zdot = velz
+    
+    ###CONTROL SYSTEM######
     tp = zdot / 9.81 ##First order approximation
-    zp = (z-Rplanet) + zdot * tp - 0.5*9.81*tp**2  ##First order approximation
+    zp = altitude + zdot * tp - 0.5*9.81*tp**2  ##First order approximation
     zc = 300
     error_altitude = zp - zc
     kp = 10.0/1000.0   ##THIS NEEDS TO BE ADJUSTED
@@ -42,24 +91,14 @@ def control_system(zdot,z):
         df = 0
     if zdot < 0:
         df = 0
-    return df
-
-#Second Order Diff Equations
-def Derivatives(state,t):
-    ##Globals
-    z = state[0]
-    velz = state[1]
-    #compute zdot
-    zdot = velz
     
-    #mass
-    mass = 1.0 ##LOOK UP MASS AFTER SECOND STAGE BURNOUT
+    ##If running on hardware. Convert df to degree
+    degree = 0 + df*180.0
     
-    ###CONTROL SYSTEM######
-    df = control_system(zdot,z)
+    ##If running on the feather
+    #send the degree command to the servos
     
-    ###HIL####
-    #Send the df command via serial to the fins
+    #############END OF FEATHER CODE###################
     
     ########FORCES############
     #Gravity
@@ -83,7 +122,10 @@ def Derivatives(state,t):
     
     statedot = np.asarray([zdot,zddot])
     
-    return statedot
+    return statedot,degree
+
+def real_time(starttimer):
+    return time.time() - starttimer
 
 ####EVERYTHING BELOW HERE IS MAIN SCRIPT###
 
@@ -100,26 +142,38 @@ velz0 = 100.0 #m/s)
 dt = 0.1
 tout = np.arange(0,15,dt)
 
+##OPEN COM PORT FOR HIL
+port = "COM22"
+BaudRate = 57600
+hComm = Serial_Init(port,BaudRate)
+
 ##Numerical Integration Call
 zout = 0*tout
 velzout = 0*tout
-dfout = 0*tout
+deg_out = 0*tout
 zout[0] = z0
 velzout[0] = velz0
+starttimer = time.time()
 for i in range(0,len(tout)-1):
-    print('T = ',tout[i])
-    state = np.array([zout[i],velzout[i]])
-    dfout[i] = control_system(velzout[i],zout[i])
     t = tout[i]
-    k1 = Derivatives(state,t)
-    k2 = Derivatives(state + k1*dt/2.0,t+dt/2)
-    k3 = Derivatives(state + k2*dt/2.0,t+dt/2)
-    k4 = Derivatives(state + k3*dt,t+dt)
+    ###WAIT FUNCTION FOR HIL
+    #while real_time(starttimer) < t:
+    #    pass
+    print('T = ',t)
+    state = np.array([zout[i],velzout[i]])
+    t = tout[i]
+    k1,degree = Derivatives(state,t)
+    k2,degree = Derivatives(state + k1*dt/2.0,t+dt/2)
+    k3,degree = Derivatives(state + k2*dt/2.0,t+dt/2)
+    k4,degree = Derivatives(state + k3*dt,t+dt)
     phi = (1.0/6.0)*(k1 + 2*k2 + 2*k3 + k4)
     statenext = state + phi*dt
     zout[i+1] = statenext[0]
     velzout[i+1] = statenext[1]
-    ###ADD A WAIT FUNCTION FOR HIL
+    deg_out[i+1] = degree
+    ###HIL####
+    #Send the degree command via serial to the fins
+    #SerialWrite(degree,hComm)
 
 ##Rename Variables
 altitude = zout - Rplanet
@@ -140,9 +194,9 @@ plt.grid()
 
 ##PLOT DF
 plt.figure()
-plt.plot(tout,dfout)
+plt.plot(tout,deg_out)
 plt.xlabel('Time (sec)')
-plt.ylabel('df (nd)')
+plt.ylabel('Degree (deg)')
 plt.grid()
 
 plt.show()
