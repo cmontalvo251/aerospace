@@ -15,9 +15,9 @@ wing_span = 2.0*18.0 ##wingspan
 
 ##Random Wing
 cr = 10.0
-ct = 10.0
+ct = 5.0
 wing_span = 50.0
-sweep_angle  = 0.0
+sweep_angle  = 30.0
 
 ###Debug Prints
 print('Root Chord = ',cr)
@@ -43,7 +43,7 @@ def quarter_chord_line(y):
   return ly + c/4.0
 
 ###Plot Chord vs Wingspan
-y = np.linspace(0,wing_span/2.0,1000)
+y = np.linspace(0,wing_span/2.0,10000)
 plt.figure()
 plt.plot(y,chord(y))
 plt.xlabel('y')
