@@ -14,10 +14,10 @@ wing_span = 2.0*18.0 ##wingspan
 """
 
 ##Random Wing
-cr = 10.0
-ct = 5.0
-wing_span = 50.0
-sweep_angle  = 30.0
+cr = 281
+ct = 122
+wing_span = 1030
+sweep_angle  = 12
 
 ###Debug Prints
 print('Root Chord = ',cr)
@@ -29,7 +29,9 @@ b1 = cr
 b2 = ct
 h = wing_span/2.0
 S = (b1+b2)*h
+AR = wing_span**2 /S
 print('Area = ',S)
+print('AR = ',AR)
 
 ###Create a function to get the chord vs wingspan
 def chord(y):
