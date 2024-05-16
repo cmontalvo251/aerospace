@@ -9,7 +9,7 @@ Amax = lsort(2)*lsort(3);
 lmax = l(3);
 CD = 1.0;
 %%%Inertia of satellite in kg-m^2
-Is = (ms/12)*[(lx^2+ly^2) 0 0 ;0 (lx^2+lz^2) 0;0 0 (ly^2+lz^2)];
+Is = (ms/12)*[(ly^2+lz^2) 0 0 ;0 (lx^2+lz^2) 0;0 0 (lx^2+ly^2)];
 
 %%%Call the reaction wheel params
 reaction_wheel_params
