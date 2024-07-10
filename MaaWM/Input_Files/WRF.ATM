@@ -1,0 +1,13 @@
+4	!Atmospheric Wind Type(1=constant,2=equation,3=table look up,4=WRF Model)
+0.00238 	!Density(slugs/ft^3)
+1.0	!Wind scale
+0.0	!Turblevel
+1	!Extrapolate or Shift? (0 = shift, 1 = extrapolate)
+0	!Offset Heading(rad)
+0	!Ramp Time (sec)
+0.00	!Vx_Wave_speed(ft/s)
+0.00	!Vy_Wave_speed(ft/s)
+'WRF_Model/' !WRF Data location
+'/home/files/Docs/GitLab_Repos/Research/MaaWM/Auto_Generated_WindField/Wave1/' !Auto Generated Location
+'/home/carlos/Documents/GitLab_Repos/MAAWM/Auto_Generated_WindField/Wave1/' !Auto Gen Loc
+

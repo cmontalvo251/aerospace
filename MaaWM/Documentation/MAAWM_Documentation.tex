@@ -1,0 +1,347 @@
+\documentclass[letterpaper]{article}
+\usepackage{fullpage}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{cite}
+\usepackage[labelfont=bf]{caption}
+\usepackage{titlesec}
+%\usepackage[nomarkers,tablesfirst]{endfloat}
+\titleformat{\section}[block]{\large\filcenter\bfseries}{\thesection}{1em}{}
+
+% abstract
+\usepackage[runin]{abstract}
+\renewcommand{\abstractname}{}
+\renewcommand{\abstracttextfont}{\normalfont\small\bfseries}
+
+% reformat section/subsection headings
+\renewcommand{\thesection}{\Roman{section}.}
+\renewcommand{\thesubsection}{\Alph{subsection}.}
+\renewcommand{\thesubsubsection}{\arabic{subsubsection}}
+
+%Manuscript style
+\linespread{2}
+%\usepackage[nomarkers]{endfloat}
+
+\setcounter{secnumdepth}{5}
+
+ \title{\bf MAAWM SIMULATION SOFTWARE DOCUMENTATION}
+
+ \author{
+  Carlos Montalvo (cmontalvo@southalabama.com) \thanks{Assistant
+    Professor,Department of Mechanical Engineering} \\
+{\normalsize\itshape
+    University of South Alabama, Mobile, AL 36688}\\}
+\date{}
+ % Data used by 'handcarry' option if invoked
+ %% \AIAApapernumber{2012}
+ %% \AIAAconference{Conference Name, Date, and Location}
+ %% \AIAAcopyright{\AIAAcopyrightD{2012}}
+
+ % Define commands to assure consistent treatment throughout document
+\newcommand{\eqnref}[1]{(\ref{#1})}
+ \newcommand{\class}[1]{\texttt{#1}}
+ \newcommand{\package}[1]{\texttt{#1}}
+ \newcommand{\file}[1]{\texttt{#1}}
+ \newcommand{\BibTeX}{\textsc{Bib}\TeX}
+
+
+\begin{document}
+\maketitle
+\begin{abstract}
+
+The Multi-Agent Atmospheric Windmapper (MAAWM) simulation sofware is
+capable of simulating N aircraft using a full 6DOF aircraft model
+which uses a taylor series expansion about a trim point for
+aerodynamics. Each aircraft samples the atmosphere at a specified
+sample rate and writes the wind data to a file. This file is read by a
+radial basis surrogate model routine to fit the data sampled. The
+following report documents all input files necessary 
+to run the code.
+
+\end{abstract}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Source Code}
+
+All source code is located in 'source/'. The source
+code is written in the FORTRAN 90 standard using modules to organize
+variables. At the top of the code starts off the module
+MAAWMDATATYPES. This data type has numerous subtypes ranging from the
+AIRCRAFTSTRUCTURE all the way to a CONTROLSYSTEMSTRUCTURE. Each datatype
+has attributes associated with it. For example the MAAWMSTRUCTURE has
+an ATMOSPHERESTRUCTURE called ATM. THE ATMOSPHERESTRUCTURE
+has many variables, one being VXWIND. Throughout the code
+the MAAWMSTRUCTURE is initialized with variable name 'T'. Thus if the
+variable VXWIND is needed the coder can 
+simply enter 'T\%ATM\%VXWIND'. This is the syntax of data structures
+throughout the code. ATM is a structure of datatype 'T' and VXWIND is
+an attribute of the ATM structure. The entire code is setup like
+this. 
+
+The main PROGRAM MAAWM starts by reading the argument given
+to the main code and it then reads it and loads all the necessary
+input files. The code then begins to load all input
+files. Each subroutine has a load (1), echo (2) and compute (3). For
+example, the subroutine ATMOSPHERE can be called with flag 1
+for load. The following lines load all of the necessary attributes for
+the simulation. After some write(25,*) commands which write to the log
+file, the subroutines are called again except with the echo flag
+tripped. Here all attributes are echoed to the log
+file. Finally, the SIMULATION subroutine is called with the
+compute flag tripped. The SIMULATION subroutine kicks off an RK4 by
+calling a subroutine SYSTEMDERIVATIVES to compute the state
+derivatives. SYSTEMDERIVATIVES contains all subroutine calls to each
+module. The CONTROL subroutine is called once per timestep rather than
+during each state derivatives function call. Each system has its own
+subroutine. The aircraft model is AIRCRAFT. These subroutines will
+most likely stay constant however the 
+CONTROL subroutine will be edited heavily. 
+
+\section{Input Files}
+
+The input files here use the standard structure of a main file of
+files that lists where to point to all the input files for each
+module. The sections below detail all the input files used in the
+simulation. 
+
+\subsection{IFILES File}
+
+The example file of files given in this bundle is called 'MAAWM.ifiles'
+located in 'Input\_Files/'. 
+
+Each file is very self explanatory. For example, 'WRF.ATM' contains
+all the parameters for the atmosphere. In addition, 'Decathalon.AC'
+contains all the parameters for the aircraft. However, each file is further
+discussed in detail in the sections that follow.
+
+\subsection{ATM File}
+
+The atmospheric file defines the atmosphere that the entire system
+will fly through. There are two types of atmospheres that are
+coded. The first is a constant wind field with an azimuth and
+elevation. The other is the standard Weather Research and Forecasting (WRF)
+Model plus a Full Field Dryden Turbulence Model. The file structure of
+the constant wind field is shown below.
+
+{\singlespace
+\begin{tabular}{l l l}
+1	& !Atmospheric Wind Type(1=constant,4=WRF Model) \\
+1.22566 	& !Density$(kg/m^3)$\\
+2.0	& !Windspeed$(m/s)$\\
+1.5707 & !Wind direction\_Psi(rad) (0 = tailwind, 3.141 = headwind,sidewind=1.5707)\\
+0.0     & !Wind Elevation Theta(rad) (1.5708 thermal)\\
+\end{tabular}
+}%\endsinglspace
+\\
+
+The first line is the type of wind field which in this case is
+constant. The second line is the density of the air. The third line is
+the magnitude of the wind vector $(V_w)$ which in this case is 2.0
+$m/s$. The last two lines are the wind azimuth ($\psi_w$) and
+elevation ($\eta_w$). The inertial components of the wind velocity are
+then given by the equation below. 
+
+\begin{equation}
+\begin{Bmatrix} V_x \\ V_y \\ V_z \end{Bmatrix} = V_w \begin{Bmatrix}
+  cos(\psi_w)cos(\eta_w) \\ sin(\psi_w)cos(\eta_w) \\ -sin(\eta_w) \end{Bmatrix}
+\end{equation}
+
+Note that the atmospheric windspeed is subtracted from the body
+velocity component of each body. For example, the aerodynamic velocity
+of the payload is given by the equation below where ${\bf T_{IP}}$ is the
+transformation matrix from the inertial frame to the payload frame.
+
+\begin{equation}
+\vec{V}_{P_{atm}/I} = \vec{V}_{P/I} - {\bf T_{IP}}^T\vec{V}_{ATM/I}
+\end{equation}
+
+The second atmospheric wind field that can be used is the WRF+Dryden
+Turbulence Model. The structure of the input file is given below.
+
+{\singlespace
+\begin{tabular}{l l l}
+4	& !Atmospheric Wind Type(1=constant,4=WRF Model)\\
+1.22566 	& !Density$(kg/m^3)$\\
+1.0	&!Wind scale ($\sigma_{WRF}$)\\
+1.0	& !Turblevel ($\sigma_T$)\\
+0	& !Offset Heading(rad) ($\psi_W$) \\
+-2.75	& !Vx\_Wave\_speed$(m/s)$ ($V_{xW}$)\\
+2.75	& !Vy\_Wave\_speed$(m/s)$ ($V_{yW}$)\\
+'WRF\_Wind\_Data/' & !WRF Data location
+\end{tabular}
+}
+\\
+
+Again the first line sets the type of wind field to the WRF model. The
+second line sets the density of the air. The next 5 lines set the
+scale and offset of the WRF model. The WRF model is a complex
+simulation tool that outputs inertial velocity components as a
+function of space and time. The TAPAS simulation software requires
+that the WRF model be run ahead of time and outputted to text files
+for import. The last line dictates the location of the WRF files. This
+report will not go into detail on how to obtain the WRF files and will
+assume that the files are already present in a working directory. The
+TAPAS simulation imports these text files and uses a 3-D interpolation
+using x,y,z as independent variables. Although the WRF model is
+capable of outputting winds as a function of time the wind field is
+assumed to by static to speed computation. However, to avoid limit
+cycles from flying through a constant wind field, a scale factor
+and offset are used to change the wind field according to the equation
+below where the functions WRF and DRYDEN are interpolated during
+simulation.
+
+\begin{equation}
+\begin{Bmatrix} V_x \\ V_y \\ V_z \end{Bmatrix} = \sigma_{WRF} \begin{Bmatrix}
+  WRF_x(x^*,y^*,z) \\ WRF_y(x^*,y^*,z)
+  \\ WRF_z(x^*,y^*,z) \end{Bmatrix} + \sigma_{T} \begin{Bmatrix}
+  DRYDEN_x(x,y,z) \\ DRYDEN_y(x,y,z) \\ DRYDEN_z(x,y,z) \end{Bmatrix}
+\end{equation}
+
+In the equations above $x^*$ and $y^*$ are given by the equations
+below.
+
+\begin{equation}
+\begin{matrix}
+x_R = x cos(\psi_W) + y sin(\psi_W) \\
+y_R = -x sin(\psi_W) + z cos(\psi_W) \\
+x^* = x_R - V_{xW}(t-t_0)\\
+y^* = y_R - V_{yW}(t-t_0)
+\end{matrix}
+\end{equation}
+
+\subsection{AC File}
+
+The aircraft file is very straight forward. The file starts with flags
+to turn the module, dynamics, gravity, aerodynamics, and contact
+forces on and off. Then the mass, inertia and area properties are
+defined. Finally the aerodynamics are set using a standard
+aerodynamic expansion for an aircraft about a trim point. An example
+aircraft file can be found in 'Input\_Files/Decathalon.AC' which is an
+AC file for a scaled Decathalon aircraft.
+
+\subsection{CS File}
+
+The CS file defines all of the controllers currently coded as well as
+the gains associated with each PID controller and the amount of sensor
+errors. An example CS file can be found in
+'Input\_Files/MaaWM.CS'. 
+
+\subsection{SIM File}
+
+The SIM file defines the time and initial conditions of the system as
+well as a few extra flags that can be set. An example SIM file can be
+found in 'Input\_Files/MaaWM.SIM'. The first three lines define the
+initial and final time of the simulation as well as the timestep. The
+output skip parameter defines the number of timesteps the simulation
+will skip before the state of the system is outputted to a file. The
+4th line turns the control system on and off. The next line sets
+whether or not the aircraft will wander aimlessly like a Roomba or
+follow the waypoints set in the Waypoints.WAY file.
+
+\subsection{ICS and WAY Files}
+
+The .ICS and .WAY files are generated by MATLAB codes
+Create\_Initial\_Conditions.m and Create\_Waypoints.m
+respectively. The first code creates random initial conditions for all
+aircraft and the second generates a vector of waypoints to
+follow. The code is designed to import these files, the aircraft then
+have a standard control system set to follow the waypoints in the file.
+
+\section{Output Files}
+
+The code makes use of numerous output files for plotting and
+debugging. All files listed below are outputted to the
+folder 'Output\_Files/'. 
+
+\subsection{LOG File}
+
+The first and most important output file is the LOG file. The LOG file
+contains information on every parameter defined in the input files
+above. If the simulation does not run often times an input file is
+defined incorrectly. It is possible to consult the log file to see
+where something may have gone wrong. 
+
+\subsection{SOUT File}
+
+The SOUT or STATE out file contains all state information as a
+function of time with as many data points as defined by the output
+skip parameter in the SIM file. The SOUT file has the following
+structure: $t,Aircraft States$. The
+aircraft states are defined as
+$x,y,z,\phi,\theta,\psi,u,v,w,p,q,r$. Each aircraft outputs its own
+state vector next to the first. Thus, if two aircraft are in the space
+the SOUT file will be 25 columns. The first column will be the time
+vector, the next 12 will be the first aircraft states and the next 12
+will be the next aircraft states.
+
+\subsection{MOUT File}
+
+The MOUT file is a MISCELLANEOUS output parameter that can be used to
+output whatever the user wants. 
+
+\subsection{COUT File}
+
+The COUT file contains useful outputs associated with the control
+system. 
+
+\subsection{FOUT File}
+
+The FOUT file is the FORCE output file which contains aerodynamic
+loads on the aircraft.
+
+\subsection{EOUT File}
+
+The EOUT file is the ERROR out file which contains the polluted and
+unpolluted signals used for feedback.
+
+\subsection{WOUT File}
+
+The WOUT file is the WIND file. All aircraft output Vx,Vy,and Vz to
+this file. This file always has 7 columns. The first column is time,
+the next three are the x,y,z coordinates of the sample point and the
+last three columns are the wind magnitudes along each axis. The first
+row is the total number of data points sampled.
+
+\section{Running Simulations}
+
+In order to run the simulation the code must first be compiled. The
+ifort or gfortran compiler will suffice. I use a linux machine (Ubuntu
+14.04). It is also possible to compile the source code using a
+make file. The 'Makefile' I am using is located in the root
+directory. With this file present in the root directory I can merely
+type the command 'make' into a terminal.
+
+{\it \$ make}
+
+If the code is successfully compiled and no errors are returned a file
+name 'Run.exe' should appear in the root directory. At this point the
+run command may be used to execute the program. Note that the ifiles
+file must be given as a command line argument.
+
+{\it \$ ./Run.exe Input\_Files/MaaWM.ifiles'}
+
+The code may return errors if files have not been found but the error
+catching in the code should catch everything you require. The example
+simulation setup currently takes about 35 seconds on my machine. 
+
+\section{Using MATLAB or Octave to Run Everything}
+
+I have created a .m script file that handles all of the compiling,
+running and plotting. The script file is called 'runMAAWM.m'. This
+file contains numerous flags associated with is such as changing the
+number of aircraft and recomputing ICS or Waypoints however as it is
+setup right now the script will compile the code if necessary and then
+plot the trajectories of all aircraft in the space.
+
+{\it $>>$ runMAAWM}
+
+\end{document}
+

@@ -1,0 +1,14 @@
+'ATM'	'Input_Files/WRF.ATM'					!Atmosphere input file 
+'AC'    'Input_Files/SBXC.AC'					!Airplane input file 
+'QUAD'  'Input_Files/Quad.COPTER'					!Quadcopter input file
+'CS'    'Input_Files/SBXC.CS'					!Control system input file 
+'SIM'   'Input_Files/MaaWM.SIM'					!Simulation input file 
+'ICS'   'Input_Files/Aircraft.ICS'				!Aircraft Initial Condition File
+'WAY'   'Input_Files/Waypoints.WAY'				!Aircraft Waypoint File
+'LOG'   'Output_Files/MaaWM.LOG'				!Log out file	 
+'SOUT'  'Output_Files/State.OUT'				!State output file 
+'MOUT'  'Output_Files/Misc.OUT'					!Miscellaneous output file 
+'COUT'  'Output_Files/Controls.OUT'				!Control output file
+'FOUT'  'Output_Files/Forces.OUT'				!Force Output File
+'EOUT'  'Output_Files/Errors.OUT'				!Error Output File
+'WOUT'  'Output_Files/Winds.OUT'				!Sampled Wind Output File

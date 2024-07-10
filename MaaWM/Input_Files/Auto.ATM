@@ -1,0 +1,9 @@
+4	!Atmospheric Wind Type(1=constant,2=equation,3=1D table look up,4=2D table look up)
+1.225 	!Density(kg/m^3)
+1.0	!Wind scale
+0.0	!Turblevel
+0	!Offset Heading(rad)
+0	!Ramp Time (sec)
+0.00	!Vx_Wave_speed(m/s)
+0.00	!Vy_Wave_speed(m/s)
+'/home/carlos/Documents/GitLab_Repos/Research/MaaWM/Auto_Generated_WindField/Wave1/' !Auto Generated Locations

@@ -1,0 +1,27 @@
+1	!Turn dynamics on(1) or off(0)
+1	!Gravity on(1) or off(0)
+1	!Aerodynamics on(1) or off(0)
+0	!Contact Forces on(1) or off(0)
+1.282	!Mass (kg)
+0	!Stationline center of mass(m)
+0	!buttline center of mass(m)
+0	!waterline center of mass(m)
+0.005 !Ixx(kg*m^2)
+0.005 !Iyy(kg*m^2)
+0.009 !Izz(kg*m^2)
+0.00	!Ixy
+0.00	!Ixz
+0.00	!Iyz
+1		!Turn_Radius(m) (The turn radius of a quad is super small so I just set it to 1)
+0.5		!Alc - Some of these parameters are wrong. 
+0.5		!Als - Lisa Schibelius created these and should be
+0.5		!dxD - cross checked with Dr. Jonny Rogers Quadcopter simulation
+0.5		!dyD
+0.12065	!Rnew
+0.05	!C_T
+0.1		!CTau
+0.3302	!lphi
+0.2413	!ltheta
+1100	!OMEGAMAX
+0.005 	!Ir
+

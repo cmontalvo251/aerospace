@@ -1,0 +1,5 @@
+1	 !Atmospheric Wind Type(1=constant,2=equation,3=table look up,4=WRF Model)
+0.0 	 !Density(kg/m^3)
+0.0	 !Windspeed(m/s)(5.38)
+1.57097 !Wind direction_Psi(rad) (0 = tailwind, 3.14159265358979323846 = headwind,sidewind=1.5707963267949)
+0.0      !Wind Elevation Theta(rad) (1.5708 thermal)

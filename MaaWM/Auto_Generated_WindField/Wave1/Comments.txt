@@ -1,0 +1,34 @@
+===================Parameters.txt===============================
+
+!This parameters file has the following data structure
+
+dx,dy,ztop,1,dim
+
+dx is the distance between x coordinates in meters
+dy is the distance between y coordinates in meters
+ztop is the maximum altitude in meters
+dim is the number of data points along all axes
+
+====================SampleTimes.txt=========================
+
+!This data file contains the time coordinates of each time snippet.
+
+For our purposes we are just using T=0 so we just need U0,U1 etc
+
+=====================Zcoord.txt============================
+
+!This data file contains the z-levels in meters
+
+=====================U0.txt-W1.txt=========================
+
+40x40 arrays of windspeed
+x40
+
+so there are 40, 40x40 tables for a total of 40^2 or 1600 lines in each
+of those files
+
+each 40x40 table represents one specific z-level
+
+U0.txt is the windspeed at t=0 and U1.txt is the windspeed at t=t1 seconds
+
+t1 is found in the sampletimes.txt file

@@ -1,0 +1,53 @@
+1	!Turn dynamics on(1) or off(0)
+1	!Gravity on(1) or off(0)
+1	!Aerodynamics on(1) or off(0)
+0	!Contact Forces on(1) or off(0)
+6.3935	!Mass (kg)
+0	!Stationline center of mass(m)
+0	!buttline center of mass(m)
+0	!waterline center of mass(m)
+2.8279	!Ixx(kg*m^2)
+1.0744	!Iyy
+3.8421	!Izz
+0.0012012	!Ixy
+0.0886865	!Ixz
+0.0035035	!Iyz
+120		!Turn_Radius(m) (Normally it is 120m)
+1.0005		!Reference_Area(m^2)
+4.3412		!Wingspan(m)
+0.23206		!Mean_chord(m)
+20		!Trim_Velocity(m/s)
+0.33		!Propellor Diameter(m)
+0.0		!C_L_0
+5.5711 		!C_L_alpha
+0.0		!C_L_u
+4.2679 		!C_L_q
+0.49525		!C_L_de
+-0.26788	!C_y_beta
+-0.16755	!C_y_p
+0.14187		!C_y_r
+0.12642		!C_y_dr
+-0.10389	!C_y_da
+0.03 		!C_D_0
+0.069812	!C_D_alpha2
+0.0000 		!C_D_u
+-0.0040288	!C_D_de	
+-0.082183      	!C_l_beta
+-0.61153        !C_l_p
+0.17213		!C_l_r
+0.0039188      	!C_l_dr
+-0.30779      	!C_l_da
+0.00 		!C_m_0
+-1.7475 	!C_m_alpha
+0.0000 		!C_m_u
+-19.952	 	!C_m_q
+-2.1194 	!C_m_de
+0.040859       	!C_n_beta
+-0.0078369     	!C_n_p
+-0.035695 	!C_n_r
+-0.034812	!C_n_dr
+0.02969		!C_n_da
+0		!Thrust Model (0 = linear, 1 = Table look up)
+7.6509 		!C_x_delThrust(7.6509)
+
+

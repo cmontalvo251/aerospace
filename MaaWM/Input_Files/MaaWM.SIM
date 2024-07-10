@@ -1,0 +1,14 @@
+0	!Skip Dynamic Model(1=skip if you are running the grid point model)                                                           
+0	!Initial Time(sec)                                                                
+10000	!Final Time(sec)                                                                           
+0.001 !Timestep(sec) (0008)                                                                                                        
+100	!Output skip (10000)                                                                                                        
+1	!Control system on(1) or off(0)                                                                                    
+1	!(0) Wander Aimlessly or (1)Follow Waypoints                                                                                
+1640 !Boundary (ft)                                                                                
+-1	!Data Point to sample before the RBF(0 = off,-1 = last waypoint)                             
+1	!IKIND (Integer b/t 1-7 -> Order of RBF (1=First))       
+0	!K35 (Integer b/t 1-4 > signifying Order of Extra Polynomials (1=First))    
+1	!Model Actuators on(1) or off(0)                 
+1	!Debug ouputs on(1) or off(0)                                                             
+32 !Number of centers 

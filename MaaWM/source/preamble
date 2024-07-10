@@ -1,0 +1,3 @@
+ 	Implicit None
+        INTEGER NDIM
+        PARAMETER (NDIM=9999)

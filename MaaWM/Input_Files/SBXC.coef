@@ -1,0 +1,77 @@
+ |--SBXC Coefficient-based Aerodynamic Model--|
+      10.764        Reference area (ft^2) [wing area]
+      14.239        Lateral reference length (ft) [wing span]
+     0.76115        Longitudinal reference length (ft) [wing chord]
+  49.213        Reference airspeed (ft/sec)
+ 0.23769E-02    Reference air density (slug/ft^3)
+  14.1          Reference level flight lift (lbf)
+  -3.9097		Reference angle of attack (deg) 
+      2.0837        Reference Ixx (slug-ft^2)
+     0.79170        Reference Iyy (slug-ft^2)
+      2.8310        Reference Izz (slug-ft^2)
+     0.88507E-03    Reference Ixy (slug-ft^2)
+     0.65348E-01    Reference Ixz (slug-ft^2)
+     0.25815E-02    Reference Iyz (slug-ft^2)
+      0.0000        Reference hx (slug-ft^2/sec)
+      0.0000        Reference hy (slug-ft^2/sec)
+      0.0000        Reference hz (slug-ft^2/sec)
+ 0.03 0.20769E-01    Reference drag coefficient
+      0.0000        Reference CL,M
+      0.0000        Reference CD,M
+      0.0000        Reference Cm,M
+  5.5711        Reference CL,alpha
+ 0.69812E-01    Reference CD,alpha
+ 0.18396E-07    Reference Cl,alpha
+ -1.7475        Reference Cm,alpha
+-0.19688E-06    Reference Cn,alpha
+     0.86619        Reference CL,alphahat
+      0.0000        Reference CD,alphahat
+     -4.4826        Reference Cm,alphahat
+  0.0000        Reference CL,uhat
+  0.0000        Reference CD,uhat
+  0.0000        Reference Cm,uhat
+    -0.26788        Reference CY,beta
+    -0.82183E-01    Reference Cl,beta
+    -0.34829E-06    Reference Cm,beta
+     0.40859E-01    Reference Cn,beta
+  4.2679        Reference CL,qbar
+ 0.10880        Reference CD,qbar
+ -19.952        Reference Cm,qbar
+    -0.16755        Reference CY,pbar
+    -0.61153        Reference Cl,pbar
+    -0.78369E-02    Reference Cn,pbar
+ 0.14187        Reference CY,rbar
+ 0.17213        Reference Cl,rbar
+-0.35695E-01    Reference Cn,rbar
+     0.49525        Reference CL,delta-e
+    -0.40288E-02    Reference CD,delta-e
+     -2.1194        Reference Cm,delta-e
+-0.10389        Reference CY,delta-a
+-0.30779        Reference Cl,delta-a
+ 0.29690E-01    Reference Cn,delta-a
+     0.12642        Reference CY,delta-r
+     0.39188E-02    Reference Cl,delta-r
+    -0.34812E-01    Reference Cn,delta-r
+  1.8272        Reference CL,delta-f
+ 0.28300E-01    Reference CD,delta-f
+-0.21888        Reference Cm,delta-f
+    -0.36048        Reference elevator trim deflection (deg)
+	 0.109          Reference CD3, change in CD with CS^2
+  1.095       Maximum lift coefficient
+  6.00        Angle of attack at which CLmax occurs (deg)
+ -2.00        Angle of upper limit of linear lift (deg)
+ -2.00        Post-CLmax lift slope (per radian) 
+      -0.31         Minimum lift coefficient
+     -17.00         Angle of attack at which CLmin occurs (deg)
+      -9.00         Angle of lower limit of linear lift (deg)
+      0.5            Post-CLmin lift slope (per radian)  
+ 0.0            T0, Full-throttle static thrust at STP (lbf)
+ 0.0            T', Coefficient of V for thrust at STP (lbf-sec/ft)
+ 0.0            T", Coefficient of V^2 for thrust at STP (lbf-sec^2/ft^2)
+ 1.0            a, density exponent, T=throttle[(T0+T'V+T"V^2)(rho/rho0)^a]
+ 0.0000         Thrust offset, positive below CG (ft)
+ 0.0000         Thrust slope, dT/dV (lbf-sec/ft) 
+
+<===SBXC===>
+ |Various aero coefficients for the SB-XC are hard-coded into the simulator.
+ |Including this tag tells the simulator to use those coefficients.
