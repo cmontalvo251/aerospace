@@ -49,7 +49,7 @@ if t >= lastMagUpdate
     %%%Convert NED (North East Down to X,Y,Z in ECI frame)
     %%%First we need to create a rotation matrix from the NED frame to the 
     %%%inertial frame
-    BNED = [BN;BE;BD]; 
+    BNED = [BN;BE;-BD]; %%PCI has Down as Up
     BI = TIB(phiE,thetaE+pi,psiE)*BNED;
     %BI = eye(3)*BNED;    
     BB = TIBquat(q0123)'*BI;
