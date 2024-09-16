@@ -9,7 +9,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.integrate as I
 import pandas as pd
-import matplotlib.pyplot as plt
 
 #data = pd.read_csv('First_Open_Rocket_Design.csv')
 
@@ -88,7 +87,7 @@ def Derivatives(state,t):
     else:
         Cdi = Cd
         Si = S
-    qinf = -np.pi/8.0*rho*S*Cdi/mass
+    qinf = -np.pi/8.0*rho*Si*Cdi/mass
     aerox = qinf*abs(velx)*velx
     aeroz = qinf*abs(velz)*velz
 
