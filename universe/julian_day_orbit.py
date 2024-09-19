@@ -1,6 +1,11 @@
 #!/usr/bin/python
 
-from pdf import * ##This file can be found here https://github.com/cmontalvo251/Python/blob/master/pdf/pdf.py
+try:
+	from pdf import * ##This file can be found here https://github.com/cmontalvo251/Python/blob/master/pdf/pdf.py
+except:
+	import sys
+	sys.path.append('../../Python/pdf/')
+	from pdf import *
 from Universe import *
 import matplotlib.pyplot as plt
 
@@ -10,14 +15,13 @@ import matplotlib.pyplot as plt
 #The Julian period is a chronological interval of 7980 years; year 1 of the Julian Period was 4713 BC (−4712)
 #julian_day = 2444240 ##this is jan 1 1980 #this was a leap year
 #julian_day = 2445701 #this is jan 1 1984 #1984 was a leap year
-#julian_day = 2446796 ##this is jan 1 1987 -- really? yes really. You can
+julian_day = 2446796 ##this is jan 1 1987 -- really? yes really. You can
 #double check on this website
 #https://www.heavens-above.com/planets.aspx
-#julian_day = 2446797
 #julian_day = 2447162 ##this is jan 1 1988 #1988 was a leap year
-julian_day = 2450449         ##1997
+#julian_day = 2450449         ##1997
 #julian_day = 2451545. ##this is jan 1 2000
-#julian_day = 2458120.-365 ##this is jan 1 2017
+#julian_day = 2458120-365 ##this is jan 1 2017
 #julian_day = 2458120. ##this is jan 1 2018
 #julian_day = 2458485 ##this is jan 1 2019
 #julian_day = 2458850 ##this is jan 1 2020
@@ -33,8 +37,8 @@ julian_day = 2450449         ##1997
 # + 265 to get to the fall equinox
 # + 355 to get to the winter solstice
 #julian_day += 36 #February 5th
-julian_day += 146 #May 26th
-#julian_day += 245 #Sep 2nd
+#julian_day += 146 #May 26th
+julian_day += 245 #Sep 2nd
 #julian_day += 276
 #julian_day += 284
 ##julian_day += 49
