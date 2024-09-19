@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import scipy.integrate as I
 import pandas as pd
 
-#data = pd.read_csv('First_Open_Rocket_Design.csv')
+#data = pd.read_csv('Kyle.csv')
 
 ###Closes all Figures
 plt.close("all")
@@ -195,12 +195,6 @@ mout = stateout[:,4]
 vout = np.sqrt(vxout**2+vzout**2)
 
 plt.figure()
-plt.plot(tout,vout)
-plt.grid()
-plt.xlabel('Time (sec)')
-plt.ylabel('Velocity (m/s)')
-
-plt.figure()
 plt.plot(xout,zout)
 thetakerbal = np.linspace(0,2*np.pi,1000)
 xkerbal = R*np.cos(thetakerbal)
@@ -224,10 +218,28 @@ plt.legend()
 plt.xlabel('Time (sec)')
 plt.ylabel('AGL (m)')
 
+"""
+plt.figure()
+plt.plot(data['time'],data['vertical acceleration'],label='OpenRocket Simulation')
+plt.grid()
+plt.legend()
+plt.xlabel('Time (sec)')
+plt.ylabel('Vertical Acceleration (m/s^2)')
+"""
+
+plt.figure()
+plt.plot(tout,vout,label='Python Simulation')
+#plt.plot(data['time'],data['vertical velocity'],label='OpenRocket Simulation')
+plt.grid()
+plt.legend()
+plt.xlabel('Time (sec)')
+plt.ylabel('Velocity (m/s)')
+
 plt.figure()
 plt.plot(tout,mout,label='Python Simulation')
-#plt.plot(data['time'],data['mass']/1000.0,label='OpenRocket Simulation')
+#plt.plot(data['time'],data['mass'],label='OpenRocket Simulation')
 plt.grid()
+plt.legend()
 plt.xlabel('Time (sec)')
 plt.ylabel('Mass (kg)')
 
