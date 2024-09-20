@@ -1,8 +1,18 @@
 import numpy as np
 import copy as C
 import matplotlib.pyplot as plt
-import plotting as P
-import mio as fileIO ##This file can be found in this repo https://github.com/cmontalvo251/Python/blob/master/io/mio.py
+try:
+    import plotting as P
+except:
+    import sys
+    sys.path.append('../../Python/plotting/')
+    import plotting as P
+try:
+    import mio as fileIO ##This file can be found in this repo https://github.com/cmontalvo251/Python/blob/master/mio/mio.py
+except:
+    import sys
+    sys.path.append('../../Python/mio/')
+    import mio as fileIO
 import sys
 
 ##This code will eventually simulate the entire solar system but for now I'd 
@@ -89,7 +99,7 @@ class JPL():
         self.G = 6.67408e-11 #m3 kg-1 s-2
         #First we need to open the correction parameters
         self.correction_parameters = fileIO.dlmread('Outer_Planets_Corrections.txt',' ')
-        #print correction_parameters
+        #print(self.correction_parameters)
         file = open('Solar_System_Orbital_Elements.txt')
         ctr = 0
         self.names = ['Sun','Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto']
@@ -113,30 +123,30 @@ class JPL():
                 #This means that the current row is the '0' numbers
                 if ctr == 0:
                     #print(self.names[planet_number])
-                    a0 = np.float(numbers[0])
+                    a0 = np.float64(numbers[0])
                     self.a0.append(a0)
-                    e0 = np.float(numbers[1])
+                    e0 = np.float64(numbers[1])
                     self.e0.append(e0)
-                    i0 = np.float(numbers[2])
+                    i0 = np.float64(numbers[2])
                     self.i0.append(i0)
-                    L0 = np.float(numbers[3])
+                    L0 = np.float64(numbers[3])
                     self.L0.append(L0)
-                    wbar0 = np.float(numbers[4])
+                    wbar0 = np.float64(numbers[4])
                     self.wbar0.append(wbar0)
-                    OMEGA0 = np.float(numbers[5])
+                    OMEGA0 = np.float64(numbers[5])
                     self.OMEGA0.append(OMEGA0)
                 if ctr == 1:
-                    adot = np.float(numbers[0])
+                    adot = np.float64(numbers[0])
                     self.adot.append(adot)
-                    edot = np.float(numbers[1])
+                    edot = np.float64(numbers[1])
                     self.edot.append(edot)
-                    idot = np.float(numbers[2])
+                    idot = np.float64(numbers[2])
                     self.idot.append(idot)
-                    Ldot = np.float(numbers[3])
+                    Ldot = np.float64(numbers[3])
                     self.Ldot.append(Ldot)
-                    wbardot = np.float(numbers[4])
+                    wbardot = np.float64(numbers[4])
                     self.wbardot.append(wbardot)
-                    OMEGAdot = np.float(numbers[5])                    
+                    OMEGAdot = np.float64(numbers[5])                    
                     self.OMEGAdot.append(OMEGAdot)
                 ctr+=1
                 if ctr == 2:
