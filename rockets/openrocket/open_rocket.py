@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import scipy.integrate as I
 import pandas as pd
 
-#data = pd.read_csv('Kyle.csv')
+data = pd.read_csv('fall_2024.csv')
 
 ###Closes all Figures
 plt.close("all")
@@ -162,22 +162,22 @@ x0 = R
 z0 = 0.
 velx0 = 0.0
 velz0 = 0.0
-mass0 = 1.6 #kg
-T1 = 175/1000.0  
-massflowrate = (168./1000.)/2.4
+mass0 = 2.065 #kg
+T1 = 99.6/1000.0 #Newtons converted to kN
+massflowrate = (121./1000.)/2.3
 exit_velocity = T1*1000 / massflowrate
 Isp = exit_velocity / 9.81
 print('Isp = ',Isp)
-Cd = 0.75
-Cd_parachute = 13.0
+Cd = 0.61
+Cd_parachute = 0.8
 t_parachute = 9.0
-D = 7.62/100.
+D = 8.89/100.
 S = D**2
-S_parachute = (45./100.0)**2
-stage_1_time = 2.4
+S_parachute = ((91.4)/100.0)**2
+stage_1_time = 2.3
 stage_2_start = -99
 stage_2_end = -99
-period = 75.0
+period = 58.0
 GNC = 0
 apogee = 10000.
 
@@ -212,24 +212,23 @@ plt.ylabel('Z (m)')
 
 plt.figure()
 plt.plot(tout,np.sqrt(xout**2+zout**2)-R,label='Python Simulation')
-#plt.plot(data['time'],data['altitude'],label='OpenRocket Simulation')
+plt.plot(data['time'],data['altitude'],label='OpenRocket Simulation')
 plt.grid()
 plt.legend()
 plt.xlabel('Time (sec)')
 plt.ylabel('AGL (m)')
 
-"""
+
 plt.figure()
 plt.plot(data['time'],data['vertical acceleration'],label='OpenRocket Simulation')
 plt.grid()
 plt.legend()
 plt.xlabel('Time (sec)')
 plt.ylabel('Vertical Acceleration (m/s^2)')
-"""
 
 plt.figure()
-plt.plot(tout,vout,label='Python Simulation')
-#plt.plot(data['time'],data['vertical velocity'],label='OpenRocket Simulation')
+plt.plot(tout,vxout,label='Python Simulation')
+plt.plot(data['time'],data['vertical velocity'],label='OpenRocket Simulation')
 plt.grid()
 plt.legend()
 plt.xlabel('Time (sec)')
@@ -237,7 +236,7 @@ plt.ylabel('Velocity (m/s)')
 
 plt.figure()
 plt.plot(tout,mout,label='Python Simulation')
-#plt.plot(data['time'],data['mass'],label='OpenRocket Simulation')
+plt.plot(data['time'],data['mass'],label='OpenRocket Simulation')
 plt.grid()
 plt.legend()
 plt.xlabel('Time (sec)')
