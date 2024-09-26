@@ -13,7 +13,7 @@ rhos = 1.225 #kg/m^3
 m = 1350.0 #kg
 CD = 1.5 #unitless - non dimensional coefficient
 S = 2.8 #m^2 - planform area of entry vehicle
-gammae = -2.0*np.pi/180.0
+gammae = -6.0*np.pi/180.0
 Va = Ve*np.exp((1.0/(2*beta))*(rhos/(np.sin(gammae)))*(S*CD/m)*np.exp(-beta*ha))
 #Compute Acceleration
 drdt = Va*np.sin(gammae)
