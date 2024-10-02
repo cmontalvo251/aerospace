@@ -107,11 +107,14 @@ def Derivatives(state,t):
         ##What angle?
         ##Tangent to the current x,z coordinate
         #First get the angle to the current coordinate
-        thetaSat = np.arctan2(z,x)            
+        if GNC:
+            thetaSat = np.arctan2(z,x)
+        else:
+            thetaSat = np.pi/2.0
         ##Then compute thrust based on that angle
         thrustx = thrust*np.sin(thetaSat)
         thrustz = thrust*np.cos(thetaSat)
-            
+        
     if mass < 1.0:
         thrustx = 0.0
         thrustz = 0.0
@@ -124,6 +127,10 @@ def Derivatives(state,t):
         mdot = -thrust/ve
     else:
         mdot = 0.0
+        
+    ##If we are in between
+    if t > stage_1_time and t < stage_2_start:
+        mdot = mass_stage_1*2000/2.2 / (stage_1_time - stage_2_start)
     
     ##Now we can put Newton's EOMs together
     xdbldot = thrustx/mass + gravx + aerox
@@ -165,22 +172,23 @@ apogee = 10000.
 """
 
 
-###Conditions for Sub orbital flight
+###Conditions for Sub orbital flight (Two Stage)
 
 x0 = R
 z0 = 0.
 velx0 = 0.0
 velz0 = 0.0
-masstons = 8.0
-mass_end = 3.0
-stage_1_time = 63.0
-stage_2_start = -99
-stage_2_end = -99
-T1 = 205.16
-Isp = 265.
-Cd = 0.23
+masstons = 13.5
+mass_stage_1 = 2.2 #this is the mass of the first stage
+stage_1_time = 58.0
+stage_2_start = stage_1_time + 1.0
+stage_2_end = stage_2_start + 58.0
+T1 = 167.97
+T2 = 167.97
+Isp = 250.0
+Cd = 0.5
 D = 1.25
-S = np.pi*D**2/4.0
+S = D**2
 period = 1000.0
 GNC = 0
 apogee = 80000.
@@ -274,10 +282,10 @@ plt.xlabel('Time (sec)')
 plt.ylabel('AGL (m)')
 
 plt.figure()
-plt.plot(tout,mout)
+plt.plot(tout,mout*2.2/2000)
 plt.grid()
 plt.xlabel('Time (sec)')
-plt.ylabel('Mass (kg)')
+plt.ylabel('Mass (tons)')
 
 plt.show()
 
