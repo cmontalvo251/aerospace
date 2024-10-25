@@ -33,14 +33,12 @@ julian_day = 2456295 #this is jan 1 2013
 #julian_day -= 15
 #julian_day += 275 #October 2
 # - 10 to get to the winter solstice from the next year
-# + 79 to get to the spring equinox
-# + 172 to get to the summer solstice
-# + 245 to get to Sep 2nd
-# + 265 to get to the fall equinox
-# + 355 to get to the winter solstice
+# + 79 to get to the spring equinox (March 31st)
+# + 172 to get to the summer solstice (June 21st)
+# + 265 to get to the fall equinox (sep 21st)
+# + 355 to get to the winter solstice (dec 21st)
 #julian_day += 36 #February 5th
 #julian_day += 146 #May 26th
-#julian_day += 245 #Sep 2nd
 #julian_day += 276
 #julian_day += 284
 ##julian_day += 49
@@ -50,7 +48,6 @@ julian_day = 2456295 #this is jan 1 2013
 #julian_day += 365 - 30
 julian_day += (365 - 15)
 #julian_day -= 10
-#julian_day += 245
 #julian_day += 355
 
 #julian_day += 492*365
