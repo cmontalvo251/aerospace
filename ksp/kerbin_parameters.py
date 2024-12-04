@@ -11,7 +11,7 @@ G = 6.67e-11
 mu = G*mass_of_Kerbin
 
 ##True Anamoly
-nu = np.linspace(0,2*np.pi,100)
+nu = np.linspace(0,2*np.pi,10000)
 ##Compute my Apoaps and Periaps
 altitude_apoaps = 82.109*1000 #meters
 altitude_periaps = 79.9871*1000

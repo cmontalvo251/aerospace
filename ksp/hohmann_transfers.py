@@ -15,7 +15,7 @@ R = 600000. #meters Kerbin
 #RMun = 200000 #meters Mun
 
 ##True Anamoly
-nu = np.linspace(0,2*np.pi,1000)
+nu = np.linspace(0,2*np.pi,10000)
 ##Type in your apogee and perigee
 peri_AGL = 500000.
 rp = R + peri_AGL
