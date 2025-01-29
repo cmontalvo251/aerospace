@@ -1,26 +1,20 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-voltage = np.asarray([0.05,0.52,1.03,1.5,2,2.56])
-length = np.asarray([0,0.5,1,1.5,2,2.5])
+##THIS IS YOUR DATA
+wingspans = np.asarray([48,55.2,44.5,86,58.5,63])
+weights = np.asarray([3.37,5.64,2.5,25,6.61,6.28])
 
-coeff = np.polyfit(voltage,length,1)
-print(coeff)
+##DO NOT TOUCH
+coeff = np.polyfit(wingspans,weights,1)
+wingspans_fit = np.linspace(np.min(wingspans),np.max(wingspans),1000)
+weights_fit = np.polyval(coeff,wingspans_fit)
 
-voltage_fit = np.linspace(voltage[0],voltage[-1],1000)
-length_fit = np.polyval(coeff,voltage_fit)
-
-length_vals = np.polyval(coeff,voltage)
-
-residuals = length - length_vals
-
-plt.plot(voltage,length,'b*')
-plt.plot(voltage_fit,length_fit,'r-')
-plt.xlabel('Voltage (V)')
-plt.ylabel('Length (cm)')
+###NO NEED TO CHANGE EXCEPT FOR THE UNITS on X AND Y AXES
+plt.plot(wingspans,weights,'b*')
+plt.plot(wingspans_fit,weights_fit,'r--')
+plt.xlabel('Wingspan (in)')
+plt.ylabel('Weight (lb)')
 plt.grid()
 
-plt.figure()
-plt.plot(residuals,'b*')
-plt.grid()
 plt.show()
