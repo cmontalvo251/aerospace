@@ -104,19 +104,22 @@ class JPL():
         ctr = 0
         self.names = ['Sun','Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto']
         self.colorwheel = ['tan','orange','blue','red','orange','yellow','green','blue','grey']
-        self.AU = 149597870700.0
+        self.AU = 149597870700.0 ##METERS
+        self.EARTHVOLUME = 1.08e12 ##KILOMETERS^3
         self.a0 = []
         self.e0 = []
         self.i0 = []
         self.L0 = []
         self.wbar0 = []
         self.OMEGA0 = []
+        self.V0 = []
         self.adot = []
         self.edot = []
         self.idot = []
         self.Ldot = []
         self.wbardot = []
         self.OMEGAdot = []
+        self.Vdot = []
         for line in file:
             if len(line) > 0:
                 numbers = line.split(',')
@@ -135,6 +138,8 @@ class JPL():
                     self.wbar0.append(wbar0)
                     OMEGA0 = np.float64(numbers[5])
                     self.OMEGA0.append(OMEGA0)
+                    V0 = np.float64(numbers[6])
+                    self.V0.append(V0)
                 if ctr == 1:
                     adot = np.float64(numbers[0])
                     self.adot.append(adot)
@@ -148,6 +153,8 @@ class JPL():
                     self.wbardot.append(wbardot)
                     OMEGAdot = np.float64(numbers[5])                    
                     self.OMEGAdot.append(OMEGAdot)
+                    Vdot = np.float64(numbers[6])
+                    self.Vdot.append(Vdot)
                 ctr+=1
                 if ctr == 2:
                     ctr = 0
@@ -158,7 +165,10 @@ class JPL():
         self.Sun = Satellite(1.989e30,432169*5280./3.28,np.asarray([0,0,0]),np.asarray([0,0,0]),'Sun','yellow',0)
         satellites = [self.Sun]
         planet_number = 1
-        for i in range(0,len(self.names)-2):
+        print('AU (m) = ',self.AU)
+        print('Earth Volume (km^3) = ',self.EARTHVOLUME)
+        print('Earth Years (days) = ',365.25)
+        for i in range(0,len(self.names)-1):
             name = self.names[planet_number]
             #print(name)
             this_planet = Satellite(0,432169*5280./3.28,np.asarray([0,0,0]),np.asarray([0,0,0]),name,self.colorwheel[planet_number-1],0)
@@ -186,6 +196,10 @@ class JPL():
             self.ComputeCoordinates(this_planet,T,b,c,s,f)
             satellites.append(this_planet)
             planet_number += 1
+            print('Satellite = ',name)
+            print('    Semi Major Axis (AU) = ',np.round(this_planet.a/self.AU,2))
+            print('    Period (Earth Yrs) = ',np.round(this_planet.T/86400/365.25,2))
+            print('    Volume (Earths) = ',np.round(self.V0[i]/self.EARTHVOLUME,2))
         return satellites
 
     def ComputeCoordinates(self,planet,T,b,c,s,f):
@@ -248,7 +262,7 @@ class JPL():
         #print('Current Position of Planet = ',planet.x0,planet.y0,planet.z0)
 
         #Compute Period of Planet
-        T = planet.a**(3./2.)*2*np.pi/(np.sqrt(self.G*self.Sun.M))
+        planet.T = planet.a**(3./2.)*2*np.pi/(np.sqrt(self.G*self.Sun.M))
         #print('Period (days) = ',T/86400.)
 
 class UniverseParameters():
@@ -352,9 +366,9 @@ class SolarSystem():
         self.name = name
         print('Created Solar System = ',self.name)
         print('Number of Satellites = ',self.numsatellites)
-        print('Satellite Names:')
-        for i in range(0,self.numsatellites):
-            print(self.satellites[i].name)
+        #print('Satellite Names:')
+        #for i in range(0,self.numsatellites):
+            #print(self.satellites[i].name)
 
         #Assume the first satellite is the central planet (Sun/Earth etc and then compute orbital elements of all others)
         #I wonder if we should compute have mu be a parameter of the satellite itself. But maybe this is ok?

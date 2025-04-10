@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 #julian_day = 2447162 ##this is jan 1 1988 #1988 was a leap year
 #julian_day = 2450449         ##1997
 #julian_day = 2451545. ##this is jan 1 2000
-julian_day = 2456295 #this is jan 1 2013
+#julian_day = 2456295 #this is jan 1 2013
 #julian_day = 2457390 ## this is jan 1 2016
 #julian_day = 2458120-365 ##this is jan 1 2017
 #julian_day = 2458120. ##this is jan 1 2018
@@ -30,6 +30,8 @@ julian_day = 2456295 #this is jan 1 2013
 #julian_day = 2459215 #this is jan 1 2021
 #julian_day = 2459580  #this is jan 1 2022
 #julian_day = 2459945 #this is jan 1 2023
+#julian_day = 2460310 #this is jan 1 2024
+julian_day = 2460675 #this is jan 1 2025
 #julian_day -= 15
 #julian_day += 275 #October 2
 # - 10 to get to the winter solstice from the next year
@@ -40,13 +42,14 @@ julian_day = 2456295 #this is jan 1 2013
 #julian_day += 36 #February 5th
 #julian_day += 146 #May 26th
 #julian_day += 276
+julian_day += 114 #April 24th
 #julian_day += 284
 ##julian_day += 49
 #julian_day += 211
 #julian_day += 182
 #julian_day += 300
 #julian_day += 365 - 30
-julian_day += (365 - 15)
+#julian_day += (365 - 15)
 #julian_day -= 10
 #julian_day += 355
 
