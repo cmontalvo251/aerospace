@@ -325,10 +325,10 @@ for ifov in range(0,len(xsat_n),skip):
 	plt.plot(longitudesw2,latitudesw2,'r-')
 
 	##Plot Current Position
-	plt.plot(longitude[ifov],latitude[ifov],'b*',markerSize=20)
+	plt.plot(longitude[ifov],latitude[ifov],'b*',markersize=20)
 
 	##Plot Location of Ground Station
-	plt.plot(lonG,latG,'rs',markerSize=20)
+	plt.plot(lonG,latG,'rs',markersize=20)
 
 	##Plot line from ground station to satellite
 	plt.plot([longitude[ifov],lonG],[latitude[ifov],latG],'y-')
@@ -372,8 +372,8 @@ for ifov in range(0,len(xsat_n),skip):
 	##Plot the IFOV in black or green
 	if sat2G < sat2FOV1 or sat2G < sat2FOV2:
 		plt.plot(Lt_all,dt_all,'g-')
-		plt.plot(longFOV_G1,latFOV_G,'gs',markerSize=20)
-		plt.plot(longFOV_G2,latFOV_G,'gs',markerSize=20)
+		plt.plot(longFOV_G1,latFOV_G,'gs',markersize=20)
+		plt.plot(longFOV_G2,latFOV_G,'gs',markersize=20)
 		"""
 		print('g',xG,yG,zG)
 		print('s',xs,ys,zs)
@@ -391,8 +391,8 @@ for ifov in range(0,len(xsat_n),skip):
 		INSIDE = 1
 	else:
 		plt.plot(Lt_all,dt_all,'k-')
-		plt.plot(longFOV_G1,latFOV_G,'ks',markerSize=20)
-		plt.plot(longFOV_G2,latFOV_G,'ks',markerSize=20)
+		plt.plot(longFOV_G1,latFOV_G,'ks',markersize=20)
+		plt.plot(longFOV_G2,latFOV_G,'ks',markersize=20)
 		if INSIDE == 1:
 			tend = tsat[ifov]
 			endTime.append(tend)
