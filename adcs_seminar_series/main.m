@@ -12,11 +12,6 @@ global BfieldNavPrev pqrNavPrev ptpNavPrev current Ir1Bcg Ir2Bcg Ir3Bcg n1 n2 n3
 global maxSpeed maxAlpha Ir1B Ir2B Ir3B rwalphas
 global fsensor MagFieldBias AngFieldBias EulerBias R Amax lmax CD
 global MagFieldNoise AngFieldNoise EulerNoise IrR Jinv
- 
-%%%%Initialize Nav Filter
-BfieldNavPrev = [-99;0;0];
-pqrNavPrev = [0;0;0];
-ptpNavPrev = [0;0;0];
 
 %%%%Simulation of a Low Earth Satellite
 disp('Simulation Started')
@@ -69,12 +64,11 @@ number_of_orbits = 1;
 tfinal = period*number_of_orbits;
 %tfinal = 100;
 next = 10;
-timestep = 1.0;
+timestep = 10;
 tout = 0:timestep:tfinal;
 stateout = zeros(length(tout),length(state));
-%%%This is where we integrate the equations of motion
 
-%%%Loop through time to integrate
+%%%Create empty array for simulation
 BxBout = 0*stateout(:,1);
 ByBout = BxBout;
 BzBout = BxBout;
@@ -82,30 +76,31 @@ BxBm = 0*stateout(:,1);
 ByBm = BxBout;
 BzBm = BxBout;
 pqrm = zeros(length(tout),3);
-
 ptpm = zeros(length(tout),3);
 ptpN = 0*ptpm;
-
 BxBN = 0*stateout(:,1);
 ByBN = BxBout;
 BzBN = BxBout;
 pqrN = zeros(length(tout),3);
-
 ix = 0*stateout(:,1);
 iy = ix;
 iz = ix;
-
 rwa = 0*ptpm;
+BfieldNavPrev = [-99;0;0];
+pqrNavPrev = [0;0;0];
+ptpNavPrev = [0;0;0];
 
 %%%Sensor Parameters
 lastSensorUpdate = 0;
 sensor_params
 
-%%%%Call the Derivatives Routine to initialize vars
+%%%%Call the Derivatives Routine to initialize variables
 k1 = Satellite(tout(1),state);
 
 %%%Print Next
 lastPrint = 0;
+
+%%%Loop through time to integrate
 for idx = 1:length(tout)
     %%%Save the current state
     stateout(idx,:) = state';
@@ -145,7 +140,8 @@ for idx = 1:length(tout)
         lastPrint = lastPrint + next;
     end
     
-    %%%%Then we make our 4 function calls for the RK4
+    %%%This is where we integrate the equations of motion and
+    %%%%make our 4 function calls for the RK4
     k1 = Satellite(tout(idx),state);
     k2 = Satellite(tout(idx)+timestep/2,state+k1*timestep/2);
     k3 = Satellite(tout(idx)+timestep/2,state+k2*timestep/2);
@@ -153,14 +149,16 @@ for idx = 1:length(tout)
     k = (1/6)*(k1 + 2*k2 + 2*k3 + k4);
     state = state + k*timestep;
     
-    
 end
+
 %%%Save original State
 stateout_original = stateout;
 
 %%%
 disp('Simulation Complete')
 toc
+tic
+disp('Initiation plotting routine....')
 
 %%Convert state to kilometers
 stateout(:,1:6) = stateout_original(:,1:6)/1000;
