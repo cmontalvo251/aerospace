@@ -35,7 +35,7 @@ xp = r*np.cos(nu)
 yq = r*np.sin(nu)
 
 plt.plot(xp,yq,'r-')
-plt.plot(xp[0],yq[0],'r*',markerSize=20)
+plt.plot(xp[0],yq[0],'r*',markersize=20)
 theta = np.linspace(0,2*np.pi,100)
 xkerbin = Rkerbin*np.cos(theta)
 ykerbin = Rkerbin*np.sin(theta)
