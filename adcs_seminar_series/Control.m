@@ -1,5 +1,5 @@
 function [current,rwalphas] = Control(BfieldNav,pqrNav,ptpNav)
-global IrR Jinv
+global IrR Jinv Bdot
 
 %%%%%%%%%%%%%%%%BDOT CONTROLLER%%%%%%%%%%%%%
 k = 67200;
@@ -9,12 +9,15 @@ k = 67200;
 %%% pqr*Bfield / (n*A) = 6e=7
 %%% muB = n*i*A
 magtorquer_params
-current = k*cross(pqrNav,BfieldNav)/(n*A);
+current = k*cross(pqrNav,BfieldNav)/(n*A); %%% current = gain * (angular velocity x magnetic field) / scale
+%%% Bdot = (BfieldNav - BfieldNavprev)/update rate
+%%% current = k * Bdot / norm(B)
+%current = -k * Bdot / (n*A);
 %%%curent to be in amps ~= 40mA = 40e-3 = 4e-2 
 
 %%%%%%%%%%%%%%RW CONTROLLER%%%%%%%%%%%%%%%
 %reaction_wheel_params
-if sum(abs(pqrNav)) < 0.1
+if sum(abs(pqrNav)) < 0.3
     KP = eye(3)*1.0*IrR(1,1);
     ptpcommand = [1;0;0];
     pqrcommand = [0;0;0];

@@ -67,10 +67,6 @@ if t >= lastSensorUpdate
     [BfieldNav,pqrNav,ptpNav] = Navigation(BfieldMeasured,pqrMeasured,ptpMeasured);   
 end
 
-
-%%%CONTROL BLOCK
-[current,rwalphas] = Control(BfieldNav,pqrNav,ptpNav);
-
 %%%Magtorquer Model
 magtorquer_params
 %%%Add in saturation filter

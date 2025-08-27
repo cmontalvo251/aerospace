@@ -1,5 +1,5 @@
 function [BfieldNav,pqrNav,ptpNav] = Navigation(BfieldMeasured,pqrMeasured,ptpMeasured)
-global BfieldNavPrev pqrNavPrev ptpNavPrev
+global BfieldNavPrev pqrNavPrev ptpNavPrev Bdot 
 
 s = 0.3;
 
@@ -14,8 +14,9 @@ else
     pqrNav = pqrNavPrev*(1-s) + s*(pqrMeasured-pqrBiasEstimate);
     ptpBiasEstimate = [0;0;0];
     ptpNav = ptpNavPrev*(1-s) + s*(ptpMeasured-ptpBiasEstimate);
+    sensor_params
+    Bdot = (BfieldNav - BfieldNavPrev)/nextSensorUpdate;
 end
-
 BfieldNavPrev = BfieldNav;
 pqrNavPrev = pqrNav;
 ptpNavPrev = ptpNav;

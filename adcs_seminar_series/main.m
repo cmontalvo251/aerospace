@@ -8,8 +8,8 @@ tic
 %%%Globals
 global BB m I Is invI mu lastMagUpdate nextMagUpdate lastSensorUpdate 
 global nextSensorUpdate BfieldMeasured pqrMeasured ptpMeasured BfieldNav pqrNav ptpNav
-global BfieldNavPrev pqrNavPrev ptpNavPrev current Ir1Bcg Ir2Bcg Ir3Bcg n1 n2 n3
-global maxSpeed maxAlpha Ir1B Ir2B Ir3B rwalphas
+global BfieldNavPrev BfieldCtlPrev pqrNavPrev ptpNavPrev current Ir1Bcg Ir2Bcg Ir3Bcg n1 n2 n3
+global maxSpeed maxAlpha Ir1B Ir2B Ir3B rwalphas Bdot
 global fsensor MagFieldBias AngFieldBias EulerBias R Amax lmax CD
 global MagFieldNoise AngFieldNoise EulerNoise IrR Jinv
 
@@ -64,7 +64,7 @@ number_of_orbits = 1;
 tfinal = period*number_of_orbits;
 %tfinal = 100;
 next = 10;
-timestep = 10;
+timestep = 0.1;
 tout = 0:timestep:tfinal;
 stateout = zeros(length(tout),length(state));
 
@@ -89,6 +89,7 @@ rwa = 0*ptpm;
 BfieldNavPrev = [-99;0;0];
 pqrNavPrev = [0;0;0];
 ptpNavPrev = [0;0;0];
+Bdot = [0;0;0];
 
 %%%Sensor Parameters
 lastSensorUpdate = 0;
@@ -99,6 +100,10 @@ k1 = Satellite(tout(1),state);
 
 %%%Print Next
 lastPrint = 0;
+
+%%%%Control Parameters
+lastControl = -timestep;
+nextControl = 0.1;
 
 %%%Loop through time to integrate
 for idx = 1:length(tout)
@@ -125,9 +130,8 @@ for idx = 1:length(tout)
     BxBN(idx) = BfieldNav(1);
     ByBN(idx) = BfieldNav(2);
     BzBN(idx) = BfieldNav(3);
-    %%%THe actual pqr truth signal is embedded in
-    %%%The state vector.
-    %%%Save the measured pqr signal
+    %%%THe actual pqr truth signal is embedded in The state vector. Save
+    %%%the measured pqr signal
     pqrm(idx,:) = pqrMeasured';
     %%%Save the Nav pqr signal
     pqrN(idx,:) = pqrNav';
@@ -138,6 +142,12 @@ for idx = 1:length(tout)
     if tout(idx) > lastPrint
         disp(['Time = ',num2str(tout(idx)),' out of ',num2str(tfinal)])
         lastPrint = lastPrint + next;
+    end
+    
+    %%%CONTROL BLOCK
+    if tout(idx) > lastControl
+        [current,rwalphas] = Control(BfieldNav,pqrNav,ptpNav);
+        lastControl = lastControl + nextControl;
     end
     
     %%%This is where we integrate the equations of motion and
