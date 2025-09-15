@@ -8,9 +8,9 @@ Created on Thu May 28 07:22:57 2020
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.integrate as I
-import pandas as pd
+import pandas as pd #Try tools manage packages and search for pandas if that doesn't work use the shell and type 'pip3 install pandas'
 
-data = pd.read_csv('fall_2024.csv')
+data = pd.read_csv('fall_2024.csv') ##Use the plot/export tool and export your openrocket data to a csv. Then make sure to change the first line to match the data[] keys in this script
 
 ###Closes all Figures
 plt.close("all")
@@ -162,24 +162,24 @@ x0 = R
 z0 = 0.
 velx0 = 0.0
 velz0 = 0.0
-mass0 = 2.065 #kg
-T1 = 99.6/1000.0 #Newtons converted to kN
-massflowrate = (121./1000.)/2.3
+mass0 = 2.065 #kg - you get this from the rocket design tab in openrocket
+T1 = 99.6/1000.0 #Newtons converted to kN - double click your motor in Motor and Configurations and grab the average thrust
+massflowrate = (121./1000.)/2.3 #Take the difference betweeen the initial motor mass in g and final motor mass in grams, divide by 1000 to get to kg and then divide by the burn time
 exit_velocity = T1*1000 / massflowrate
 Isp = exit_velocity / 9.81
 print('Isp = ',Isp)
-Cd = 0.61
-Cd_parachute = 0.8
-t_parachute = 9.0
-D = 8.89/100.
+Cd = 0.61 #open your spreadsheet and grab the average of your drag coefficient over the length of the burn time
+Cd_parachute = 0.8 #double click the parachute and grab the Cd of the parachute from the properties
+t_parachute = 9.0 #GO back to your motor properties and check your ejection delay
+D = 8.89/100. #Double click your body tube and then check for your outer diameter in cm and divide by 100 to get to meters
 S = D**2
-S_parachute = ((91.4)/100.0)**2
-stage_1_time = 2.3
-stage_2_start = -99
-stage_2_end = -99
-period = 58.0
-GNC = 0
-apogee = 10000.
+S_parachute = ((91.4)/100.0)**2 ##This is the area of the parachute so I double click the parachute and look at the diamter
+stage_1_time = 2.3 ##This is your single stage burn time which is also in your motor properties
+stage_2_start = -99 ##YOu have a single stage rocket so leave the next
+stage_2_end = -99 #two lines here at -99
+period = 58.0 ##This is the time it takes for my rocket to ascend and descend.
+GNC = 0 ##leave these alone
+apogee = 10000. #leave these alone
 
 ###################################################################
 tout = np.linspace(0,period,100000)  #linspace(start,end,number of data points)
