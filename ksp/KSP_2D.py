@@ -75,6 +75,14 @@ def Derivatives(state,t):
         rho = 1.0
     else:
         rho = atmosphere_model(altitude)
+
+    ##Thrust ratio based on altitude
+    rho0 = atmosphere_model(0.0) ##This will always be 1.225
+    ratio = rho/rho0 ##This number will be between 0 and 1, start at 1 and go to 0
+    inverse_ratio = 1.0 - ratio ##This number will start at 0 and go to 1
+    T_ALT = T1*ratio + TVAC*inverse_ratio
+    ISP_ALT = Isp*ratio + IspVAC*inverse_ratio
+
     #Need AeroGUI Mod to get these parameters
     #https://forum.kerbalspaceprogram.com/index.php?/topic/105524-105-aerogui-v30-14-nov/
     #https://www.youtube.com/watch?v=ASHRPo4sw80
@@ -91,14 +99,14 @@ def Derivatives(state,t):
         thrustz = 0.0
     else:
         if GNC:
-            thrust = T1*1000.0
+            thrust = T_ALT*1000.0
             theta = 90.0*altitude/apogee
             if theta > 90.0:
                 theta = 90.0
             thrustx = thrust*np.cos(theta*np.pi/180.0)
             thrustz = thrust*np.sin(theta*np.pi/180.0)
         else:
-            thrustx = T1*1000.0
+            thrustx = T_ALT*1000.0
             thrustz = 0.0 
                 
     #Fire stage 2
@@ -123,7 +131,7 @@ def Derivatives(state,t):
     if abs(thrust) > 0:
         #print('thrust',thrust)
         #But when thrust is fired we lose mass
-        ve = Isp*abs(surface_gravity)
+        ve = ISP_ALT*abs(surface_gravity)
         mdot = -thrust/ve
     else:
         mdot = 0.0
@@ -152,28 +160,30 @@ deny = atm_model[:,3]
 #And planet parameters
 sidereal_rotational_velocity,mu,surface_gravity,R = planet_parameters()
 
-"""
+
 ##Initial Conditions for hop Orbit
 x0 = R
 z0 = 0.
 velx0 = 0.0
 velz0 = 0.0
-masstons = 2.4
-T1 = 38.28
-Isp = 140.
-Cd = 0.4
-S = 0.18 #This needs to be D^2
-stage_1_time = 38.0
+masstons = 11.8
+T1 = 167.97 ##Thrust ASL - At sea level
+TVAC = 215. ##Thrust in Vacuum
+Isp = 250. #This is ISP at sea level
+IspVAC = 320. #This is ISP in vacuum
+Cd = 0.2 #This is a guess based on some missile parameters 
+D = 2.0 #meters using the gear icon in KSP
+S = D**2 #This needs to be D^2
+stage_1_time = 117.
 stage_2_start = -99
 stage_2_end = -99
-period = 100.0
+period = 900.0
 GNC = 0
 apogee = 10000.
-"""
 
 
 ###Conditions for Sub orbital flight (Two Stage)
-
+"""
 x0 = R
 z0 = 0.
 velx0 = 0.0
@@ -192,7 +202,7 @@ S = D**2
 period = 1000.0
 GNC = 0
 apogee = 80000.
-
+"""
 """
 ###Let's make an orbit
 desired_orbit_altitude_km = 70. #kilometers
@@ -240,7 +250,7 @@ apogee = 70000.
 """
 
 ###################################################################
-mass0 = masstons*2000/2.2
+mass0 = masstons*1000 #CONVERT to kg via metric tons
 tout = np.linspace(0,period,100000)  #linspace(start,end,number of data points)
 stateinitial = np.asarray([x0,z0,velx0,velz0,mass0])
 stateout = I.odeint(Derivatives,stateinitial,tout) ##This is the ode toolbox from scipy (Scientific Python)
@@ -275,17 +285,45 @@ plt.grid()
 plt.xlabel('Time (sec)')
 plt.ylabel('Z (m)')
 
-plt.figure()
-plt.plot(tout,np.sqrt(xout**2+zout**2)-R)
-plt.grid()
-plt.xlabel('Time (sec)')
-plt.ylabel('AGL (m)')
+altitude = (np.sqrt(xout**2+zout**2)-R)
 
 plt.figure()
-plt.plot(tout,mout*2.2/2000)
+plt.plot(tout,altitude/1000.)
 plt.grid()
 plt.xlabel('Time (sec)')
-plt.ylabel('Mass (tons)')
+plt.ylabel('AGL (km)')
+
+rho = []
+rho0 = atmosphere_model(0.0) ##This will always be 1.225
+for a in altitude:
+    rho.append(atmosphere_model(a))
+rho = np.asarray(rho)
+##Thrust ratio based on altitude
+ratio = rho/rho0 ##This number will be between 0 and 1, start at 1 and go to 0
+inverse_ratio = 1.0 - ratio ##This number will start at 0 and go to 1
+T_ALT = T1*ratio + TVAC*inverse_ratio
+ISP_ALT = Isp*ratio + IspVAC*inverse_ratio
+plt.figure()
+plt.plot(tout,T_ALT)
+plt.grid()
+plt.xlabel('Time (sec)')
+plt.ylabel('Thrust (kN)')
+
+plt.figure()
+plt.plot(tout,ISP_ALT)
+plt.grid()
+plt.xlabel('Time (sec)')
+plt.ylabel('Isp (sec)')
+
+plt.figure()
+plt.plot(tout,mout/1000.)
+plt.grid()
+plt.xlabel('Time (sec)')
+plt.ylabel('Mass (metric tons)')
+
+###Compute the delta V
+dv = Isp*surface_gravity*np.log(mass0/mout[-1]) #in m/s
+print('Delta V = ',dv,'m/s')
 
 plt.show()
 
