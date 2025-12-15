@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Scale of the Universe 3D</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        #canvas-container { width: 100vw; height: 100vh; display: block; }
+        
+        /* UI Overlay */
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            pointer-events: none;
+            text-shadow: 0 0 10px rgba(0,0,0,0.8);
+        }
+        h1 { margin: 0; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; }
+        #scale-label { font-size: 1.2rem; color: #4aa3df; font-weight: bold; margin-top: 5px;}
+        #object-name { font-size: 2.5rem; font-weight: 100; margin-top: 10px; transition: opacity 0.5s; }
+        #description { font-size: 1rem; max-width: 400px; line-height: 1.4; opacity: 0.8; margin-top: 10px; }
+
+        /* Slider Controls */
+        #controls {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            text-align: center;
+        }
+        input[type=range] {
+            width: 100%;
+            cursor: pointer;
+        }
+        .instruction { color: #888; font-size: 0.8rem; margin-top: 10px; }
+        
+        /* Loading */
+        #loading {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: white; font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ui">
+        <h1>Scale of the Universe</h1>
+        <div id="scale-label">10^0 meters</div>
+        <div id="object-name">Beach Ball</div>
+        <div id="description">Starting at human scale.</div>
+    </div>
+
+    <div id="loading">Generating Universe...</div>
+
+    <div id="controls">
+        <input type="range" id="zoomSlider" min="-16" max="22" step="0.01" value="0">
+        <div class="instruction">Scroll or Drag Slider to Zoom</div>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+
+        // --- Configuration ---
+        const SCENES = [
+            { name: "Proton (Quarks)", scale: -15, desc: "Inside the nucleus. Quarks buzzing in a gluon field.", type: 'subatomic' },
+            { name: "Atom", scale: -10, desc: "A dense nucleus surrounded by an electron cloud.", type: 'atom' },
+            { name: "DNA Strand", scale: -8.5, desc: "The building blocks of life. Width approx 2.5 nanometers.", type: 'dna' },
+            { name: "Virus", scale: -7, desc: "A typical virus particle (approx 100nm).", type: 'virus' },
+            { name: "Beach Ball", scale: -0.5, desc: "Human scale reference object (approx 30cm).", type: 'ball' },
+            { name: "Earth", scale: 7, desc: "Our home. 12,742 km diameter.", type: 'earth' },
+            { name: "The Sun", scale: 9, desc: "A G-type main-sequence star. 1.4 million km diameter.", type: 'sun' },
+            { name: "Solar System", scale: 12.5, desc: "The heliosphere. Planets orbiting the sun.", type: 'solar' },
+            { name: "Milky Way Galaxy", scale: 20.8, desc: "Our galaxy. 100,000 light-years across.", type: 'galaxy' }
+        ];
+
+        // Global Variables
+        let scene, camera, renderer, composer;
+        let currentScale = 0; // Log10 meters
+        const objects = {}; // Store references to 3D objects
+        let time = 0;
+
+        // HTML Elements
+        const elScale = document.getElementById('scale-label');
+        const elName = document.getElementById('object-name');
+        const elDesc = document.getElementById('description');
+        const slider = document.getElementById('zoomSlider');
+
+        init();
+        animate();
+
+        function init() {
+            // Scene Setup
+            const container = document.getElementById('canvas-container');
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x000000, 0.02);
+
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 1000);
+            camera.position.z = 2;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.toneMapping = THREE.ReinhardToneMapping;
+            container.appendChild(renderer.domElement);
+
+            // Post Processing (Bloom for the "Beautiful" look)
+            const renderScene = new RenderPass(scene, camera);
+            const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+            bloomPass.threshold = 0;
+            bloomPass.strength = 1.2;
+            bloomPass.radius = 0.5;
+
+            composer = new EffectComposer(renderer);
+            composer.addPass(renderScene);
+            composer.addPass(bloomPass);
+
+            // --- Generate Objects ---
+            
+            // 1. Subatomic (Proton)
+            objects.proton = createProton();
+            scene.add(objects.proton);
+
+            // 2. Atom
+            objects.atom = createAtom();
+            scene.add(objects.atom);
+
+            // 3. DNA
+            objects.dna = createDNA();
+            scene.add(objects.dna);
+            
+            // 4. Virus (Simple Icosahedron)
+            objects.virus = createVirus();
+            scene.add(objects.virus);
+
+            // 5. Beach Ball
+            objects.ball = createBeachBall();
+            scene.add(objects.ball);
+
+            // 6. Earth
+            objects.earthGroup = createEarth();
+            scene.add(objects.earthGroup);
+
+            // 7. Sun
+            objects.sun = createSun();
+            scene.add(objects.sun);
+
+            // 8. Solar System (Lines)
+            objects.solar = createSolarSystem();
+            scene.add(objects.solar);
+
+            // 9. Galaxy
+            objects.galaxy = createGalaxy();
+            scene.add(objects.galaxy);
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0x404040);
+            scene.add(ambientLight);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 2);
+            dirLight.position.set(1, 1, 2);
+            scene.add(dirLight);
+
+            // Remove loading text
+            document.getElementById('loading').style.display = 'none';
+
+            // Event Listeners
+            window.addEventListener('resize', onWindowResize);
+            slider.addEventListener('input', (e) => { currentScale = parseFloat(e.target.value); });
+            window.addEventListener('wheel', (e) => {
+                let val = parseFloat(slider.value);
+                val -= e.deltaY * 0.005; 
+                if(val < -16) val = -16;
+                if(val > 22) val = 22;
+                slider.value = val;
+                currentScale = val;
+            });
+        }
+
+        // --- Object Creation Functions ---
+
+        function createProton() {
+            const group = new THREE.Group();
+            // Quarks
+            const geometry = new THREE.SphereGeometry(0.1, 32, 32);
+            const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            const quark1 = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 0xff3333 }));
+            const quark2 = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 0x33ff33 }));
+            const quark3 = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 0x3333ff }));
+            
+            quark1.position.set(0.2, 0, 0);
+            quark2.position.set(-0.1, 0.17, 0);
+            quark3.position.set(-0.1, -0.17, 0);
+            
+            group.add(quark1, quark2, quark3);
+            
+            // Gluon field (particles)
+            const pGeo = new THREE.BufferGeometry();
+            const pCount = 50;
+            const pos = new Float32Array(pCount * 3);
+            for(let i=0; i<pCount*3; i++) pos[i] = (Math.random() - 0.5);
+            pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+            const pMat = new THREE.PointsMaterial({color: 0xffffff, size: 0.02, transparent: true, opacity: 0.5});
+            const particles = new THREE.Points(pGeo, pMat);
+            group.add(particles);
+
+            group.visible = false;
+            return group;
+        }
+
+        function createAtom() {
+            const group = new THREE.Group();
+            // Nucleus
+            const nucleus = new THREE.Mesh(
+                new THREE.SphereGeometry(0.05, 16, 16),
+                new THREE.MeshStandardMaterial({ color: 0xff00ff, emissive: 0x440044 })
+            );
+            group.add(nucleus);
+
+            // Electron Cloud (Trails)
+            const trailGeo = new THREE.TorusGeometry(0.5, 0.005, 8, 50);
+            const trailMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.3 });
+            
+            const e1 = new THREE.Mesh(trailGeo, trailMat);
+            const e2 = new THREE.Mesh(trailGeo, trailMat);
+            const e3 = new THREE.Mesh(trailGeo, trailMat);
+
+            e1.rotation.x = Math.PI / 2;
+            e2.rotation.y = Math.PI / 2;
+            e3.rotation.x = Math.PI / 4;
+            e3.rotation.y = Math.PI / 4;
+
+            group.add(e1, e2, e3);
+            group.visible = false;
+            return group;
+        }
+
+        function createDNA() {
+            const group = new THREE.Group();
+            const sphereGeo = new THREE.SphereGeometry(0.08, 16, 16);
+            const mat1 = new THREE.MeshStandardMaterial({ color: 0xff8800 });
+            const mat2 = new THREE.MeshStandardMaterial({ color: 0x0088ff });
+            
+            for (let i = -10; i < 10; i++) {
+                const angle = i * 0.5;
+                const y = i * 0.3;
+                
+                const b1 = new THREE.Mesh(sphereGeo, mat1);
+                b1.position.set(Math.cos(angle)*0.5, y, Math.sin(angle)*0.5);
+                
+                const b2 = new THREE.Mesh(sphereGeo, mat2);
+                b2.position.set(Math.cos(angle + Math.PI)*0.5, y, Math.sin(angle + Math.PI)*0.5);
+
+                // Connector
+                const cylGeo = new THREE.CylinderGeometry(0.02, 0.02, 1, 8);
+                const cyl = new THREE.Mesh(cylGeo, new THREE.MeshBasicMaterial({color: 0xcccccc}));
+                cyl.position.set(0, y, 0);
+                cyl.rotation.y = -angle;
+                cyl.rotation.z = Math.PI / 2;
+                cyl.scale.y = 1;
+
+                group.add(b1, b2, cyl);
+            }
+            group.rotation.z = Math.PI / 4;
+            group.visible = false;
+            return group;
+        }
+
+        function createVirus() {
+            const geo = new THREE.IcosahedronGeometry(1, 1);
+            const mat = new THREE.MeshStandardMaterial({ color: 0x88ff88, roughness: 0.5, metalness: 0.1 });
+            const mesh = new THREE.Mesh(geo, mat);
+            
+            // Spikes
+            const pos = geo.attributes.position;
+            for(let i=0; i<pos.count; i++){
+                const v = new THREE.Vector3().fromBufferAttribute(pos, i);
+                const spike = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.05, 0.3), new THREE.MeshStandardMaterial({color: 0xff4444}));
+                spike.position.copy(v);
+                spike.lookAt(new THREE.Vector3(0,0,0));
+                spike.rotateX(-Math.PI/2);
+                spike.position.add(v.normalize().multiplyScalar(0.15));
+                mesh.add(spike);
+            }
+            
+            mesh.visible = false;
+            return mesh;
+        }
+
+        function createBeachBall() {
+            const geometry = new THREE.SphereGeometry(1, 32, 32);
+            // Create a striped texture using canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = 128; canvas.height = 128;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'white'; ctx.fillRect(0,0,128,128);
+            const colors = ['red', 'blue', 'yellow', 'green', 'white', 'orange'];
+            const w = 128/6;
+            colors.forEach((c, i) => {
+                ctx.fillStyle = c;
+                ctx.fillRect(i*w, 0, w, 128);
+            });
+            const tex = new THREE.CanvasTexture(canvas);
+            const material = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.2, metalness: 0.1 });
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.visible = false;
+            return mesh;
+        }
+
+        function createEarth() {
+            const group = new THREE.Group();
+            
+            // Procedural Earth Texture (Noise-ish)
+            const canvas = document.createElement('canvas');
+            canvas.width = 512; canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#000033'; ctx.fillRect(0,0,512,256);
+            
+            // Draw continents roughly
+            for(let i=0; i<400; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? '#228822' : '#116611';
+                const x = Math.random()*512;
+                const y = Math.random()*256;
+                const r = Math.random()*30 + 10;
+                ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+            }
+            
+            const tex = new THREE.CanvasTexture(canvas);
+            const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.8 });
+            const earth = new THREE.Mesh(new THREE.SphereGeometry(1, 64, 64), mat);
+            
+            // Atmosphere
+            const atmoGeo = new THREE.SphereGeometry(1.1, 64, 64);
+            const atmoMat = new THREE.MeshBasicMaterial({ color: 0x4444ff, transparent: true, opacity: 0.15, side: THREE.BackSide });
+            const atmo = new THREE.Mesh(atmoGeo, atmoMat);
+
+            group.add(earth, atmo);
+            group.visible = false;
+            return group;
+        }
+
+        function createSun() {
+            const geo = new THREE.SphereGeometry(1, 64, 64);
+            const mat = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
+            const mesh = new THREE.Mesh(geo, mat);
+            
+            // Glow sprite
+            const spriteMat = new THREE.SpriteMaterial({ 
+                map: new THREE.CanvasTexture(generateGlowTexture()), 
+                color: 0xffaa00, 
+                transparent: true, 
+                blending: THREE.AdditiveBlending 
+            });
+            const sprite = new THREE.Sprite(spriteMat);
+            sprite.scale.set(4, 4, 1);
+            mesh.add(sprite);
+            
+            mesh.visible = false;
+            return mesh;
+        }
+
+        function generateGlowTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 64; canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            const grad = ctx.createRadialGradient(32,32,0, 32,32,32);
+            grad.addColorStop(0, 'rgba(255,255,255,1)');
+            grad.addColorStop(0.5, 'rgba(255,255,255,0.3)');
+            grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0,0,64,64);
+            return canvas;
+        }
+
+        function createSolarSystem() {
+            const group = new THREE.Group();
+            
+            const orbits = [0.4, 0.7, 1.0, 1.5, 5.2, 9.5]; // AU distances relative
+            orbits.forEach(r => {
+                const geo = new THREE.RingGeometry(r, r+0.02, 64);
+                const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0.3 });
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.rotation.x = Math.PI/2;
+                group.add(mesh);
+            });
+            
+            // Tiny Sun in center
+            const sun = new THREE.Mesh(new THREE.SphereGeometry(0.1, 16,16), new THREE.MeshBasicMaterial({color:0xffff00}));
+            group.add(sun);
+
+            group.visible = false;
+            return group;
+        }
+
+        function createGalaxy() {
+            const group = new THREE.Group();
+            const particles = 2000;
+            const geo = new THREE.BufferGeometry();
+            const positions = [];
+            const colors = [];
+
+            const colorInside = new THREE.Color(0xffaa33);
+            const colorOutside = new THREE.Color(0x3344ff);
+
+            for(let i=0; i<particles; i++){
+                const radius = Math.random() * 5;
+                const spinAngle = radius * 5;
+                const branchAngle = (i % 3) * ((Math.PI * 2) / 3);
+                
+                const x = Math.cos(branchAngle + spinAngle) * radius + (Math.random()-0.5)*0.5;
+                const y = (Math.random()-0.5) * (0.5 - radius/10); // Flattened
+                const z = Math.sin(branchAngle + spinAngle) * radius + (Math.random()-0.5)*0.5;
+
+                positions.push(x, y, z);
+
+                const mixedColor = colorInside.clone().lerp(colorOutside, radius / 5);
+                colors.push(mixedColor.r, mixedColor.g, mixedColor.b);
+            }
+
+            geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+            const mat = new THREE.PointsMaterial({ size: 0.05, vertexColors: true, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending });
+            const points = new THREE.Points(geo, mat);
+            group.add(points);
+            group.visible = false;
+            return group;
+        }
+
+        // --- Logic ---
+
+        function updateUI(scale) {
+            // Find closest scene definition
+            let active = SCENES[0];
+            let minDist = 1000;
+            
+            SCENES.forEach(s => {
+                const dist = Math.abs(scale - s.scale);
+                if(dist < minDist) {
+                    minDist = dist;
+                    active = s;
+                }
+            });
+
+            // Format Scale String
+            const power = Math.floor(scale);
+            elScale.innerHTML = `10<sup>${power}</sup> meters`;
+            
+            if (minDist < 2.5) {
+                elName.innerText = active.name;
+                elDesc.innerText = active.desc;
+                elName.style.opacity = 1 - (minDist / 2.5);
+            } else {
+                elName.innerText = "";
+                elDesc.innerText = "";
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            time += 0.005;
+
+            updateUI(currentScale);
+
+            // Object visibility and scaling logic
+            // To simulate infinite scale, we map the current logarithmic scale to the object's local scale
+            // If the slider is at 7 (Earth), Earth is scale 1. If slider is 8, Earth is scale 0.1
+            
+            renderObject(objects.proton, -15, currentScale, 2);
+            renderObject(objects.atom, -10, currentScale, 2);
+            renderObject(objects.dna, -8.5, currentScale, 1.5);
+            renderObject(objects.virus, -7, currentScale, 1.5);
+            renderObject(objects.ball, -0.5, currentScale, 4); // Beach ball is roughly 10^-0.5
+            renderObject(objects.earthGroup, 7.1, currentScale, 2); 
+            renderObject(objects.sun, 9.15, currentScale, 3);
+            renderObject(objects.solar, 12.5, currentScale, 4);
+            renderObject(objects.galaxy, 20.8, currentScale, 2);
+
+            // Specific Animations
+            if(objects.proton.visible) objects.proton.rotation.y += 0.05;
+            if(objects.atom.visible) objects.atom.rotation.z += 0.01;
+            if(objects.dna.visible) objects.dna.rotation.y += 0.01;
+            if(objects.virus.visible) objects.virus.rotation.x += 0.01;
+            if(objects.earthGroup.visible) objects.earthGroup.rotation.y += 0.005;
+            if(objects.sun.visible) objects.sun.rotation.y += 0.002;
+            if(objects.galaxy.visible) objects.galaxy.rotation.y += 0.001;
+
+            composer.render();
+        }
+
+        // Helper to manage visibility based on scale difference
+        function renderObject(obj, objScaleLog, currentScaleLog, fadeRange) {
+            const diff = currentScaleLog - objScaleLog;
+            
+            // If within range
+            if (Math.abs(diff) < fadeRange) {
+                obj.visible = true;
+                
+                // Scale calculation: 
+                // If diff is 0, scale is 1.
+                // If diff is +1 (zoomed out), scale is 0.1
+                // If diff is -1 (zoomed in), scale is 10
+                const s = Math.pow(10, -diff);
+                obj.scale.set(s, s, s);
+
+                // Opacity Fade
+                let opacity = 1;
+                if (Math.abs(diff) > fadeRange - 1) {
+                    opacity = fadeRange - Math.abs(diff);
+                }
+                
+                // Recursively set opacity
+                obj.traverse(child => {
+                    if(child.material) {
+                        child.material.transparent = true;
+                        child.material.opacity = opacity;
+                        // Keep emissive intensity stable if exists
+                    }
+                });
+
+            } else {
+                obj.visible = false;
+            }
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        }
+    </script>
+</body>
+</html>
