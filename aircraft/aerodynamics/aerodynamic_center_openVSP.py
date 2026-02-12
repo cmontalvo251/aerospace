@@ -27,16 +27,20 @@ xacT = 50 + xacW_VSP*(cT/cbar-1)
 #Nose to nose the tails are 50 inches apart.
 #The xac_w is 2.34" and the root chord of the tail is 5"
 #so I'm assuming the aero center is half of the main wing aero center
-print('Distance between aero centers of wings = ',xacT)
+print('Distance between aero centers of wing and tail = ',xacT)
 
 #Theoretical aerodynamic center is Complicated because it's highly sensitive to the lift on the tail
 #Thus it's recommended you run a stability sweep on the tail independently of the main wing
-CLT = 0.66571*0.8 #add in "wake" effects
+CLT = 0.66571
 CL = (CLw + ST/S*CLT) #This is essentially the lift of the entire airplane
 print('Theoretical Total Lift = ',CL)
 VH = ST*xacT/(S*cbar) #This is the volume coefficient of the horizontal stabilizer
 xMAC = xacW_VSP + CLT/CL*VH*cbar
 print('Theoretical location of xMAC ignoring wake effects = ',xMAC)
+
+#Using my weird equation
+xMAC_ = xacW_VSP + xacT*ST/S
+print('Equation I made up which you can tell is totally wrong = ',xMAC_)
 
 #Running VSP you get the following data for Cl and drag
 CL = 0.85513 #Notice this is lower tan the theoretical lift due to wake effects
