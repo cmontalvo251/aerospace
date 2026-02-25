@@ -23,23 +23,23 @@ xcg = 6.816 #in
 ##Tail parameters
 ST = 100.0 #in^2
 cT = 5.0 #in
-xacT = 50 + xacW_VSP*(cT/cbar-1)
+lT = 50 + xacW_VSP*(cT/cbar-1)
 #Nose to nose the tails are 50 inches apart.
 #The xac_w is 2.34" and the root chord of the tail is 5"
 #so I'm assuming the aero center is half of the main wing aero center
-print('Distance between aero centers of wing and tail = ',xacT)
+print('Distance between aero centers of wing and tail = ',lT)
 
 #Theoretical aerodynamic center is Complicated because it's highly sensitive to the lift on the tail
 #Thus it's recommended you run a stability sweep on the tail independently of the main wing
 CLT = 0.66571 #Note that this does not include the efficiency factor of the tail which is typically around 85% from being in the wake of the main wing
 CL = (CLw + ST/S*CLT) #This is essentially the lift of the entire airplane
 print('Theoretical Total Lift = ',CL)
-VH = ST*xacT/(S*cbar) #This is the volume coefficient of the horizontal stabilizer
+VH = ST*lt/(S*cbar) #This is the volume coefficient of the horizontal stabilizer
 xMAC = xacW_VSP + CLT/CL*VH*cbar #Note that this does not include the effect of downwash (1-de/da) which is because the tail is in the downwash of the main wing
 print('Theoretical location of xMAC ignoring wake effects (will be farther back than openVSP) = ',xMAC)
 
 #Using my weird equation
-xMAC_ = xacW_VSP + xacT*ST/S
+xMAC_ = xacW_VSP + lT*ST/S
 print('Equation I made up which you can tell is totally wrong = ',xMAC_)
 
 #Running VSP you get the following data for Cl and drag

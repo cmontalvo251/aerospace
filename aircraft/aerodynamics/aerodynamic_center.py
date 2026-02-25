@@ -60,12 +60,12 @@ plt.ylabel('x_(c/4)')
 plt.grid()
 
 ##Alright now integrate equation 2.29 of Caughey's notes using a Reimann Sum
-xMAC = 0.0
+xAC = 0.0
 dy = y[1]-y[0]
 for yi in y:
-  xMAC += quarter_chord_line(yi)*chord(yi)*dy
-xMAC*=2.0/S
-print('xMAC = ',xMAC)
+  xAC += quarter_chord_line(yi)*chord(yi)*dy
+xAC*=2.0/S
+print('xAC = ',xAC)
 
 ###MEAN AERODYNAMIC CHORD
 MAC = 0.0
@@ -84,7 +84,7 @@ plt.plot([wing_span/2.0,wing_span/2.0],[ct+np.tan(sweep_angle*np.pi/180.0)*wing_
 plt.plot([-wing_span/2.0,-wing_span/2.0],[ct+np.tan(sweep_angle*np.pi/180.0)*wing_span/2.0,np.tan(sweep_angle*np.pi/180.0)*wing_span/2.0]) #end cap right side
 plt.plot([0,wing_span/2.0],[quarter_chord_line(0),quarter_chord_line(wing_span/2.0)]) #quarter chord line of right side
 plt.plot([0,-wing_span/2.0],[quarter_chord_line(0),quarter_chord_line(wing_span/2.0)]) #quarter chord line of left side
-plt.plot([0,0],[xMAC,xMAC],'b*')
+plt.plot([0,0],[xAC,xAC],'b*')
 plt.grid()
 plt.axis('equal')
 plt.show()
