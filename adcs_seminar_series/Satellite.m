@@ -4,7 +4,7 @@ global BB invI I m mu nextMagUpdate lastMagUpdate lastSensorUpdate maxSpeed
 global nextSensorUpdate BfieldMeasured pqrMeasured BfieldNav pqrNav
 global BfieldNavPrev pqrNavPrev current Is Ir1Bcg Ir2Bcg Ir3Bcg n1 n2 n3
 global maxAlpha Ir1B Ir2B Ir3B ptpMeasured ptpNavPrev ptpNav rwalphas
-global fsensor MagFieldBias AngFieldBias EulerBias
+global fsensor MagFieldBias AngFieldBias EulerBias rwSATURATED
 global MagFieldNoise AngFieldNoise EulerNoise R Amax lmax CD
 
 x = state(1);
@@ -81,11 +81,19 @@ w123dot = [0;0;0];
 for idx = 1:3
     if abs(w123(idx)) > maxSpeed
         w123dot(idx) = 0;
+        if (rwSATURATED == 0)
+            disp('Reaction Wheels have Saturated. Moving to desaturization scheme')
+            rwSATURATED = 1;
+        end
     else
         if abs(rwalphas(idx)) > maxAlpha
             rwalphas(idx) = sign(rwalphas(idx))*maxAlpha;
         end
         w123dot(idx) = rwalphas(idx);
+    end
+    %%%Spin down the reaction wheels
+    if (rwSATURATED)
+        w123dot(idx) = -0.1*w123(idx);
     end
 end
 LMN_RWs = Ir1B*w123dot(1)*n1 + Ir2B*w123dot(2)*n2 + Ir3B*w123dot(3)*n3;
