@@ -9,9 +9,9 @@ tic
 global BB m I Is invI mu lastMagUpdate nextMagUpdate lastSensorUpdate 
 global nextSensorUpdate BfieldMeasured pqrMeasured ptpMeasured BfieldNav pqrNav ptpNav
 global BfieldNavPrev BfieldCtlPrev pqrNavPrev ptpNavPrev current Ir1Bcg Ir2Bcg Ir3Bcg n1 n2 n3
-global maxSpeed maxAlpha Ir1B Ir2B Ir3B rwalphas Bdot DETUMBLE
+global maxSpeed maxAlpha Ir1B Ir2B Ir3B rwalphas Bdot
 global fsensor MagFieldBias AngFieldBias EulerBias R Amax lmax CD
-global MagFieldNoise AngFieldNoise EulerNoise IrR Jinv rwSATURATED
+global MagFieldNoise AngFieldNoise EulerNoise IrR Jinv
 
 %%%%Simulation of a Low Earth Satellite
 disp('Simulation Started')
@@ -48,9 +48,9 @@ theta0 = 0;
 psi0 = 0;
 ptp0 = [phi0;theta0;psi0];
 q0123_0 = EulerAngles2Quaternions(ptp0);
-p0 = 0.8*0;
-q0 = -0.2*0;
-r0 = 0.3*0;
+p0 = 0.8;
+q0 = -0.2;
+r0 = 0.3;
 %%%Initial conditions of my reaction wheels
 w10 = 0;
 w20 = 0;
@@ -60,7 +60,7 @@ state = [x0;y0;z0;xdot0;ydot0;zdot0;q0123_0;p0;q0;r0;w10;w20;w30];
 
 %%%Need time window
 period = 2*pi/sqrt(mu)*semi_major^(3/2);
-number_of_orbits = 2;
+number_of_orbits = 1;
 tfinal = period*number_of_orbits;
 %tfinal = 100;
 next = 10;
@@ -90,10 +90,6 @@ BfieldNavPrev = [-99;0;0];
 pqrNavPrev = [0;0;0];
 ptpNavPrev = [0;0;0];
 Bdot = [0;0;0];
-current = [0;0;0];
-rwalphas = [0;0;0];
-rwSATURATED = 0;
-DETUMBLE = 0;
 
 %%%Sensor Parameters
 lastSensorUpdate = 0;
@@ -150,9 +146,7 @@ for idx = 1:length(tout)
     
     %%%CONTROL BLOCK
     if tout(idx) > lastControl
-        %%%Assume perfect feedback of rw angular velocity
-        w123 = state(14:16);
-        [current,rwalphas] = Control(BfieldNav,pqrNav,ptpNav,w123);
+        [current,rwalphas] = Control(BfieldNav,pqrNav,ptpNav);
         lastControl = lastControl + nextControl;
     end
     

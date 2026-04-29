@@ -1,6 +1,5 @@
 function [XYZD,LMND] = Disturbance(altitude,Amax,lmax,vel,CD,BI_Tesla)
 %%%Compute the disturbance forces and moments on a Satellite
-global rwSATURATED
 
 %%%Aerodynamic Drag
 V = norm(vel);
@@ -25,4 +24,4 @@ LMNMDM = dconstant*BI_Tesla;
 
 %%%Add it all up
 XYZD = XYZSRP + XYZAERO;
-LMND = LMNSRP + LMNAERO + LMNMDM + [1.0;1.0;1.0]*(1e-4)*(1-rwSATURATED); %%This is only on to simulate rw saturation
+LMND = LMNSRP + LMNAERO + LMNMDM;

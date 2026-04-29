@@ -1,12 +1,8 @@
-function [current,rwalphas] = Control(BfieldNav,pqrNav,ptpNav,w123)
-global IrR Jinv Bdot rwSATURATED DETUMBLE
+function [current,rwalphas] = Control(BfieldNav,pqrNav,ptpNav)
+global IrR Jinv Bdot
 
 %%%%%%%%%%%%%%%%BDOT CONTROLLER%%%%%%%%%%%%%
-if DETUMBLE || rwSATURATED
-    k = 67200; %%Force the magnetorquers to be off
-else
-    k = 0;
-end
+k = 67200;
 %%%Bfield is in teslas - 40000 nT = 4e4e-9 = 4e-5 ~= 1e-5
 %%%pqr is in rad/s --    0.1 rad/s  = 1e-1
 %%% pqr*Bfield = 1e-1*1e-5 = 1e-6
@@ -21,8 +17,7 @@ current = k*cross(pqrNav,BfieldNav)/(n*A); %%% current = gain * (angular velocit
 
 %%%%%%%%%%%%%%RW CONTROLLER%%%%%%%%%%%%%%%
 %reaction_wheel_params
-sumabspqrNav = sum(abs(pqrNav));
-if sumabspqrNav < 0.3*1e20 && (rwSATURATED == 0)
+if sum(abs(pqrNav)) < 0.3
     KP = eye(3)*1.0*IrR(1,1);
     ptpcommand = [1;0;0];
     pqrcommand = [0;0;0];
@@ -30,10 +25,6 @@ if sumabspqrNav < 0.3*1e20 && (rwSATURATED == 0)
     Mdesired = -KD*(pqrcommand - pqrNav) - KP*(ptpcommand-ptpNav);
 else
     Mdesired = [0;0;0];
-end
-if sumabspqrNav < 0.3 && (rwSATURATED == 1) && sum(abs(w123)) < 0.1
-    rwSATURATED = 0;
-    disp('Reaction wheels at zero and system detumbled')
 end
 
 %%%Invert Mdesired
