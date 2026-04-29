@@ -12,11 +12,57 @@ import scipy.integrate as I
 ###Closes all Figures
 plt.close("all")
 
-def atmosphere_model(altitude):
-    scale_height = 5000.0
-    rho_sl = 1.225
-    rho = rho_sl*np.exp(-altitude/scale_height)
-    return rho
+#Gemini Pro 3.1 wrote this function to make my atmosphere model more accurate
+def get_atmosphere(altitude):
+    """
+    Returns atmospheric density (rho), pressure ratio, and speed of sound (a)
+    based on Droo's standard atmosphere.
+    """
+    R_air = 287.058 # Specific gas constant for air J/(kg*K)
+    gamma = 1.4 # Heat capacity ratio
+    rho_sl = 1.225 # Sea level density kg/m^3
+    T_sl = 288.15 # Sea level temperature K
+    
+    if altitude <= 0:
+        return rho_sl, 1.0, np.sqrt(gamma * R_air * T_sl)
+    if altitude >= 60000:
+        return 0.0, 0.0, 0.0 # Vacuum
+        
+    if altitude < 11000:
+        # Troposphere: Temperature drops linearly
+        T = T_sl - 0.0065 * altitude
+        p_ratio = (1 - (0.0065 * altitude) / T_sl)**5.2558
+        # Ideal Gas Law density calculation relative to sea level
+        rho = rho_sl * p_ratio * (T_sl / T)
+    else:
+        # Stratosphere: Temperature is constant in this simplified model
+        T = 216.65 
+        p_11k = 0.2233 
+        p_ratio = p_11k * np.exp(-(altitude - 11000) / 6340)
+        rho = rho_sl * p_ratio * (T_sl / T)
+        
+    speed_of_sound = np.sqrt(gamma * R_air * T)
+    return rho, p_ratio, speed_of_sound
+
+
+#Gemini Pro 3.1 also wrote this function
+def get_drag_coefficient(velocity, speed_of_sound):
+    """
+    Interpolates the drag coefficient based on Mach number 
+    to simulate the transonic wave drag wall.
+    """
+    if speed_of_sound == 0:
+        return 0.0 # Vacuum, no drag
+        
+    mach_number = velocity / speed_of_sound
+    
+    # Define the Mach vs Cd curve (The "Transonic Drag Wall")
+    mach_points = [0.0,  0.8,  1.05, 1.2,  2.0,  4.0,  10.0]
+    cd_points   = [0.35, 0.36, 0.85, 0.80, 0.45, 0.35, 0.30]
+    
+    # np.interp mathematically connects the dots between the arrays above
+    cd = np.interp(mach_number, mach_points, cd_points)
+    return cd
 
 def planet_parameters():
     ##https://junoneworigins.fandom.com/wiki/Juno_System
@@ -70,20 +116,16 @@ def Derivatives(state,t):
 
     ##Now let's do Aerodynamics 
     altitude = rSat-R
-    if altitude < 0:
-        rho = 1.0
-    else:
-        rho = atmosphere_model(altitude)
+    rho, p_ratio, speed_of_sound = get_atmosphere(altitude)
 
     ##Thrust ratio based on altitude
-    rho0 = atmosphere_model(0.0) ##This will always be 1.225
-    ratio = rho/rho0 ##This number will be between 0 and 1, start at 1 and go to 0
-    inverse_ratio = 1.0 - ratio ##This number will start at 0 and go to 1
-    T_ALT = T1*ratio + TVAC*inverse_ratio
-    ISP_ALT = Isp*ratio + IspVAC*inverse_ratio
+    T_ALT = T1 + (TVAC-T1)*(1-p_ratio)
+    ISP_ALT = Isp + (IspVAC-Isp)*(1-p_ratio)
     
     #A few problems here. First Cd is a function of Mach Number and Reynolds number
-    #so......I think I'll just leave this off
+    #As Such I had Gemini Pro 3.1 write a nice function to interpolate drag
+    velocity = np.sqrt(velx**2 + velz**2)
+    Cd = get_drag_coefficient(velocity,speed_of_sound)
     #Make sure that S is D^2
     qinf = -np.pi/8.0*rho*S*Cd/mass #This aero model was checked with ARL work in 2012
     aerox = qinf*abs(velx)*velx
@@ -158,17 +200,17 @@ z0 = 0.
 velx0 = 0.0
 velz0 = 0.0
 masstons = 11.8
-T1 = 167.97 ##Thrust ASL - At sea level
-TVAC = 215. ##Thrust in Vacuum
-Isp = 250. #This is ISP at sea level
-IspVAC = 320. #This is ISP in vacuum
-Cd = 0.2 #This is a guess based on some missile parameters 
-D = 2.0 #meters using the gear icon in KSP
+T1 = 475.0 ##Thrust ASL - At sea level
+TVAC = 539. ##Thrust in Vacuum
+Isp = 226. #This is ISP at sea level dv = Isp*ln(MR)
+IspVAC = 256. #This is ISP in vacuum
+Cd = 0.35 #This is a guess based on OpenRocket
+D = 2.01 #meters using width and depth
 S = D**2 #This needs to be D^2
-stage_1_time = 117.
+stage_1_time = 41.
 stage_2_start = -99
 stage_2_end = -99
-period = 900.0
+period = 2000.0
 GNC = 0
 apogee = 10000.
 
@@ -242,7 +284,7 @@ apogee = 70000.
 
 ###################################################################
 mass0 = masstons*1000 #CONVERT to kg via metric tons
-tout = np.linspace(0,period,100000)  #linspace(start,end,number of data points)
+tout = np.linspace(0,period,1000000)  #linspace(start,end,number of data points)
 stateinitial = np.asarray([x0,z0,velx0,velz0,mass0])
 stateout = I.odeint(Derivatives,stateinitial,tout) ##This is the ode toolbox from scipy (Scientific Python)
 
@@ -285,9 +327,10 @@ plt.xlabel('Time (sec)')
 plt.ylabel('AGL (km)')
 
 rho = []
-rho0 = atmosphere_model(0.0) ##This will always be 1.225
+rho0,_,_ = get_atmosphere(0.0) ##This will always be 1.225
 for a in altitude:
-    rho.append(atmosphere_model(a))
+    rhoi,_,_ = get_atmosphere(a)
+    rho.append(rhoi)
 rho = np.asarray(rho)
 ##Thrust ratio based on altitude
 ratio = rho/rho0 ##This number will be between 0 and 1, start at 1 and go to 0
