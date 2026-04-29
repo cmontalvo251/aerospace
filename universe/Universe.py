@@ -34,7 +34,7 @@ import sys
 
 class JPL():
     def __init__(self,julian_day):
-        #run the coordinate transformation
+        #This will read the orbital elements of all the planets
         self.planetsInit()
         print('Planets Initialized')
         satellites = self.computePlanetLocations(julian_day)
@@ -372,7 +372,8 @@ class SolarSystem():
 
         #Assume the first satellite is the central planet (Sun/Earth etc and then compute orbital elements of all others)
         #I wonder if we should compute have mu be a parameter of the satellite itself. But maybe this is ok?
-        self.ComputeOrbitalElements()
+        #This is no longer utilized
+        ##self.ComputeOrbitalElements()
 
     def Derivatives(self):
         ##Need to get acceleration from all other satellites except itself
@@ -614,6 +615,8 @@ class SolarSystem():
             #plt.xlim([-2.4,2.4])
             #plt.ylim([-2,2])
         pp.savefig()
+        
+        ##This is where we need to add plotting the angle 
 
     def PlotMayavi(self):
         from mayavi import mlab
@@ -674,10 +677,10 @@ class SolarSystem():
         mlab.orientation_axes()
         mlab.show()
 
-    def Orbit(self):
+    def Orbit(self,numorbits=1):
         print('Computing Orbit based on Orbital Elements')
         #Alright so here we're going to make a vector for the true anomaly
-        nu = np.linspace(0,2*np.pi,1000)
+        nu = np.linspace(0,2*np.pi*numorbits,1000)
         for i in range(0,self.numsatellites):
             print(self.satellites[i].name)
             if i == 0:
@@ -751,6 +754,9 @@ class SolarSystem():
         #In order to compute this you really need to have an body on the inside.
         central_satellite = self.satellites[0] #It's assume your solar system is set up this way                
         for i in range(1,self.numsatellites):
+            print('Name = ',self.satellites[i].name)
+            print('Initial Pos = ',self.satellites[i].initial_pos)
+            print('Initial Vel = ',self.satellites[i].initial_vel)
             if np.linalg.norm(self.satellites[i].initial_pos) > 1e-2 and np.linalg.norm(self.satellites[i].initial_vel) > 1e-2:               
                 print('Computing Orbital Elements....')
                 print(self.satellites[i].name)

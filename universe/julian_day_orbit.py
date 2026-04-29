@@ -16,10 +16,9 @@ import matplotlib.pyplot as plt
 #julian_day = 2444240 ##this is jan 1 1980 #this was a leap year
 #julian_day = 2445701 #this is jan 1 1984 #1984 was a leap year
 #julian_day = 2446796 ##this is jan 1 1987 -- really? yes really. You can
-#double check on this website
-#https://www.heavens-above.com/planets.aspx
+#double check on this website https://www.heavens-above.com/planets.aspx
 #julian_day = 2447162 ##this is jan 1 1988 #1988 was a leap year
-#julian_day = 2450449         ##1997
+#julian_day = 2450449  ##1997
 #julian_day = 2451545. ##this is jan 1 2000
 #julian_day = 2456295 #this is jan 1 2013
 #julian_day = 2457390 ## this is jan 1 2016
@@ -31,7 +30,8 @@ import matplotlib.pyplot as plt
 #julian_day = 2459580  #this is jan 1 2022
 #julian_day = 2459945 #this is jan 1 2023
 #julian_day = 2460310 #this is jan 1 2024
-julian_day = 2460675 #this is jan 1 2025
+#julian_day = 2460675 #this is jan 1 2025
+julian_day  = 2461040 #this is jan 1 2026
 #julian_day -= 15
 #julian_day += 275 #October 2
 # - 10 to get to the winter solstice from the next year
@@ -42,7 +42,7 @@ julian_day = 2460675 #this is jan 1 2025
 #julian_day += 36 #February 5th
 #julian_day += 146 #May 26th
 #julian_day += 276
-julian_day += 114 #April 24th
+julian_day += 119 #April 29th
 #julian_day += 284
 ##julian_day += 49
 #julian_day += 211
@@ -59,7 +59,8 @@ julian_day += 114 #April 24th
 planets = JPL(julian_day)
 
 #Finally compute all the orbits
-planets.MilkyWay.Orbit()
+planets.MilkyWay.Orbit() #I added an optional numorbits here
+#so I can plot more orbits....wait. This is not time dependent. Dang it.
 
 ##Finally Plot the Output of the Systems
 print('Creating Plots')
@@ -71,9 +72,12 @@ planets.MilkyWay.PlotOrbit(pp,-1)
 ##Only plot inner planets
 planets.MilkyWay.numsatellites = 5
 planets.MilkyWay.PlotOrbit(pp,-1)
+#plt.show()
 pp.close()
 sys.exit()
 
+##I'm going to have to edit the animation routine here
+##To get the angles as a function of day
 ##Animation
 #planets.MilkyWay.numsatellites = 4 + 1 #The plus one is because of loops in Python. I know I probably need to fix the loop but whatever
 #pa = PDF(1,plt)
