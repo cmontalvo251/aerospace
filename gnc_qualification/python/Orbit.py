@@ -133,7 +133,7 @@ class Earth_Orbit():
             plt.grid()
             #plt.title('Altitude vs Time')
             plt.xlabel('Time (sec)')
-            plt.ylabel('Altitude of Earth (km)')
+            plt.ylabel('Altitude above Earth (km)')
             if pp != None:
                 pp.savefig()
 

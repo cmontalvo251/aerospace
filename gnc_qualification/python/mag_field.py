@@ -2,10 +2,19 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import Orbit as orb
+import traceback
 try:
 	import pyIGRF as IGRF
+except FileNotFoundError as e:
+    print(f"Missing File Error: {e}")
+except ImportError as e:
+    print(f"Library not installed: {e}")
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
 except:
-	print('pyIGRF not found')
+	traceback.print_exc()
+	print('Unknown issue. Make sure you have pyIGRF installed')
+	print('And the coefficients - https://www.ngdc.noaa.gov/IAGA/vmod/igrf.html')
 	print('pip3 install pyIGRF to install')
 	sys.exit()
 
