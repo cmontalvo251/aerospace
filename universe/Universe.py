@@ -42,6 +42,57 @@ class JPL():
         ##Now that we've looped through the satellites it's time to create a solar system Class
         self.MilkyWay = SolarSystem(satellites,'The Solar System')
 
+    def PlotMultipleDays(self,pp,julian_day,day_skip,num_skips):
+        framenumber = 0
+        print('Plotting Multiple Orbits')
+        ##Let's just try and plot today
+
+        plti = P.plottool(12,'X (AU)','Y (AU)','Skip = '+str(0))
+        plt.title('Plotting Multiple Days = '+str(day_skip*num_skips)) 
+
+        XTRACES = []
+        YTRACES = []
+        for j in range(0,num_skips+1):
+            print('j=',j,' out of ',num_skips)
+            #Recompute orbits? But how?
+            #Ok moved some things around here we go
+            self.MilkyWay.satellites = self.computePlanetLocations(julian_day+j*day_skip)
+            #self.MilkyWay.Orbit()
+
+            #Plot system in a top down view -- REally it'd be nice if we could plot the orbital plane somehow
+            for i in range(0,self.MilkyWay.numsatellites):
+                offsetx = self.MilkyWay.satellites[3].x0/self.MilkyWay.AU*0
+                offsety = self.MilkyWay.satellites[3].y0/self.MilkyWay.AU*0
+                x = self.MilkyWay.satellites[i].x0/self.MilkyWay.AU-offsetx
+                y = self.MilkyWay.satellites[i].y0/self.MilkyWay.AU-offsety
+                if j == 0:
+                    print('J == 0')
+                    tracex = []
+                    tracey = []
+                    XTRACES.append(tracex)
+                    YTRACES.append(tracey)
+                else:
+                    XTRACES[i].append(x)
+                    YTRACES[i].append(y)
+                    #plti.plot(XTRACES[i],YTRACES[i],color=self.MilkyWay.satellites[i].color,label=self.MilkyWay.satellites[i].name)
+                #plti.plot(self.MilkyWay.satellites[i].x/self.MilkyWay.AU-offsetx,self.MilkyWay.satellites[i].y/self.MilkyWay.AU-offsety,label=self.MilkyWay.satellites[i].name,color=self.MilkyWay.satellites[i].color)
+                
+        for i in range(0,self.MilkyWay.numsatellites):
+            offsetx = self.MilkyWay.satellites[3].x0/self.MilkyWay.AU*0
+            offsety = self.MilkyWay.satellites[3].y0/self.MilkyWay.AU*0
+            x = self.MilkyWay.satellites[i].x0/self.MilkyWay.AU-offsetx
+            y = self.MilkyWay.satellites[i].y0/self.MilkyWay.AU-offsety
+            plti.plot(x,y,marker='o',color=self.MilkyWay.satellites[i].color)
+            plti.plot(XTRACES[i],YTRACES[i],color=self.MilkyWay.satellites[i].color,label=self.MilkyWay.satellites[i].name)
+        #plt.legend(loc='best')
+        plt.grid()
+        plt.axis('equal')
+        #plt.axis('square')
+        plt.grid()
+        #plt.xlim([-10,10])
+        #plt.ylim([-10,10])
+        pp.savefig()
+
     def AnimateOrbits(self,pp,julian_day,day_skip,num_skips,pause_time):
         framenumber = 0
         print('Animating Orbits')
@@ -165,9 +216,9 @@ class JPL():
         self.Sun = Satellite(1.989e30,432169*5280./3.28,np.asarray([0,0,0]),np.asarray([0,0,0]),'Sun','yellow',0)
         satellites = [self.Sun]
         planet_number = 1
-        print('AU (m) = ',self.AU)
-        print('Earth Volume (km^3) = ',self.EARTHVOLUME)
-        print('Earth Years (days) = ',365.25)
+        #print('AU (m) = ',self.AU)
+        #print('Earth Volume (km^3) = ',self.EARTHVOLUME)
+        #print('Earth Years (days) = ',365.25)
         for i in range(0,len(self.names)-1):
             name = self.names[planet_number]
             #print(name)
@@ -196,10 +247,10 @@ class JPL():
             self.ComputeCoordinates(this_planet,T,b,c,s,f)
             satellites.append(this_planet)
             planet_number += 1
-            print('Satellite = ',name)
-            print('    Semi Major Axis (AU) = ',np.round(this_planet.a/self.AU,2))
-            print('    Period (Earth Yrs) = ',np.round(this_planet.T/86400/365.25,2))
-            print('    Volume (Earths) = ',np.round(self.V0[i]/self.EARTHVOLUME,2))
+            #print('Satellite = ',name)
+            #print('    Semi Major Axis (AU) = ',np.round(this_planet.a/self.AU,2))
+            #print('    Period (Earth Yrs) = ',np.round(this_planet.T/86400/365.25,2))
+            #print('    Volume (Earths) = ',np.round(self.V0[i]/self.EARTHVOLUME,2))
         return satellites
 
     def ComputeCoordinates(self,planet,T,b,c,s,f):
