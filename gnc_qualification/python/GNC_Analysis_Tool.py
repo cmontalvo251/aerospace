@@ -1,17 +1,16 @@
 ########################################################
-#   NAME OF SOFTWARE
-#   WHO WROTE IT
-#   LAST EDIT DATE
-#   LIST OF INPUTS
-#   LIST OF OUTPUTS
-#   DIRECTIONS ON HOW TO RUN
-#   DESCRIPTION OF SOFTWARE
+#   GNC Analysis Tool for CubeSats
+#   Carlos Montalvo and Maxwell Cobar
+#   4/30/2026
+#   ABEX_GNC_Data_File.txt
+#   GNC_Analysis_Tool.pdf
+#   Set parameters in the .txt file and read the standard outputs and pdf
+#   This tool will help you size reaction wheels and magnetorquers for a LEO CubeSat
 #########################################################
 
 ###Modules
 import numpy as np
 import Orbit as O
-import os
 import matplotlib.pyplot as plt
 import mag_field as igrf
 from matplotlib.backends.backend_pdf import PdfPages

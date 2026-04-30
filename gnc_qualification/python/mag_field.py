@@ -6,11 +6,14 @@ import traceback
 try:
 	import pyIGRF as IGRF
 except FileNotFoundError as e:
-    print(f"Missing File Error: {e}")
+	print(f"Missing File Error: {e}")
+	sys.exit()
 except ImportError as e:
-    print(f"Library not installed: {e}")
+	print(f"Library not installed: {e}")
+	sys.exit()
 except Exception as e:
-    print(f"An unexpected error occurred: {e}")
+	print(f"An unexpected error occurred: {e}")
+	sys.exit()
 except:
 	traceback.print_exc()
 	print('Unknown issue. Make sure you have pyIGRF installed')
