@@ -1,7 +1,8 @@
 ########################################################
 #   GNC Analysis Tool for CubeSats
 #   Carlos Montalvo and Maxwell Cobar
-#   4/30/2026
+#   Original Creation: Spring 2021
+#   Last Edit Date: 5/1/2026
 #   ABEX_GNC_Data_File.txt
 #   GNC_Analysis_Tool.pdf
 #   Set parameters in the .txt file and read the standard outputs and pdf
