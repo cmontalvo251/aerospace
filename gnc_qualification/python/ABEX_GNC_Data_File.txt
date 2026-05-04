@@ -9,7 +9,7 @@
 12.0 #mission duration (months)
 2.2 #CD
 185.0 #rp-initial (km)
-400.0 #ra (km)
+60000.0 #ra (km)
 24 #mass of satellite (kg)
-0.5 #Momentum Storage of Chosen Reaction Wheels
+0.5 #Momentum Storage of Chosen Reaction Wheels (Nms)
 1.19 #magnetic moment (Amp-m^2)

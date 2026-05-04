@@ -42,7 +42,7 @@ julian_day  = 2461040 #this is jan 1 2026
 #julian_day += 36 #February 5th
 #julian_day += 146 #May 26th
 #julian_day += 276
-julian_day += 120 #April 30th
+julian_day += 121 #May 1st
 #julian_day += 284
 ##julian_day += 49
 #julian_day += 211
@@ -77,11 +77,12 @@ planets.MilkyWay.PlotOrbit(pp,-1)
 
 ###Plot multiple days rather than the keplerian orbit
 day_skip = 1 ##How may days to skip between iterations (must be an integer)
-num_skips = 265 #number of skips (must be an integer)
+num_skips = 365 #number of skips (must be an integer)
 planets.MilkyWay.numsatellites = 10  #Sun = 1,Mercury 2,Venus 3,Earth 4,Mars 5,Jupiter 6,Saturn 7,Uranus 8,Neptune 9,Pluto 10
 planets.PlotMultipleDays(pp,julian_day,day_skip,num_skips)
 
 pp.close()
+#plt.show()
 sys.exit()
 
 ##Animation

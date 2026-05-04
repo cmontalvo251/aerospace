@@ -52,11 +52,14 @@ class JPL():
 
         XTRACES = []
         YTRACES = []
+        days = []
         for j in range(0,num_skips+1):
             print('j=',j,' out of ',num_skips)
             #Recompute orbits? But how?
             #Ok moved some things around here we go
             self.MilkyWay.satellites = self.computePlanetLocations(julian_day+j*day_skip)
+            if j > 0:
+                days.append(j*day_skip)
             #self.MilkyWay.Orbit()
 
             #Plot system in a top down view -- REally it'd be nice if we could plot the orbital plane somehow
@@ -84,13 +87,19 @@ class JPL():
             y = self.MilkyWay.satellites[i].y0/self.MilkyWay.AU-offsety
             plti.plot(x,y,marker='o',color=self.MilkyWay.satellites[i].color)
             plti.plot(XTRACES[i],YTRACES[i],color=self.MilkyWay.satellites[i].color,label=self.MilkyWay.satellites[i].name)
-        #plt.legend(loc='best')
-        plt.grid()
         plt.axis('equal')
         #plt.axis('square')
-        plt.grid()
         #plt.xlim([-10,10])
         #plt.ylim([-10,10])
+        pp.savefig()
+
+        ###Plot the angle of the satellite with respect to the offset point
+        plti = P.plottool(12,'Days','Angle (deg)','Skip = '+str(0))
+        plt.title('Plotting Multiple Days = '+str(day_skip*num_skips)) 
+        for i in range(0,self.MilkyWay.numsatellites):
+            angle = np.arctan2(XTRACES[i],YTRACES[i])*180/np.pi
+            plti.plot(days,angle,label=self.MilkyWay.satellites[i].name)
+        plt.legend(loc='best')
         pp.savefig()
 
     def AnimateOrbits(self,pp,julian_day,day_skip,num_skips,pause_time):
