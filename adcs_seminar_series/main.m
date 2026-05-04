@@ -60,7 +60,7 @@ state = [x0;y0;z0;xdot0;ydot0;zdot0;q0123_0;p0;q0;r0;w10;w20;w30];
 
 %%%Need time window
 period = 2*pi/sqrt(mu)*semi_major^(3/2);
-number_of_orbits = 2;
+number_of_orbits = 5;
 tfinal = period*number_of_orbits;
 %tfinal = 100;
 next = 10;

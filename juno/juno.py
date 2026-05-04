@@ -204,7 +204,6 @@ T1 = 475.0 ##Thrust ASL - At sea level
 TVAC = 539. ##Thrust in Vacuum
 Isp = 226. #This is ISP at sea level dv = Isp*ln(MR)
 IspVAC = 256. #This is ISP in vacuum
-Cd = 0.35 #This is a guess based on OpenRocket
 D = 2.01 #meters using width and depth
 S = D**2 #This needs to be D^2
 stage_1_time = 41.

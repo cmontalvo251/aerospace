@@ -25,4 +25,4 @@ LMNMDM = dconstant*BI_Tesla;
 
 %%%Add it all up
 XYZD = XYZSRP + XYZAERO;
-LMND = LMNSRP + LMNAERO + LMNMDM + [1.0;1.0;1.0]*(1e-4)*(1-rwSATURATED); %%This is only on to simulate rw saturation
+LMND = LMNSRP + LMNAERO + LMNMDM + 0*[1.0;1.0;1.0]*(1e-4)*(1-rwSATURATED); %%This is only on to simulate rw saturation
