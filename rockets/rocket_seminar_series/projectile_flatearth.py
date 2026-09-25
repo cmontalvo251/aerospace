@@ -84,4 +84,5 @@ plt.plot(tout,velzout)
 plt.xlabel('Time (sec)')
 plt.ylabel('Normal Speed (m/s)')
 plt.grid()
+plt.show()
 
