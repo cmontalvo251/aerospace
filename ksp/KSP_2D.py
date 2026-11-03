@@ -160,7 +160,7 @@ deny = atm_model[:,3]
 #And planet parameters
 sidereal_rotational_velocity,mu,surface_gravity,R = planet_parameters()
 
-
+"""
 ##Initial Conditions for hop Orbit
 x0 = R
 z0 = 0.
@@ -180,7 +180,7 @@ stage_2_end = -99
 period = 900.0
 GNC = 0
 apogee = 10000.
-
+"""
 
 ###Conditions for Sub orbital flight (Two Stage)
 """
@@ -229,25 +229,26 @@ period = 2*np.pi/np.sqrt(mu)*semi_major**(3.0/2.0)
 GNC = 0
 """
 
-"""
 ###Two Stage Rocket
 x0 = R
 z0 = 0.0
 velx0 = 0.0
 velz0 = 0.0
 T1 = 180.0
+TVAC = T1
 T2 = 160.0
 Isp = 250.
+IspVAC = Isp
 Cd = 0.1
 S = 0.01
 masstons = 5.3+2.0
+mass_stage_1 = 1.0
 stage_1_time = 38.0
 stage_2_start = 150.0
 stage_2_end = stage_2_start + 35.0
 period = 3000.0
 GNC = 1
 apogee = 70000.
-"""
 
 ###################################################################
 mass0 = masstons*1000 #CONVERT to kg via metric tons
@@ -262,6 +263,8 @@ vzout = stateout[:,3]
 mout = stateout[:,4]
 
 vout = np.sqrt(vxout**2+vzout**2)
+
+print(xout[-1],zout[-1],vxout[-1],vzout[-1],mout[-1])
 
 plt.figure()
 plt.plot(tout,vout)
