@@ -56,7 +56,7 @@ def cubesat_dynamics(theta,omega, t, I, Kp, Kd, theta_target):
     current = tau_control/(beta*n*A)
     """
     
-    """
+    
     #Let's do this for Reaction wheels
     max_torque_RW = 0.004
     if abs(tau_desired) > max_torque_RW:
@@ -67,8 +67,8 @@ def cubesat_dynamics(theta,omega, t, I, Kp, Kd, theta_target):
     RRW = 0.042
     IRW = mRW*RRW**2 /2.0
     angular_acceleration_RW = tau_control / IRW
-    """
-    
+
+    """    
     ##Alright let's do Thrusters
     if RCS == False and (t-RCSTIME) > 2/1000.0:
         #Turn it on
@@ -78,8 +78,8 @@ def cubesat_dynamics(theta,omega, t, I, Kp, Kd, theta_target):
         RCS = False
         Thrust = 0.0
         RCSTIME = t
-
     tau_control = Thrust*length
+    """
     
     # Equations of Motion
     dtheta_dt = omega
@@ -124,14 +124,23 @@ for i in range(1, n_steps):
 # Post-calculate tau_control history for plotting
 current_sim = 0*theta_sim
 alpha_RW = 0*theta_sim
+omega_RW = 0*theta_sim
 thrust_sim = 0*theta_sim
 RCS = False
 RCSTIME = -1e20
 for i in range(0,len(theta_sim)):
     cubesat_dynamics(theta_sim[i],omega_sim[i], t[i], I, Kp, Kd, theta_target)
+
+    ##MagTs
     #current_sim[i] = current
-    #alpha_RW[i] = angular_acceleration_RW
-    thrust_sim[i] = Thrust
+
+    ##RWs
+    alpha_RW[i] = angular_acceleration_RW
+    #Let's also use Euler's method to simulate the RW angular velocity
+    omega_RW[i] = omega_RW[i-1] + dt * angular_acceleration_RW
+
+    ##RCS
+    #thrust_sim[i] = Thrust
 
 # --- 6. Plot Results (3 Subplots) ---
 plt.figure(figsize=(10, 10))
@@ -153,14 +162,15 @@ plt.ylabel('Angular Velocity (deg/s)')
 plt.grid(True)
 plt.legend(loc='upper right')
 
-# Subplot 3: Control Torque (tau_control)
+# Subplot 3: Control Value
 plt.subplot(3, 1, 3)
-plt.plot(t, thrust_sim, label='Control Value', color='green', linewidth=2)
+plt.plot(t, alpha_RW, label='Angular Acceleration(rad/s^2)', color='green', linewidth=2)
+plt.plot(t, omega_RW, label='Angular Velocity RW(rad/s)', color='orange', linewidth=2)
 plt.axhline(0, color='black', linestyle='--', alpha=0.5)
 plt.xlabel('Time (s)')
 #plt.ylabel('Current (Amps)')
-#plt.ylabel('Angular Acceleration (rad/s^2)')
-plt.ylabel('Thrust RCS (N)')
+plt.ylabel('Reaction Wheels')
+#plt.ylabel('Thrust RCS (N)')
 plt.grid(True)
 plt.legend(loc='upper right')
 
